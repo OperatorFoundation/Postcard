@@ -33,13 +33,10 @@ class MailController: NSObject
             if let listMessagesResponse = response as? GTLGmailListMessagesResponse
             {
                 //If there are messages that meet the query criteria in the list, get the message payload from Gmail
-                if !listMessagesResponse.messages.isEmpty
+                if let metaMessages = listMessagesResponse.messages as? [GTLGmailMessage]
                 {
-                    if let metaMessages = listMessagesResponse.messages as? [GTLGmailMessage]
-                    {
-                        //Get message payloads
-                        self.fetchAndSaveGmailPayloads(metaMessages)
-                    }
+                    //Get message payloads
+                    self.fetchAndSaveGmailPayloads(metaMessages)
                 }
             }
         })
