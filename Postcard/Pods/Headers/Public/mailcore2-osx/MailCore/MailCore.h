@@ -1,0 +1,1 @@
+../../../../mailcore2-osx/include/MailCore/MailCore.h

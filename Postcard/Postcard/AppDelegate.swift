@@ -7,36 +7,129 @@
 //
 
 import Cocoa
+import GTMOAuth2
+import GoogleAPIClient
 
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate {
-
-
-
-    func applicationDidFinishLaunching(aNotification: NSNotification) {
-        // Insert code here to initialize your application
+class AppDelegate: NSObject, NSApplicationDelegate
+{
+    @IBOutlet weak var postcardWindow: NSWindow!
+    
+    
+    
+    //MARK: Application Lifecycle
+    
+    func applicationDidFinishLaunching(aNotification: NSNotification)
+    {
+//        //Initialize GMail API Service
+//        if let auth = GTMOAuth2WindowController.authForGoogleFromKeychainForName(GmailProps.kKeychainItemName , clientID: GmailProps.kClientID, clientSecret: nil)
+//        {
+//            GmailProps.service.authorizer = auth
+//        }
+//        
+//        //Ensure Gmail API service is authorized and perform API calls (fetch postcards)
+//        if let authorizer = GmailProps.service.authorizer, canAuth = authorizer.canAuthorize where canAuth
+//        {
+//            //If we do not already have the user's email saved fetch it
+//            let userDefaults = NSUserDefaults.standardUserDefaults()
+//            if let _ = userDefaults.objectForKey(UDKey.emailAddressKey) as? String
+//            {
+//                fetchGoodies()
+//            }
+//            else
+//            {
+//                //Get user profile
+//                let query = GTLQueryGmail.queryForUsersGetProfile()
+//                GmailProps.service.executeQuery(query, completionHandler: { (ticket, maybeProfile, error) in
+//                    if let profile = maybeProfile as? GTLGmailProfile
+//                    {
+//                        print("\(profile)\n")
+//                        //save email to user defaults
+//                        userDefaults.setValue(profile.emailAddress, forKey: UDKey.emailAddressKey)
+//                        self.fetchGoodies()
+//                    }
+//                })
+//            }
+//        }
+//        else
+//        {
+//            
+//            //Present window for gmail login
+//            //_ = createAuthController()
+//        }
+        
+        
     }
-
-    func applicationWillTerminate(aNotification: NSNotification) {
-        // Insert code here to tear down your application
+    
+//    func fetchGoodies()
+//    {
+//        //DEV ONLY
+//        //MailController().sendEmail()
+//        //MailController().sendKey()
+//        MailController().fetchGmailMessagesList()
+//    }
+//    
+//    //MARK: OAuth2 Methods
+//    
+//    //Creates the Auth Controller for authorizing access to Gmail
+//    private func createAuthController() -> GTMOAuth2WindowController
+//    {
+//        let scopeString = GmailProps.scopes.joinWithSeparator(" ")
+//        let controller = GTMOAuth2WindowController(scope: scopeString, clientID: GmailProps.kClientID, clientSecret: nil, keychainItemName: GmailProps.kKeychainItemName, resourceBundle: nil)
+//        controller.signInSheetModalForWindow(NSApplication.sharedApplication().mainWindow, completionHandler: {(auth, error) in
+//            //Handle response
+//            self.finishedWithAuth(controller, authResult: auth, error: error)
+//        })
+//        return controller
+//    }
+//    
+//    //Handle completion of authorization process and update the Gmail API with the new credentials
+//    func finishedWithAuth(authWindowController: GTMOAuth2WindowController, authResult: GTMOAuth2Authentication, error: NSError?)
+//    {
+//        if let error: NSError = error
+//        {
+//            GmailProps.service.authorizer = nil
+//            showAlert("Authentication Error: \(error.localizedDescription)")
+//            return
+//        }
+//        
+//        GmailProps.service.authorizer = authResult
+//        //
+//        print("Authorization result from app delegate: \(authResult)\n")
+//        //
+//        authWindowController.dismissController(self)
+//    }
+    
+    //MARK: Helper Methods
+    
+    //Helper for showing an alert.
+    func showAlert(message: String)
+    {
+        let alert = NSAlert()
+        alert.messageText = message
+        alert.addButtonWithTitle("OK")
+        alert.runModal()
     }
 
     // MARK: - Core Data stack
 
-    lazy var applicationDocumentsDirectory: NSURL = {
+    lazy var applicationDocumentsDirectory: NSURL =
+    {
         // The directory the application uses to store the Core Data store file. This code uses a directory named "org.operatorfoundation.Postcard" in the user's Application Support directory.
         let urls = NSFileManager.defaultManager().URLsForDirectory(.ApplicationSupportDirectory, inDomains: .UserDomainMask)
         let appSupportURL = urls[urls.count - 1]
         return appSupportURL.URLByAppendingPathComponent("org.operatorfoundation.Postcard")
     }()
 
-    lazy var managedObjectModel: NSManagedObjectModel = {
+    lazy var managedObjectModel: NSManagedObjectModel =
+    {
         // The managed object model for the application. This property is not optional. It is a fatal error for the application not to be able to find and load its model.
         let modelURL = NSBundle.mainBundle().URLForResource("Postcard", withExtension: "momd")!
         return NSManagedObjectModel(contentsOfURL: modelURL)!
     }()
 
-    lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
+    lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator =
+    {
         // The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it. (The directory for the store is created, if necessary.) This property is optional since there are legitimate error conditions that could cause the creation of the store to fail.
         let fileManager = NSFileManager.defaultManager()
         var failError: NSError? = nil
@@ -50,32 +143,40 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 failureReason = "Expected a folder to store application data, found a file \(self.applicationDocumentsDirectory.path)."
                 shouldFail = true
             }
-        } catch  {
+        }
+        catch  {
             let nserror = error as NSError
-            if nserror.code == NSFileReadNoSuchFileError {
+            if nserror.code == NSFileReadNoSuchFileError
+            {
                 do {
                     try fileManager.createDirectoryAtPath(self.applicationDocumentsDirectory.path!, withIntermediateDirectories: true, attributes: nil)
-                } catch {
+                }
+                catch {
                     failError = nserror
                 }
-            } else {
+            }
+            else
+            {
                 failError = nserror
             }
         }
         
         // Create the coordinator and store
         var coordinator: NSPersistentStoreCoordinator? = nil
-        if failError == nil {
+        if failError == nil
+        {
             coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
             let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent("CocoaAppCD.storedata")
             do {
                 try coordinator!.addPersistentStoreWithType(NSXMLStoreType, configuration: nil, URL: url, options: nil)
-            } catch {
+            }
+            catch {
                 failError = error as NSError
             }
         }
         
-        if shouldFail || (failError != nil) {
+        if shouldFail || (failError != nil)
+        {
             // Report any error we got.
             var dict = [String: AnyObject]()
             dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data"
@@ -86,60 +187,75 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let error = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict)
             NSApplication.sharedApplication().presentError(error)
             abort()
-        } else {
+        }
+        else
+        {
             return coordinator!
         }
     }()
 
-    lazy var managedObjectContext: NSManagedObjectContext = {
+    lazy var managedObjectContext: NSManagedObjectContext =
+    {
         // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.) This property is optional since there are legitimate error conditions that could cause the creation of the context to fail.
         let coordinator = self.persistentStoreCoordinator
         var managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
         managedObjectContext.persistentStoreCoordinator = coordinator
+        managedObjectContext.mergePolicy = NSMergePolicy(mergeType: NSMergePolicyType.MergeByPropertyObjectTrumpMergePolicyType)
+        
         return managedObjectContext
     }()
 
     // MARK: - Core Data Saving and Undo support
 
-    @IBAction func saveAction(sender: AnyObject!) {
+    @IBAction func saveAction(sender: AnyObject!)
+    {
         // Performs the save action for the application, which is to send the save: message to the application's managed object context. Any encountered errors are presented to the user.
-        if !managedObjectContext.commitEditing() {
+        if !managedObjectContext.commitEditing()
+        {
             NSLog("\(NSStringFromClass(self.dynamicType)) unable to commit editing before saving")
         }
-        if managedObjectContext.hasChanges {
+        if managedObjectContext.hasChanges
+        {
             do {
                 try managedObjectContext.save()
-            } catch {
+            }
+            catch {
                 let nserror = error as NSError
                 NSApplication.sharedApplication().presentError(nserror)
             }
         }
     }
 
-    func windowWillReturnUndoManager(window: NSWindow) -> NSUndoManager? {
+    func windowWillReturnUndoManager(window: NSWindow) -> NSUndoManager?
+    {
         // Returns the NSUndoManager for the application. In this case, the manager returned is that of the managed object context for the application.
         return managedObjectContext.undoManager
     }
 
-    func applicationShouldTerminate(sender: NSApplication) -> NSApplicationTerminateReply {
+    func applicationShouldTerminate(sender: NSApplication) -> NSApplicationTerminateReply
+    {
         // Save changes in the application's managed object context before the application terminates.
         
-        if !managedObjectContext.commitEditing() {
+        if !managedObjectContext.commitEditing()
+        {
             NSLog("\(NSStringFromClass(self.dynamicType)) unable to commit editing to terminate")
             return .TerminateCancel
         }
         
-        if !managedObjectContext.hasChanges {
+        if !managedObjectContext.hasChanges
+        {
             return .TerminateNow
         }
         
         do {
             try managedObjectContext.save()
-        } catch {
+        }
+        catch {
             let nserror = error as NSError
             // Customize this code block to include application-specific recovery steps.
             let result = sender.presentError(nserror)
-            if (result) {
+            if (result)
+            {
                 return .TerminateCancel
             }
             
@@ -154,7 +270,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             alert.addButtonWithTitle(cancelButton)
             
             let answer = alert.runModal()
-            if answer == NSAlertFirstButtonReturn {
+            if answer == NSAlertFirstButtonReturn
+            {
                 return .TerminateCancel
             }
         }

@@ -7,13 +7,45 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		10DB8DEA5BE0FFB798FB44E4 /* Pods_Postcard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 678705936F2FBB24A6BDCD03 /* Pods_Postcard.framework */; };
+		25C76123AD3248366E5B133E /* Pods_PostcardTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3695404FAD88AD3813CC7809 /* Pods_PostcardTests.framework */; };
+		26DEFCD09B3521E06F917794 /* Pods_PostcardUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D53A4297FA3F7402E52D098 /* Pods_PostcardUITests.framework */; };
 		461891AC1CC17B9A009C577D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AB1CC17B9A009C577D /* AppDelegate.swift */; };
-		461891AE1CC17B9A009C577D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AD1CC17B9A009C577D /* ViewController.swift */; };
 		461891B11CC17B9A009C577D /* Postcard.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 461891AF1CC17B9A009C577D /* Postcard.xcdatamodeld */; };
 		461891B31CC17B9A009C577D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 461891B21CC17B9A009C577D /* Assets.xcassets */; };
 		461891B61CC17B9A009C577D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 461891B41CC17B9A009C577D /* Main.storyboard */; };
 		461891C11CC17B9A009C577D /* PostcardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891C01CC17B9A009C577D /* PostcardTests.swift */; };
 		461891CC1CC17B9A009C577D /* PostcardUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891CB1CC17B9A009C577D /* PostcardUITests.swift */; };
+		461C0A531CE63F0B00C5B5A5 /* PenPalController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A521CE63F0B00C5B5A5 /* PenPalController.swift */; };
+		461C0A551CE6638C00C5B5A5 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A541CE6638C00C5B5A5 /* MenuViewController.swift */; };
+		461C0A561CE6638C00C5B5A5 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A541CE6638C00C5B5A5 /* MenuViewController.swift */; };
+		461C0A581CE663D500C5B5A5 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A571CE663D500C5B5A5 /* ContentViewController.swift */; };
+		461C0A591CE663D500C5B5A5 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A571CE663D500C5B5A5 /* ContentViewController.swift */; };
+		461C0A5B1CE6645300C5B5A5 /* PenPalsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A5A1CE6645300C5B5A5 /* PenPalsViewController.swift */; };
+		461C0A5C1CE6645300C5B5A5 /* PenPalsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A5A1CE6645300C5B5A5 /* PenPalsViewController.swift */; };
+		461C0A5E1CE664D900C5B5A5 /* MessageListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A5D1CE664D900C5B5A5 /* MessageListViewController.swift */; };
+		461C0A5F1CE664D900C5B5A5 /* MessageListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A5D1CE664D900C5B5A5 /* MessageListViewController.swift */; };
+		461C0A611CE6664200C5B5A5 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A601CE6664200C5B5A5 /* MessageViewController.swift */; };
+		461C0A621CE6664200C5B5A5 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A601CE6664200C5B5A5 /* MessageViewController.swift */; };
+		461C0A641CE682AF00C5B5A5 /* DesignableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A631CE682AF00C5B5A5 /* DesignableView.swift */; };
+		461C0A671CE696E300C5B5A5 /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A661CE696E300C5B5A5 /* MainSplitViewController.swift */; };
+		46A6F4AE1CEFB578007C2D17 /* MainContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A6F4AD1CEFB578007C2D17 /* MainContainerViewController.swift */; };
+		B4056FD11CC99B3A00D81301 /* GTMOAuth2Window.xib in Resources */ = {isa = PBXBuildFile; fileRef = B4056FD01CC99B3A00D81301 /* GTMOAuth2Window.xib */; };
+		B4238F551CD2A24D0054E7EF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4238F541CD2A24D0054E7EF /* Security.framework */; };
+		B4238F571CD2A6030054E7EF /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4238F561CD2A6030054E7EF /* SystemConfiguration.framework */; };
+		B4238F591CD2C0100054E7EF /* MailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4238F581CD2C0100054E7EF /* MailController.swift */; };
+		B4238F5C1CD2C11C0054E7EF /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4238F5B1CD2C11C0054E7EF /* Constants.swift */; };
+		B4238F5F1CD2DF050054E7EF /* KeyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4238F5E1CD2DF050054E7EF /* KeyController.swift */; };
+		B427B8581CF5259C007BD79C /* Postcard+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B427B8561CF5258B007BD79C /* Postcard+CoreDataProperties.swift */; };
+		B427B8591CF5259F007BD79C /* Postcard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B427B8571CF52594007BD79C /* Postcard.swift */; };
+		B430D5EB1CF7C31D0025365E /* WelcomeWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B430D5EA1CF7C31D0025365E /* WelcomeWindowController.swift */; };
+		B430FC8D1CF8A22900205015 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AB1CC17B9A009C577D /* AppDelegate.swift */; };
+		B430FC8E1CF8A23200205015 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AB1CC17B9A009C577D /* AppDelegate.swift */; };
+		B4BF355D1CDAC05500C3CDD0 /* PenPal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BF355B1CDAC05500C3CDD0 /* PenPal+CoreDataProperties.swift */; };
+		B4BF355E1CDAC05500C3CDD0 /* PenPal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BF355C1CDAC05500C3CDD0 /* PenPal.swift */; };
+		B4EDBB4E1CEF6BC50094853F /* ComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EDBB4D1CEF6BC50094853F /* ComposeViewController.swift */; };
+		B4EDBB501CEF74D80094853F /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */; };
+		B4EDBB521CEF7C040094853F /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EDBB511CEF7C040094853F /* MainWindowController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,9 +66,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1C54A563A07AFC852BFBF765 /* Pods-PostcardTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostcardTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PostcardTests/Pods-PostcardTests.debug.xcconfig"; sourceTree = "<group>"; };
+		3695404FAD88AD3813CC7809 /* Pods_PostcardTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostcardTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		461891A81CC17B99009C577D /* Postcard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Postcard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		461891AB1CC17B9A009C577D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		461891AD1CC17B9A009C577D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		461891B01CC17B9A009C577D /* Postcard.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Postcard.xcdatamodel; sourceTree = "<group>"; };
 		461891B21CC17B9A009C577D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		461891B51CC17B9A009C577D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -47,6 +80,37 @@
 		461891C71CC17B9A009C577D /* PostcardUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PostcardUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		461891CB1CC17B9A009C577D /* PostcardUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostcardUITests.swift; sourceTree = "<group>"; };
 		461891CD1CC17B9A009C577D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		461C0A521CE63F0B00C5B5A5 /* PenPalController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PenPalController.swift; path = Controllers/PenPalController.swift; sourceTree = "<group>"; };
+		461C0A541CE6638C00C5B5A5 /* MenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MenuViewController.swift; path = Controllers/ViewControllers/MenuViewController.swift; sourceTree = "<group>"; };
+		461C0A571CE663D500C5B5A5 /* ContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContentViewController.swift; path = Controllers/ViewControllers/ContentViewController.swift; sourceTree = "<group>"; };
+		461C0A5A1CE6645300C5B5A5 /* PenPalsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PenPalsViewController.swift; path = Controllers/ViewControllers/PenPalsViewController.swift; sourceTree = "<group>"; };
+		461C0A5D1CE664D900C5B5A5 /* MessageListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageListViewController.swift; path = Controllers/ViewControllers/MessageListViewController.swift; sourceTree = "<group>"; };
+		461C0A601CE6664200C5B5A5 /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageViewController.swift; path = Controllers/ViewControllers/MessageViewController.swift; sourceTree = "<group>"; };
+		461C0A631CE682AF00C5B5A5 /* DesignableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DesignableView.swift; path = UIGoodies/DesignableView.swift; sourceTree = "<group>"; };
+		461C0A661CE696E300C5B5A5 /* MainSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainSplitViewController.swift; path = Controllers/ViewControllers/MainSplitViewController.swift; sourceTree = "<group>"; };
+		46A6F4AD1CEFB578007C2D17 /* MainContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainContainerViewController.swift; path = Controllers/ViewControllers/MainContainerViewController.swift; sourceTree = "<group>"; };
+		4D53A4297FA3F7402E52D098 /* Pods_PostcardUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostcardUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		611C5D787BC8FC1916D45E9A /* Pods-Postcard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Postcard.release.xcconfig"; path = "Pods/Target Support Files/Pods-Postcard/Pods-Postcard.release.xcconfig"; sourceTree = "<group>"; };
+		678705936F2FBB24A6BDCD03 /* Pods_Postcard.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Postcard.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B4056FD01CC99B3A00D81301 /* GTMOAuth2Window.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GTMOAuth2Window.xib; sourceTree = "<group>"; };
+		B4238F541CD2A24D0054E7EF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		B4238F561CD2A6030054E7EF /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		B4238F581CD2C0100054E7EF /* MailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MailController.swift; path = Controllers/MailController.swift; sourceTree = "<group>"; };
+		B4238F5B1CD2C11C0054E7EF /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = SupportingFiles/Constants.swift; sourceTree = "<group>"; };
+		B4238F5E1CD2DF050054E7EF /* KeyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KeyController.swift; path = Controllers/KeyController.swift; sourceTree = "<group>"; };
+		B4238F601CD2DF630054E7EF /* Postcard-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Postcard-Bridging-Header.h"; sourceTree = "<group>"; };
+		B427B8561CF5258B007BD79C /* Postcard+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Postcard+CoreDataProperties.swift"; path = "DataModels/Postcard+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B427B8571CF52594007BD79C /* Postcard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Postcard.swift; path = DataModels/Postcard.swift; sourceTree = "<group>"; };
+		B430D5EA1CF7C31D0025365E /* WelcomeWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeWindowController.swift; path = Controllers/ViewControllers/WelcomeWindowController.swift; sourceTree = "<group>"; };
+		B4BF355B1CDAC05500C3CDD0 /* PenPal+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PenPal+CoreDataProperties.swift"; path = "DataModels/PenPal+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B4BF355C1CDAC05500C3CDD0 /* PenPal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PenPal.swift; path = DataModels/PenPal.swift; sourceTree = "<group>"; };
+		B4EDBB4D1CEF6BC50094853F /* ComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComposeViewController.swift; path = Controllers/ViewControllers/ComposeViewController.swift; sourceTree = "<group>"; };
+		B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeViewController.swift; path = Controllers/ViewControllers/WelcomeViewController.swift; sourceTree = "<group>"; };
+		B4EDBB511CEF7C040094853F /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainWindowController.swift; path = Controllers/ViewControllers/MainWindowController.swift; sourceTree = "<group>"; };
+		DE6AE8B4A763778B6E995AD4 /* Pods-PostcardUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostcardUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PostcardUITests/Pods-PostcardUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		E06FF6A9674F8BD384D14B5C /* Pods-PostcardTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostcardTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PostcardTests/Pods-PostcardTests.release.xcconfig"; sourceTree = "<group>"; };
+		F993DEEA770B3AC03674690B /* Pods-Postcard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Postcard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Postcard/Pods-Postcard.debug.xcconfig"; sourceTree = "<group>"; };
+		FF885B77E55313A866B6724E /* Pods-PostcardUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostcardUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PostcardUITests/Pods-PostcardUITests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +118,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4238F571CD2A6030054E7EF /* SystemConfiguration.framework in Frameworks */,
+				B4238F551CD2A24D0054E7EF /* Security.framework in Frameworks */,
+				10DB8DEA5BE0FFB798FB44E4 /* Pods_Postcard.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +128,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25C76123AD3248366E5B133E /* Pods_PostcardTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,6 +136,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26DEFCD09B3521E06F917794 /* Pods_PostcardUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +150,8 @@
 				461891BF1CC17B9A009C577D /* PostcardTests */,
 				461891CA1CC17B9A009C577D /* PostcardUITests */,
 				461891A91CC17B99009C577D /* Products */,
+				CAAD6366546B4CDA3491C9B9 /* Pods */,
+				CD953D86455DD95CB6DAFBBB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -98,11 +169,15 @@
 			isa = PBXGroup;
 			children = (
 				461891AB1CC17B9A009C577D /* AppDelegate.swift */,
-				461891AD1CC17B9A009C577D /* ViewController.swift */,
 				461891B21CC17B9A009C577D /* Assets.xcassets */,
 				461891B41CC17B9A009C577D /* Main.storyboard */,
+				B4056FD01CC99B3A00D81301 /* GTMOAuth2Window.xib */,
 				461891B71CC17B9A009C577D /* Info.plist */,
-				461891AF1CC17B9A009C577D /* Postcard.xcdatamodeld */,
+				B4BF355A1CDAC02F00C3CDD0 /* DataModels */,
+				B4238F5A1CD2C0E50054E7EF /* Controllers */,
+				B4238F5D1CD2C4C50054E7EF /* SupportingFiles */,
+				B4238F601CD2DF630054E7EF /* Postcard-Bridging-Header.h */,
+				461C0A651CE682B800C5B5A5 /* UIGoodies */,
 			);
 			path = Postcard;
 			sourceTree = "<group>";
@@ -125,6 +200,96 @@
 			path = PostcardUITests;
 			sourceTree = "<group>";
 		};
+		461C0A651CE682B800C5B5A5 /* UIGoodies */ = {
+			isa = PBXGroup;
+			children = (
+				461C0A631CE682AF00C5B5A5 /* DesignableView.swift */,
+			);
+			name = UIGoodies;
+			sourceTree = "<group>";
+		};
+		B4238F5A1CD2C0E50054E7EF /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				B45C57DC1CE51CBF0057EEAF /* ViewControllers */,
+				B4238F581CD2C0100054E7EF /* MailController.swift */,
+				B4238F5E1CD2DF050054E7EF /* KeyController.swift */,
+				461C0A521CE63F0B00C5B5A5 /* PenPalController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		B4238F5D1CD2C4C50054E7EF /* SupportingFiles */ = {
+			isa = PBXGroup;
+			children = (
+				B4238F5B1CD2C11C0054E7EF /* Constants.swift */,
+			);
+			name = SupportingFiles;
+			sourceTree = "<group>";
+		};
+		B430D5EC1CF7DACD0025365E /* WindowControllers */ = {
+			isa = PBXGroup;
+			children = (
+				B430D5EA1CF7C31D0025365E /* WelcomeWindowController.swift */,
+				B4EDBB511CEF7C040094853F /* MainWindowController.swift */,
+			);
+			name = WindowControllers;
+			sourceTree = "<group>";
+		};
+		B45C57DC1CE51CBF0057EEAF /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				B430D5EC1CF7DACD0025365E /* WindowControllers */,
+				461C0A541CE6638C00C5B5A5 /* MenuViewController.swift */,
+				461C0A571CE663D500C5B5A5 /* ContentViewController.swift */,
+				461C0A5A1CE6645300C5B5A5 /* PenPalsViewController.swift */,
+				461C0A5D1CE664D900C5B5A5 /* MessageListViewController.swift */,
+				461C0A601CE6664200C5B5A5 /* MessageViewController.swift */,
+				461C0A661CE696E300C5B5A5 /* MainSplitViewController.swift */,
+				B4EDBB4D1CEF6BC50094853F /* ComposeViewController.swift */,
+				B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */,
+				46A6F4AD1CEFB578007C2D17 /* MainContainerViewController.swift */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		B4BF355A1CDAC02F00C3CDD0 /* DataModels */ = {
+			isa = PBXGroup;
+			children = (
+				B427B8561CF5258B007BD79C /* Postcard+CoreDataProperties.swift */,
+				B427B8571CF52594007BD79C /* Postcard.swift */,
+				B4BF355B1CDAC05500C3CDD0 /* PenPal+CoreDataProperties.swift */,
+				B4BF355C1CDAC05500C3CDD0 /* PenPal.swift */,
+				461891AF1CC17B9A009C577D /* Postcard.xcdatamodeld */,
+			);
+			name = DataModels;
+			sourceTree = "<group>";
+		};
+		CAAD6366546B4CDA3491C9B9 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F993DEEA770B3AC03674690B /* Pods-Postcard.debug.xcconfig */,
+				611C5D787BC8FC1916D45E9A /* Pods-Postcard.release.xcconfig */,
+				1C54A563A07AFC852BFBF765 /* Pods-PostcardTests.debug.xcconfig */,
+				E06FF6A9674F8BD384D14B5C /* Pods-PostcardTests.release.xcconfig */,
+				DE6AE8B4A763778B6E995AD4 /* Pods-PostcardUITests.debug.xcconfig */,
+				FF885B77E55313A866B6724E /* Pods-PostcardUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		CD953D86455DD95CB6DAFBBB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B4238F561CD2A6030054E7EF /* SystemConfiguration.framework */,
+				B4238F541CD2A24D0054E7EF /* Security.framework */,
+				678705936F2FBB24A6BDCD03 /* Pods_Postcard.framework */,
+				3695404FAD88AD3813CC7809 /* Pods_PostcardTests.framework */,
+				4D53A4297FA3F7402E52D098 /* Pods_PostcardUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -132,9 +297,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 461891D01CC17B9A009C577D /* Build configuration list for PBXNativeTarget "Postcard" */;
 			buildPhases = (
+				2518CCF84D5266CF3869DD70 /* Check Pods Manifest.lock */,
 				461891A41CC17B99009C577D /* Sources */,
 				461891A51CC17B99009C577D /* Frameworks */,
 				461891A61CC17B99009C577D /* Resources */,
+				4E188169FF636E0098830984 /* Embed Pods Frameworks */,
+				4AABE3B0BE886ABA92E5F83C /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -149,9 +317,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 461891D31CC17B9A009C577D /* Build configuration list for PBXNativeTarget "PostcardTests" */;
 			buildPhases = (
+				65CA4B9C578A0B5CC488845D /* Check Pods Manifest.lock */,
 				461891B81CC17B9A009C577D /* Sources */,
 				461891B91CC17B9A009C577D /* Frameworks */,
 				461891BA1CC17B9A009C577D /* Resources */,
+				DFE19F25B48A619B7CC8A91B /* Embed Pods Frameworks */,
+				9E62D00ADEAAD14B5EB5E063 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -167,9 +338,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 461891D61CC17B9A009C577D /* Build configuration list for PBXNativeTarget "PostcardUITests" */;
 			buildPhases = (
+				45A1E41CDD0CD985D244D079 /* Check Pods Manifest.lock */,
 				461891C31CC17B9A009C577D /* Sources */,
 				461891C41CC17B9A009C577D /* Frameworks */,
 				461891C51CC17B9A009C577D /* Resources */,
+				9136808A56C2B48B7D89C09A /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -231,6 +404,7 @@
 			files = (
 				461891B31CC17B9A009C577D /* Assets.xcassets in Resources */,
 				461891B61CC17B9A009C577D /* Main.storyboard in Resources */,
+				B4056FD11CC99B3A00D81301 /* GTMOAuth2Window.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -250,14 +424,156 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		2518CCF84D5266CF3869DD70 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		45A1E41CDD0CD985D244D079 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		4AABE3B0BE886ABA92E5F83C /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Postcard/Pods-Postcard-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4E188169FF636E0098830984 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Postcard/Pods-Postcard-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		65CA4B9C578A0B5CC488845D /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		9136808A56C2B48B7D89C09A /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PostcardUITests/Pods-PostcardUITests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9E62D00ADEAAD14B5EB5E063 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PostcardTests/Pods-PostcardTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DFE19F25B48A619B7CC8A91B /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PostcardTests/Pods-PostcardTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		461891A41CC17B99009C577D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				461891AE1CC17B9A009C577D /* ViewController.swift in Sources */,
+				B427B8591CF5259F007BD79C /* Postcard.swift in Sources */,
+				461C0A581CE663D500C5B5A5 /* ContentViewController.swift in Sources */,
+				461C0A611CE6664200C5B5A5 /* MessageViewController.swift in Sources */,
 				461891B11CC17B9A009C577D /* Postcard.xcdatamodeld in Sources */,
+				B4238F5F1CD2DF050054E7EF /* KeyController.swift in Sources */,
+				461C0A641CE682AF00C5B5A5 /* DesignableView.swift in Sources */,
+				B4EDBB501CEF74D80094853F /* WelcomeViewController.swift in Sources */,
+				461C0A671CE696E300C5B5A5 /* MainSplitViewController.swift in Sources */,
+				46A6F4AE1CEFB578007C2D17 /* MainContainerViewController.swift in Sources */,
 				461891AC1CC17B9A009C577D /* AppDelegate.swift in Sources */,
+				B4EDBB521CEF7C040094853F /* MainWindowController.swift in Sources */,
+				B4238F591CD2C0100054E7EF /* MailController.swift in Sources */,
+				461C0A551CE6638C00C5B5A5 /* MenuViewController.swift in Sources */,
+				B4BF355E1CDAC05500C3CDD0 /* PenPal.swift in Sources */,
+				461C0A531CE63F0B00C5B5A5 /* PenPalController.swift in Sources */,
+				B4EDBB4E1CEF6BC50094853F /* ComposeViewController.swift in Sources */,
+				B4238F5C1CD2C11C0054E7EF /* Constants.swift in Sources */,
+				B4BF355D1CDAC05500C3CDD0 /* PenPal+CoreDataProperties.swift in Sources */,
+				B430D5EB1CF7C31D0025365E /* WelcomeWindowController.swift in Sources */,
+				B427B8581CF5259C007BD79C /* Postcard+CoreDataProperties.swift in Sources */,
+				461C0A5E1CE664D900C5B5A5 /* MessageListViewController.swift in Sources */,
+				461C0A5B1CE6645300C5B5A5 /* PenPalsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,6 +581,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B430FC8D1CF8A22900205015 /* AppDelegate.swift in Sources */,
 				461891C11CC17B9A009C577D /* PostcardTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -273,7 +590,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				461C0A5C1CE6645300C5B5A5 /* PenPalsViewController.swift in Sources */,
+				461C0A5F1CE664D900C5B5A5 /* MessageListViewController.swift in Sources */,
 				461891CC1CC17B9A009C577D /* PostcardUITests.swift in Sources */,
+				461C0A591CE663D500C5B5A5 /* ContentViewController.swift in Sources */,
+				B430FC8E1CF8A23200205015 /* AppDelegate.swift in Sources */,
+				461C0A621CE6664200C5B5A5 /* MessageViewController.swift in Sources */,
+				461C0A561CE6638C00C5B5A5 /* MenuViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,30 +711,38 @@
 		};
 		461891D11CC17B9A009C577D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F993DEEA770B3AC03674690B /* Pods-Postcard.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Postcard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.operatorfoundation.Postcard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Postcard/Postcard-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		461891D21CC17B9A009C577D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 611C5D787BC8FC1916D45E9A /* Pods-Postcard.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Postcard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.operatorfoundation.Postcard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Postcard/Postcard-Bridging-Header.h";
 			};
 			name = Release;
 		};
 		461891D41CC17B9A009C577D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1C54A563A07AFC852BFBF765 /* Pods-PostcardTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -425,6 +756,7 @@
 		};
 		461891D51CC17B9A009C577D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E06FF6A9674F8BD384D14B5C /* Pods-PostcardTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -438,6 +770,7 @@
 		};
 		461891D71CC17B9A009C577D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DE6AE8B4A763778B6E995AD4 /* Pods-PostcardUITests.debug.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = PostcardUITests/Info.plist;
@@ -450,6 +783,7 @@
 		};
 		461891D81CC17B9A009C577D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FF885B77E55313A866B6724E /* Pods-PostcardUITests.release.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = PostcardUITests/Info.plist;
@@ -479,6 +813,7 @@
 				461891D21CC17B9A009C577D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		461891D31CC17B9A009C577D /* Build configuration list for PBXNativeTarget "PostcardTests" */ = {
 			isa = XCConfigurationList;
@@ -487,6 +822,7 @@
 				461891D51CC17B9A009C577D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		461891D61CC17B9A009C577D /* Build configuration list for PBXNativeTarget "PostcardUITests" */ = {
 			isa = XCConfigurationList;
@@ -495,6 +831,7 @@
 				461891D81CC17B9A009C577D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

@@ -1,0 +1,45 @@
+platform :osx, '10.11'
+use_frameworks!
+
+target 'Postcard' do
+
+source 'https://github.com/CocoaPods/Specs.git'
+source 'https://github.com/OperatorFoundation/OperatorPods'
+
+pod 'GoogleAPIClient/Gmail'
+pod 'GTMOAuth2', '1.1.0'
+pod 'Sodium', '~> 0.1'
+pod 'CBOR', '~> 0.1'
+pod 'mailcore2-osx'
+pod 'SSKeychain'
+
+end
+
+target 'PostcardTests' do
+
+source 'https://github.com/CocoaPods/Specs.git'
+source 'https://github.com/OperatorFoundation/OperatorPods'
+
+pod 'GoogleAPIClient/Gmail'
+pod 'GTMOAuth2', '1.1.0'
+pod 'Sodium', '~> 0.1'
+pod 'CBOR', '~> 0.1'
+pod 'mailcore2-osx'
+pod 'SSKeychain'
+
+end
+
+target 'PostcardUITests' do
+
+source 'https://github.com/CocoaPods/Specs.git'
+source 'https://github.com/OperatorFoundation/OperatorPods'
+
+pod 'GoogleAPIClient/Gmail'
+pod 'GTMOAuth2', '1.1.0'
+pod 'Sodium', '~> 0.1'
+pod 'CBOR', '~> 0.1'
+pod 'mailcore2-osx'
+pod 'SSKeychain'
+
+end
+

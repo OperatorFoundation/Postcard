@@ -1,0 +1,36 @@
+PODS:
+  - CBOR (0.1)
+  - GoogleAPIClient/Core (1.0.3):
+    - GTMSessionFetcher (~> 1.1)
+  - GoogleAPIClient/Gmail (1.0.3):
+    - GoogleAPIClient/Core
+    - GTMSessionFetcher (~> 1.1)
+  - GTMOAuth2 (1.1.0):
+    - GTMSessionFetcher (~> 1.1)
+  - GTMSessionFetcher (1.1.2):
+    - GTMSessionFetcher/Full (= 1.1.2)
+  - GTMSessionFetcher/Core (1.1.2)
+  - GTMSessionFetcher/Full (1.1.2):
+    - GTMSessionFetcher/Core (= 1.1.2)
+  - mailcore2-osx (0.6.4)
+  - Sodium (0.1)
+  - SSKeychain (1.4.0)
+
+DEPENDENCIES:
+  - CBOR (~> 0.1)
+  - GoogleAPIClient/Gmail
+  - GTMOAuth2 (= 1.1.0)
+  - mailcore2-osx
+  - Sodium (~> 0.1)
+  - SSKeychain
+
+SPEC CHECKSUMS:
+  CBOR: cfda2cf059eb52968677fd853b21f91a78db6a74
+  GoogleAPIClient: 06a32889d31c0f1c9ae528e31139ec3680b25e0d
+  GTMOAuth2: b3908247eeeb24b9bc90bd12739b4ef072919297
+  GTMSessionFetcher: 765d87b1ff52999f865857c11bcdad516696cc89
+  mailcore2-osx: 56890045e50f3b09b6530f5bd008eda67e1f6b82
+  Sodium: fa459e59912d3e6d44f3d9030fafc12c4079148d
+  SSKeychain: c71293fa57216a40ab06c23f4085387583293de4
+
+COCOAPODS: 0.39.0

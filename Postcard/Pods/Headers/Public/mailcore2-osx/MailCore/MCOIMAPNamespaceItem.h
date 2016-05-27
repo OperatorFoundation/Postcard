@@ -1,0 +1,1 @@
+../../../../mailcore2-osx/include/MailCore/MCOIMAPNamespaceItem.h

@@ -1,0 +1,148 @@
+//
+//  MenuViewController.swift
+//  Postcard
+//
+//  Created by Adelita Schule on 5/13/16.
+//  Copyright © 2016 operatorfoundation.org. All rights reserved.
+//
+
+import Cocoa
+
+enum SelectedMode
+{
+    case Inbox, Penpals
+}
+
+class MenuViewController: NSViewController
+{
+    @IBOutlet weak var composeButton: NSButton!
+    @IBOutlet weak var inboxButton: NSButton!
+    @IBOutlet weak var penPalsButton: NSButton!
+    @IBOutlet weak var lockdownButton: NSButton!
+    @IBOutlet weak var logoutButton: NSButton!
+
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        
+        //selectMode(.Inbox)
+        styleButtons()
+    }
+    
+    override func viewWillAppear()
+    {
+        super.viewWillAppear()
+        
+        selectMode(.Inbox)
+    }
+    
+    //MARK: Actions
+    
+    @IBAction func composeClick(sender: NSButton) {
+    }
+    
+    @IBAction func inboxClick(sender: NSButton)
+    {
+        showMessages()
+    }
+    
+    @IBAction func penPalsClick(sender: NSButton)
+    {
+        showPenPals()
+    }
+    
+    lazy var welcomeWindowController: WelcomeWindowController =
+        {
+            let storyboard: NSStoryboard = NSStoryboard(name: "Main", bundle: nil)
+            let newWindowController = storyboard.instantiateControllerWithIdentifier("WelcomeWindowController") as! WelcomeWindowController
+            return newWindowController
+    }()
+    
+    
+    
+
+    
+    @IBAction func lockdownClick(sender: NSButton)
+    {
+        
+        //Present Welcome View
+        welcomeWindowController.showWindow(sender)
+        
+        self.view.window?.close()
+    }
+    
+    @IBAction func logoutClick(sender: NSButton)
+    {
+        //Present Welcome View
+        welcomeWindowController.showWindow(sender)
+        
+        self.view.window?.close()
+    }
+    
+    //MARK: Content
+    
+    func selectMode(mode: SelectedMode)
+    {
+        switch mode
+        {
+        case .Inbox:
+            showMessages()
+        case .Penpals:
+            showPenPals()
+        }
+    }
+    
+    func showPenPals()
+    {
+        let splitVC = parentViewController as! NSSplitViewController
+        let penPalVC = storyboard?.instantiateControllerWithIdentifier("PenPals View") as! PenPalsViewController
+        let splitViewItem = NSSplitViewItem(viewController: penPalVC)
+        splitVC.removeSplitViewItem(splitVC.splitViewItems[1])
+        splitVC.addSplitViewItem(splitViewItem)
+        
+        //TODO: Show button state
+        penPalsButton.state = NSOnState
+        inboxButton.state = NSOffState
+        
+    }
+    
+    func showMessages()
+    {
+        let splitVC = parentViewController as! NSSplitViewController
+        let contentVC = storyboard?.instantiateControllerWithIdentifier("Messages Split View") as! NSSplitViewController
+        let splitViewItem = NSSplitViewItem(viewController: contentVC)
+        splitVC.removeSplitViewItem(splitVC.splitViewItems[1] )
+        splitVC.addSplitViewItem(splitViewItem)
+        
+        //TODO: Show button state
+        inboxButton.state = NSOnState
+        penPalsButton.state = NSOffState
+    }
+    
+    //MARK: Style
+    
+    func styleButtons()
+    {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .Center
+        let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle]
+        let altInboxAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle]
+        let altPenpalAttributes = [NSForegroundColorAttributeName: PostcardUI.green, NSParagraphStyleAttributeName: paragraphStyle]
+        let altAttributes = [NSForegroundColorAttributeName: PostcardUI.orange, NSParagraphStyleAttributeName: paragraphStyle]
+        
+        inboxButton.attributedTitle = NSAttributedString(string: "Inbox", attributes: attributes)
+        inboxButton.attributedAlternateTitle = NSAttributedString(string: "Inbox", attributes: altInboxAttributes)
+        
+        composeButton.attributedTitle = NSAttributedString(string: "Compose", attributes: attributes)
+        
+        penPalsButton.attributedTitle = NSAttributedString(string: "PenPals", attributes: attributes)
+        penPalsButton.attributedAlternateTitle = NSAttributedString(string: "PenPals", attributes: altPenpalAttributes)
+        
+        lockdownButton.attributedTitle = NSAttributedString(string: "Lockdown", attributes: attributes)
+        lockdownButton.attributedAlternateTitle = NSAttributedString(string: "Lockdown", attributes: altAttributes)
+        
+        logoutButton.attributedTitle = NSAttributedString(string: "Logout", attributes: attributes)
+        logoutButton.attributedAlternateTitle = NSAttributedString(string: "Logout", attributes: altAttributes)
+    }
+    
+}

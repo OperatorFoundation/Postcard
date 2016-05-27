@@ -1,0 +1,11 @@
+CODE_SIGN_IDENTITY =
+EMBEDDED_CONTENT_CONTAINS_SWIFT = YES
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1 $(inherited) GTM_OAUTH2_USE_FRAMEWORK_IMPORTS=1 $(inherited) GTL_USE_FRAMEWORK_IMPORTS=1
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/mailcore2-osx"
+LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/../Frameworks' '@loader_path/Frameworks'
+LIBRARY_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/mailcore2-osx/lib"
+OTHER_CFLAGS = $(inherited) -iquote "$CONFIGURATION_BUILD_DIR/CBOR.framework/Headers" -iquote "$CONFIGURATION_BUILD_DIR/GTMOAuth2.framework/Headers" -iquote "$CONFIGURATION_BUILD_DIR/GTMSessionFetcher.framework/Headers" -iquote "$CONFIGURATION_BUILD_DIR/GoogleAPIClient.framework/Headers" -iquote "$CONFIGURATION_BUILD_DIR/SSKeychain.framework/Headers" -iquote "$CONFIGURATION_BUILD_DIR/Sodium.framework/Headers" -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/mailcore2-osx"
+OTHER_LDFLAGS = $(inherited) -ObjC -l"MailCore" -l"c++" -l"crypto" -l"iconv" -l"resolv" -l"sasl2" -l"ssl" -l"tidy" -l"xml2" -l"z" -framework "CBOR" -framework "GTMOAuth2" -framework "GTMSessionFetcher" -framework "GoogleAPIClient" -framework "SSKeychain" -framework "Sodium"
+OTHER_SWIFT_FLAGS = $(inherited) "-D" "COCOAPODS"
+PODS_FRAMEWORK_BUILD_PATH = $(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Pods-Postcard
+PODS_ROOT = ${SRCROOT}/Pods
