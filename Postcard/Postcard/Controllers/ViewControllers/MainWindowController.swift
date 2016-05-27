@@ -14,7 +14,7 @@ class MainWindowController: NSWindowController
     {
         super.windowDidLoad()
         
-        //self.window?.setContentSize(NSSize(width: 1070, height: 640))
+        self.window?.setContentSize(NSSize(width: 1070, height: 640))
         self.window?.titlebarAppearsTransparent = true
         
         window?.movableByWindowBackground = true
