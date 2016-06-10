@@ -21,6 +21,13 @@ class AppDelegate: NSObject, NSApplicationDelegate
     
     func applicationDidFinishLaunching(aNotification: NSNotification)
     {
+        for name in NSFontManager.sharedFontManager().availableFonts {
+            print(name)
+//            if let nameString = name as? String
+//            {
+//                println(UIFont.fontNamesForFamilyName(nameString))
+//            }
+        }
 //        //Initialize GMail API Service
 //        if let auth = GTMOAuth2WindowController.authForGoogleFromKeychainForName(GmailProps.kKeychainItemName , clientID: GmailProps.kClientID, clientSecret: nil)
 //        {

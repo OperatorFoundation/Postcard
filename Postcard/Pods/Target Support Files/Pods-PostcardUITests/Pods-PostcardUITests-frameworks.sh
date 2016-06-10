@@ -88,6 +88,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-PostcardUITests/GTMOAuth2.framework"
   install_framework "Pods-PostcardUITests/GTMSessionFetcher.framework"
   install_framework "Pods-PostcardUITests/GoogleAPIClient.framework"
+  install_framework "Pods-PostcardUITests/GoogleAPIClientForREST.framework"
   install_framework "Pods-PostcardUITests/SSKeychain.framework"
   install_framework "Pods-PostcardUITests/Sodium.framework"
 fi
@@ -96,6 +97,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-PostcardUITests/GTMOAuth2.framework"
   install_framework "Pods-PostcardUITests/GTMSessionFetcher.framework"
   install_framework "Pods-PostcardUITests/GoogleAPIClient.framework"
+  install_framework "Pods-PostcardUITests/GoogleAPIClientForREST.framework"
   install_framework "Pods-PostcardUITests/SSKeychain.framework"
   install_framework "Pods-PostcardUITests/Sodium.framework"
 fi

@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import GoogleAPIClientForREST
 
 class PenPalController: NSObject
 {
@@ -35,6 +36,27 @@ class PenPalController: NSObject
             }
         }
         completionHandler()
+        print("This is my penpal email set: \n")
+        print(PostCardProps.penPalEmailSet)
+    }
+    
+    func getGoogleContacts()
+    {
+        let service  = GTLRPeopleService()
+        let query = GTLRPeopleQuery_PeopleConnectionsList.queryWithResourceName("people/me")
+        service.executeQuery(query, completionHandler: { (ticket, response, error) in
+            //Do we have friends??
+            if let response:GTLRPeopleQuery_PeopleConnectionsList = response as? GTLRPeopleQuery_PeopleConnectionsList
+            {
+                
+            }
+            else if let error = error
+            {
+                print(error)
+            }
+            
+        })
+        
     }
     
     

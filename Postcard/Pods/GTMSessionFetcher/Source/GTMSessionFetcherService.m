@@ -109,6 +109,7 @@ NSString *const kGTMSessionFetcherServiceSessionKey
             configurationBlock = _configurationBlock,
             cookieStorage = _cookieStorage,
             userAgent = _userAgent,
+            challengeBlock = _challengeBlock,
             credential = _credential,
             proxyCredential = _proxyCredential,
             allowedInsecureSchemes = _allowedInsecureSchemes,
@@ -158,12 +159,14 @@ NSString *const kGTMSessionFetcherServiceSessionKey
 
 #pragma mark Generate a new fetcher
 
+// Clients may override this method. Clients should not override any other library methods.
 - (id)fetcherWithRequest:(NSURLRequest *)request
             fetcherClass:(Class)fetcherClass {
   GTMSessionFetcher *fetcher = [[fetcherClass alloc] initWithRequest:request
                                                        configuration:self.configuration];
   fetcher.callbackQueue = self.callbackQueue;
   fetcher.sessionDelegateQueue = self.sessionDelegateQueue;
+  fetcher.challengeBlock = self.challengeBlock;
   fetcher.credential = self.credential;
   fetcher.proxyCredential = self.proxyCredential;
   fetcher.authorizer = self.authorizer;
@@ -189,8 +192,8 @@ NSString *const kGTMSessionFetcherServiceSessionKey
   NSString *userAgent = self.userAgent;
   if (userAgent.length > 0
       && [request valueForHTTPHeaderField:@"User-Agent"] == nil) {
-    [fetcher.mutableRequest setValue:userAgent
-                  forHTTPHeaderField:@"User-Agent"];
+    [fetcher setRequestValue:userAgent
+          forHTTPHeaderField:@"User-Agent"];
   }
   fetcher.testBlock = self.testBlock;
 
@@ -300,7 +303,7 @@ NSString *const kGTMSessionFetcherServiceSessionKey
   @synchronized(self) {
     GTMSessionMonitorSynchronized(self);
 
-    NSString *host = fetcher.mutableRequest.URL.host;
+    NSString *host = fetcher.request.URL.host;
     if (host == nil) {
       return NO;
     }
@@ -313,7 +316,7 @@ NSString *const kGTMSessionFetcherServiceSessionKey
 
 - (BOOL)fetcherShouldBeginFetching:(GTMSessionFetcher *)fetcher {
   // Entry point from the fetcher
-  NSURL *requestURL = fetcher.mutableRequest.URL;
+  NSURL *requestURL = fetcher.request.URL;
   NSString *host = requestURL.host;
 
   // Addresses "file:///path" case where localhost is the implicit host.
@@ -576,7 +579,7 @@ NSString *const kGTMSessionFetcherServiceSessionKey
   NSIndexSet *indexes = [allFetchers indexesOfObjectsPassingTest:^BOOL(GTMSessionFetcher *fetcher,
                                                                        NSUInteger idx,
                                                                        BOOL *stop) {
-      NSURL *fetcherURL = [fetcher.mutableRequest.URL absoluteURL];
+      NSURL *fetcherURL = [fetcher.request.URL absoluteURL];
       return [fetcherURL isEqual:targetURL];
   }];
 

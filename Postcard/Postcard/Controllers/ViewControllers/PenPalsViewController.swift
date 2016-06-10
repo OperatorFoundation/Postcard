@@ -8,28 +8,116 @@
 
 import Cocoa
 
-class PenPalsViewController: NSViewController
+class PenPalsViewController: NSViewController, NSTableViewDelegate
 {
+    @IBOutlet weak var penPalsTableView: NSTableView!
+    @IBOutlet var penPalsArrayController: NSArrayController!
     var managedContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
-
     override func viewDidLoad()
     {
         super.viewDidLoad()
         // Do view setup here.
         
-//        view.layer?.backgroundColor = PostcardUI.
-//        view.superview?.window?.titlebarAppearsTransparent = true
+        penPalsTableView.target = self
+        penPalsTableView.doubleAction = #selector(doubleClickComposeEmail)
     }
+    
+    func doubleClickComposeEmail()
+    {
+        if let thisPenPal = penPalsArrayController.selectedObjects[0] as? PenPal
+        {
+            if thisPenPal.sentKey == true
+            {
+                performSegueWithIdentifier("Email PenPal", sender: self)
+            }
+            print(thisPenPal.email)
+        }
+    }
+    
+    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?)
+    {
+        if segue.identifier == "Email PenPal"
+        {
+            if let composeVC = segue.destinationController as? ComposeViewController
+            {
+                if let thisPenPal = penPalsArrayController.selectedObjects[0] as? PenPal, let email = thisPenPal.email
+                {
+                    composeVC.sendTo = email
+                }
+            }
+        }
+    }
+    
     
 }
 
-
+//MARK: TableCellView
 class PenPalTableCell: NSTableCellView
 {
     @IBOutlet weak var nameField: NSTextField!
     @IBOutlet weak var subtitleLabel: NSTextField!
     @IBOutlet weak var penPalImageView: NSImageView!
     @IBOutlet weak var actionButton: NSButton!
+    
+    var actionTitle = ""
+    var managedContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    
+    override var objectValue: AnyObject?
+    {
+        didSet
+        {
+            //Set up the action button based on penpal status
+            if let penPal = objectValue as? PenPal
+            {
+                let paragraphStyle = NSMutableParagraphStyle()
+                paragraphStyle.alignment = .Center
+                let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: NSFont.boldSystemFontOfSize(13)]
+                let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: NSFont.boldSystemFontOfSize(13)]
+                
+                if penPal.key == nil && penPal.sentKey == false
+                {
+                    actionTitle = "Invite"
+                    actionButton.image = NSImage(named: "greenButton")
+                    actionButton.target = self
+                    actionButton.action = #selector(inviteAction)
+                    
+                }
+                else if penPal.key != nil && penPal.sentKey == false
+                {
+                    actionTitle = "Add"
+                    actionButton.image = NSImage(named: "redButton")
+                    actionButton.target = self
+                    actionButton.action = #selector(addAction)
+                }
+                else
+                {
+                    actionButton.hidden = true
+                }
+                actionButton.attributedTitle = NSAttributedString(string: actionTitle, attributes: attributes)
+                actionButton.attributedAlternateTitle = NSAttributedString(string: actionTitle, attributes: altAttributes)
+            }
+        }
+    }
+    
+    //We already have their key, but they don't have ours
+    func addAction()
+    {
+        //TODO: Send key email to this user
+        
+        //TODO: Update sentKey to "true"
+        actionButton.hidden = true
+    }
+    
+    //We don't have their key, and they don't have ours
+    func inviteAction()
+    {
+        //TODO: Send key email to this user
+        
+        //TODO: Update sentKey to "true"
+        actionButton.hidden = true
+    }
+    
+    
     
 }

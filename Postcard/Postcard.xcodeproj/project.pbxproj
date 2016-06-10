@@ -29,6 +29,11 @@
 		461C0A621CE6664200C5B5A5 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A601CE6664200C5B5A5 /* MessageViewController.swift */; };
 		461C0A641CE682AF00C5B5A5 /* DesignableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A631CE682AF00C5B5A5 /* DesignableView.swift */; };
 		461C0A671CE696E300C5B5A5 /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A661CE696E300C5B5A5 /* MainSplitViewController.swift */; };
+		466FC5F61D01FB1A00B8AABB /* PenPal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466FC5F21D01FB1A00B8AABB /* PenPal+CoreDataProperties.swift */; };
+		466FC5F71D01FB1A00B8AABB /* PenPal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466FC5F31D01FB1A00B8AABB /* PenPal.swift */; };
+		466FC5F81D01FB1A00B8AABB /* Postcard+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466FC5F41D01FB1A00B8AABB /* Postcard+CoreDataProperties.swift */; };
+		466FC5F91D01FB1A00B8AABB /* Postcard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466FC5F51D01FB1A00B8AABB /* Postcard.swift */; };
+		466FC5FD1D021BA100B8AABB /* Proxima Nova Font Free in Resources */ = {isa = PBXBuildFile; fileRef = 466FC5FC1D021BA100B8AABB /* Proxima Nova Font Free */; };
 		46A6F4AE1CEFB578007C2D17 /* MainContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A6F4AD1CEFB578007C2D17 /* MainContainerViewController.swift */; };
 		B4056FD11CC99B3A00D81301 /* GTMOAuth2Window.xib in Resources */ = {isa = PBXBuildFile; fileRef = B4056FD01CC99B3A00D81301 /* GTMOAuth2Window.xib */; };
 		B4238F551CD2A24D0054E7EF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4238F541CD2A24D0054E7EF /* Security.framework */; };
@@ -36,13 +41,10 @@
 		B4238F591CD2C0100054E7EF /* MailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4238F581CD2C0100054E7EF /* MailController.swift */; };
 		B4238F5C1CD2C11C0054E7EF /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4238F5B1CD2C11C0054E7EF /* Constants.swift */; };
 		B4238F5F1CD2DF050054E7EF /* KeyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4238F5E1CD2DF050054E7EF /* KeyController.swift */; };
-		B427B8581CF5259C007BD79C /* Postcard+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B427B8561CF5258B007BD79C /* Postcard+CoreDataProperties.swift */; };
-		B427B8591CF5259F007BD79C /* Postcard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B427B8571CF52594007BD79C /* Postcard.swift */; };
 		B430D5EB1CF7C31D0025365E /* WelcomeWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B430D5EA1CF7C31D0025365E /* WelcomeWindowController.swift */; };
 		B430FC8D1CF8A22900205015 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AB1CC17B9A009C577D /* AppDelegate.swift */; };
 		B430FC8E1CF8A23200205015 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AB1CC17B9A009C577D /* AppDelegate.swift */; };
-		B4BF355D1CDAC05500C3CDD0 /* PenPal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BF355B1CDAC05500C3CDD0 /* PenPal+CoreDataProperties.swift */; };
-		B4BF355E1CDAC05500C3CDD0 /* PenPal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BF355C1CDAC05500C3CDD0 /* PenPal.swift */; };
+		B48A273E1D08B4B8007BBB27 /* LockedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */; };
 		B4EDBB4E1CEF6BC50094853F /* ComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EDBB4D1CEF6BC50094853F /* ComposeViewController.swift */; };
 		B4EDBB501CEF74D80094853F /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */; };
 		B4EDBB521CEF7C040094853F /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EDBB511CEF7C040094853F /* MainWindowController.swift */; };
@@ -88,6 +90,11 @@
 		461C0A601CE6664200C5B5A5 /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageViewController.swift; path = Controllers/ViewControllers/MessageViewController.swift; sourceTree = "<group>"; };
 		461C0A631CE682AF00C5B5A5 /* DesignableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DesignableView.swift; path = UIGoodies/DesignableView.swift; sourceTree = "<group>"; };
 		461C0A661CE696E300C5B5A5 /* MainSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainSplitViewController.swift; path = Controllers/ViewControllers/MainSplitViewController.swift; sourceTree = "<group>"; };
+		466FC5F21D01FB1A00B8AABB /* PenPal+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PenPal+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		466FC5F31D01FB1A00B8AABB /* PenPal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PenPal.swift; sourceTree = "<group>"; };
+		466FC5F41D01FB1A00B8AABB /* Postcard+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Postcard+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		466FC5F51D01FB1A00B8AABB /* Postcard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Postcard.swift; sourceTree = "<group>"; };
+		466FC5FC1D021BA100B8AABB /* Proxima Nova Font Free */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Proxima Nova Font Free"; sourceTree = "<group>"; };
 		46A6F4AD1CEFB578007C2D17 /* MainContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainContainerViewController.swift; path = Controllers/ViewControllers/MainContainerViewController.swift; sourceTree = "<group>"; };
 		4D53A4297FA3F7402E52D098 /* Pods_PostcardUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostcardUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		611C5D787BC8FC1916D45E9A /* Pods-Postcard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Postcard.release.xcconfig"; path = "Pods/Target Support Files/Pods-Postcard/Pods-Postcard.release.xcconfig"; sourceTree = "<group>"; };
@@ -99,11 +106,8 @@
 		B4238F5B1CD2C11C0054E7EF /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = SupportingFiles/Constants.swift; sourceTree = "<group>"; };
 		B4238F5E1CD2DF050054E7EF /* KeyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KeyController.swift; path = Controllers/KeyController.swift; sourceTree = "<group>"; };
 		B4238F601CD2DF630054E7EF /* Postcard-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Postcard-Bridging-Header.h"; sourceTree = "<group>"; };
-		B427B8561CF5258B007BD79C /* Postcard+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Postcard+CoreDataProperties.swift"; path = "DataModels/Postcard+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B427B8571CF52594007BD79C /* Postcard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Postcard.swift; path = DataModels/Postcard.swift; sourceTree = "<group>"; };
 		B430D5EA1CF7C31D0025365E /* WelcomeWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeWindowController.swift; path = Controllers/ViewControllers/WelcomeWindowController.swift; sourceTree = "<group>"; };
-		B4BF355B1CDAC05500C3CDD0 /* PenPal+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PenPal+CoreDataProperties.swift"; path = "DataModels/PenPal+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B4BF355C1CDAC05500C3CDD0 /* PenPal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PenPal.swift; path = DataModels/PenPal.swift; sourceTree = "<group>"; };
+		B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LockedViewController.swift; path = Controllers/ViewControllers/LockedViewController.swift; sourceTree = "<group>"; };
 		B4EDBB4D1CEF6BC50094853F /* ComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComposeViewController.swift; path = Controllers/ViewControllers/ComposeViewController.swift; sourceTree = "<group>"; };
 		B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeViewController.swift; path = Controllers/ViewControllers/WelcomeViewController.swift; sourceTree = "<group>"; };
 		B4EDBB511CEF7C040094853F /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainWindowController.swift; path = Controllers/ViewControllers/MainWindowController.swift; sourceTree = "<group>"; };
@@ -176,7 +180,6 @@
 				B4BF355A1CDAC02F00C3CDD0 /* DataModels */,
 				B4238F5A1CD2C0E50054E7EF /* Controllers */,
 				B4238F5D1CD2C4C50054E7EF /* SupportingFiles */,
-				B4238F601CD2DF630054E7EF /* Postcard-Bridging-Header.h */,
 				461C0A651CE682B800C5B5A5 /* UIGoodies */,
 			);
 			path = Postcard;
@@ -203,6 +206,7 @@
 		461C0A651CE682B800C5B5A5 /* UIGoodies */ = {
 			isa = PBXGroup;
 			children = (
+				466FC5FC1D021BA100B8AABB /* Proxima Nova Font Free */,
 				461C0A631CE682AF00C5B5A5 /* DesignableView.swift */,
 			);
 			name = UIGoodies;
@@ -222,6 +226,7 @@
 		B4238F5D1CD2C4C50054E7EF /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
+				B4238F601CD2DF630054E7EF /* Postcard-Bridging-Header.h */,
 				B4238F5B1CD2C11C0054E7EF /* Constants.swift */,
 			);
 			name = SupportingFiles;
@@ -249,6 +254,7 @@
 				B4EDBB4D1CEF6BC50094853F /* ComposeViewController.swift */,
 				B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */,
 				46A6F4AD1CEFB578007C2D17 /* MainContainerViewController.swift */,
+				B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -256,10 +262,10 @@
 		B4BF355A1CDAC02F00C3CDD0 /* DataModels */ = {
 			isa = PBXGroup;
 			children = (
-				B427B8561CF5258B007BD79C /* Postcard+CoreDataProperties.swift */,
-				B427B8571CF52594007BD79C /* Postcard.swift */,
-				B4BF355B1CDAC05500C3CDD0 /* PenPal+CoreDataProperties.swift */,
-				B4BF355C1CDAC05500C3CDD0 /* PenPal.swift */,
+				466FC5F21D01FB1A00B8AABB /* PenPal+CoreDataProperties.swift */,
+				466FC5F31D01FB1A00B8AABB /* PenPal.swift */,
+				466FC5F41D01FB1A00B8AABB /* Postcard+CoreDataProperties.swift */,
+				466FC5F51D01FB1A00B8AABB /* Postcard.swift */,
 				461891AF1CC17B9A009C577D /* Postcard.xcdatamodeld */,
 			);
 			name = DataModels;
@@ -405,6 +411,7 @@
 				461891B31CC17B9A009C577D /* Assets.xcassets in Resources */,
 				461891B61CC17B9A009C577D /* Main.storyboard in Resources */,
 				B4056FD11CC99B3A00D81301 /* GTMOAuth2Window.xib in Resources */,
+				466FC5FD1D021BA100B8AABB /* Proxima Nova Font Free in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -552,28 +559,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B427B8591CF5259F007BD79C /* Postcard.swift in Sources */,
 				461C0A581CE663D500C5B5A5 /* ContentViewController.swift in Sources */,
 				461C0A611CE6664200C5B5A5 /* MessageViewController.swift in Sources */,
 				461891B11CC17B9A009C577D /* Postcard.xcdatamodeld in Sources */,
 				B4238F5F1CD2DF050054E7EF /* KeyController.swift in Sources */,
 				461C0A641CE682AF00C5B5A5 /* DesignableView.swift in Sources */,
 				B4EDBB501CEF74D80094853F /* WelcomeViewController.swift in Sources */,
+				466FC5F91D01FB1A00B8AABB /* Postcard.swift in Sources */,
 				461C0A671CE696E300C5B5A5 /* MainSplitViewController.swift in Sources */,
 				46A6F4AE1CEFB578007C2D17 /* MainContainerViewController.swift in Sources */,
 				461891AC1CC17B9A009C577D /* AppDelegate.swift in Sources */,
 				B4EDBB521CEF7C040094853F /* MainWindowController.swift in Sources */,
 				B4238F591CD2C0100054E7EF /* MailController.swift in Sources */,
 				461C0A551CE6638C00C5B5A5 /* MenuViewController.swift in Sources */,
-				B4BF355E1CDAC05500C3CDD0 /* PenPal.swift in Sources */,
+				466FC5F61D01FB1A00B8AABB /* PenPal+CoreDataProperties.swift in Sources */,
 				461C0A531CE63F0B00C5B5A5 /* PenPalController.swift in Sources */,
 				B4EDBB4E1CEF6BC50094853F /* ComposeViewController.swift in Sources */,
 				B4238F5C1CD2C11C0054E7EF /* Constants.swift in Sources */,
-				B4BF355D1CDAC05500C3CDD0 /* PenPal+CoreDataProperties.swift in Sources */,
 				B430D5EB1CF7C31D0025365E /* WelcomeWindowController.swift in Sources */,
-				B427B8581CF5259C007BD79C /* Postcard+CoreDataProperties.swift in Sources */,
 				461C0A5E1CE664D900C5B5A5 /* MessageListViewController.swift in Sources */,
+				466FC5F81D01FB1A00B8AABB /* Postcard+CoreDataProperties.swift in Sources */,
 				461C0A5B1CE6645300C5B5A5 /* PenPalsViewController.swift in Sources */,
+				466FC5F71D01FB1A00B8AABB /* PenPal.swift in Sources */,
+				B48A273E1D08B4B8007BBB27 /* LockedViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

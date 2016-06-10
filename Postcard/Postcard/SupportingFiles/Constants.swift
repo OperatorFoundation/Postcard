@@ -8,13 +8,14 @@
 
 import Foundation
 import GoogleAPIClient
+import GoogleAPIClientForREST
 
 struct GmailProps
 {
     static let service = GTLServiceGmail()
     
     /*If modifying these scopes, delete your previously saved credentials by resetting the iOS simulator or uninstalling the app.*/
-    static let scopes = [kGTLAuthScopeGmail]
+    static let scopes = [kGTLAuthScopeGmail, kGTLRAuthScopePeopleContacts, kGTLRAuthScopePeopleContactsReadonly]
     static let kKeychainItemName = "Gmail API"
     static let kClientID = "313251347973-cpo986nne3t21bus5499b4kt1kb8thrm.apps.googleusercontent.com"
 }

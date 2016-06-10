@@ -80,7 +80,7 @@ GTM_ASSUME_NONNULL_END
 @interface GTMSessionFetcher ()
 
 @property(strong, readwrite, GTM_NULLABLE) NSData *downloadedData;
-@property(strong, readwrite, GTM_NULLABLE) NSMutableURLRequest *mutableRequest;
+@property(strong, readwrite, GTM_NULLABLE) NSData *downloadResumeData;
 
 #if GTM_BACKGROUND_TASK_FETCHING
 @property(assign, atomic) UIBackgroundTaskIdentifier backgroundTaskIdentifier;
@@ -117,7 +117,10 @@ static BOOL IsLocalhost(NSString * GTM_NULLABLE_TYPE host) {
 static GTMSessionFetcherTestBlock GTM_NULLABLE_TYPE gGlobalTestBlock;
 
 @implementation GTMSessionFetcher {
-  NSMutableURLRequest *_request;
+  NSMutableURLRequest *_request; // after beginFetch, changed only in delegate callbacks
+  BOOL _useUploadTask;           // immutable after beginFetch
+  NSURL *_bodyFileURL;           // immutable after beginFetch
+  GTMSessionFetcherBodyStreamProvider _bodyStreamProvider;  // immutable after beginFetch
   NSURLSession *_session;
   BOOL _shouldInvalidateSession;  // immutable after beginFetch
   NSURLSession *_sessionNeedingInvalidation;
@@ -141,18 +144,19 @@ static GTMSessionFetcherTestBlock GTM_NULLABLE_TYPE gGlobalTestBlock;
   NSURLCredential *_proxyCredential; // credential supplied to proxy servers
   BOOL _isStopNotificationNeeded;   // set when start notification has been sent
   BOOL _isUsingTestBlock;  // set when a test block was provided (remains set when the block is released)
-  id _userData;                     // retained, if set by caller
-  NSMutableDictionary *_properties; // more data retained for caller
+  id _userData;                      // retained, if set by caller
+  NSMutableDictionary *_properties;  // more data retained for caller
   dispatch_queue_t _callbackQueue;
-  dispatch_group_t _callbackGroup;  // read-only after creation
-  NSOperationQueue *_delegateQueue;
+  dispatch_group_t _callbackGroup;   // read-only after creation
+  NSOperationQueue *_delegateQueue;  // immutable after beginFetch
 
   id<GTMFetcherAuthorizationProtocol> _authorizer;  // immutable after beginFetch
 
   // The service object that created and monitors this fetcher, if any.
   id<GTMSessionFetcherServiceProtocol> _service;  // immutable; set by the fetcher service upon creation
   NSString *_serviceHost;
-  NSInteger _servicePriority;
+  NSInteger _servicePriority;       // immutable after beginFetch
+  BOOL _hasStoppedFetching;         // counterpart to _initialBeginFetchDate
   BOOL _userStoppedFetching;
 
   BOOL _isRetryEnabled;             // user wants auto-retry
@@ -317,7 +321,7 @@ static GTMSessionFetcherTestBlock GTM_NULLABLE_TYPE gGlobalTestBlock;
 }
 
 - (NSString *)description {
-  NSString *requestStr = self.mutableRequest.URL.description;
+  NSString *requestStr = self.request.URL.description;
   if (requestStr.length == 0) {
     if (self.downloadResumeData.length > 0) {
       requestStr = @"<download resume data>";
@@ -346,6 +350,8 @@ static GTMSessionFetcherTestBlock GTM_NULLABLE_TYPE gGlobalTestBlock;
 // for the duration of the fetch connection.
 
 - (void)beginFetchWithCompletionHandler:(GTM_NULLABLE GTMSessionFetcherCompletionHandler)handler {
+  GTMSessionCheckNotSynchronized(self);
+
   _completionHandler = [handler copy];
 
   // The user may have called setDelegate: earlier if they want to use other
@@ -376,6 +382,8 @@ static GTMSessionFetcherTestBlock GTM_NULLABLE_TYPE gGlobalTestBlock;
 
 - (void)beginFetchWithDelegate:(GTM_NULLABLE_TYPE id)target
              didFinishSelector:(GTM_NULLABLE_TYPE SEL)finishedSelector {
+  GTMSessionCheckNotSynchronized(self);
+
   GTMSessionFetcherCompletionHandler handler =  [self completionHandlerWithTarget:target
                                                                 didFinishSelector:finishedSelector];
   [self beginFetchWithCompletionHandler:handler];
@@ -384,8 +392,9 @@ static GTMSessionFetcherTestBlock GTM_NULLABLE_TYPE gGlobalTestBlock;
 - (void)beginFetchMayDelay:(BOOL)mayDelay
               mayAuthorize:(BOOL)mayAuthorize {
   // This is the internal entry point for re-starting fetches.
+  GTMSessionCheckNotSynchronized(self);
 
-  NSMutableURLRequest *fetchRequest = self.mutableRequest;
+  NSMutableURLRequest *fetchRequest = _request;  // The request property is now externally immutable.
   NSURL *fetchRequestURL = fetchRequest.URL;
   NSString *priorSessionIdentifier = self.sessionIdentifier;
 
@@ -408,7 +417,7 @@ static GTMSessionFetcherTestBlock GTM_NULLABLE_TYPE gGlobalTestBlock;
                           _delegateQueue.name, _delegateQueue.maxConcurrentOperationCount);
 
   if (!_initialBeginFetchDate) {
-    // This ivar is set once here on the initial beginFetch so need not be synchronized.
+    // This ivar is set only here on the initial beginFetch so need not be synchronized.
     _initialBeginFetchDate = [[NSDate alloc] init];
   }
 
@@ -663,22 +672,23 @@ static GTMSessionFetcherTestBlock GTM_NULLABLE_TYPE gGlobalTestBlock;
   BOOL isEffectiveHTTPGet = (effectiveHTTPMethod == nil
                              || [effectiveHTTPMethod isEqual:@"GET"]);
 
-  BOOL needsUploadTask = (_useUploadTask || _bodyFileURL || _bodyStreamProvider);
-  if (_bodyData || _bodyStreamProvider || fetchRequest.HTTPBodyStream) {
+  BOOL needsUploadTask = (self.useUploadTask || self.bodyFileURL || self.bodyStreamProvider);
+  if (_bodyData || self.bodyStreamProvider || fetchRequest.HTTPBodyStream) {
     if (isEffectiveHTTPGet) {
-      [fetchRequest setHTTPMethod:@"POST"];
+      fetchRequest.HTTPMethod = @"POST";
       isEffectiveHTTPGet = NO;
     }
 
     if (_bodyData) {
       if (!needsUploadTask) {
-        [fetchRequest setHTTPBody:_bodyData];
+        fetchRequest.HTTPBody = _bodyData;
       }
 #if !STRIP_GTM_FETCH_LOGGING
     } else if (fetchRequest.HTTPBodyStream) {
       if ([self respondsToSelector:@selector(loggedInputStreamForInputStream:)]) {
-        fetchRequest.HTTPBodyStream = [self performSelector:@selector(loggedInputStreamForInputStream:)
-                                                 withObject:fetchRequest.HTTPBodyStream];
+        fetchRequest.HTTPBodyStream =
+            [self performSelector:@selector(loggedInputStreamForInputStream:)
+                       withObject:fetchRequest.HTTPBodyStream];
       }
 #endif
     }
@@ -726,13 +736,13 @@ static GTMSessionFetcherTestBlock GTM_NULLABLE_TYPE gGlobalTestBlock;
     GTMSESSION_ASSERT_DEBUG_OR_LOG(newSessionTask, @"Failed downloadTaskWithRequest for %@, %@",
                                    _session, fetchRequest);
   } else if (needsUploadTask) {
-    if (_bodyFileURL) {
+    if (bodyFileURL) {
       newSessionTask = [_session uploadTaskWithRequest:fetchRequest
-                                            fromFile:(NSURL * GTM_NONNULL_TYPE)_bodyFileURL];
+                                              fromFile:bodyFileURL];
       GTMSESSION_ASSERT_DEBUG_OR_LOG(newSessionTask,
                                      @"Failed uploadTaskWithRequest for %@, %@, file %@",
-                                     _session, fetchRequest, _bodyFileURL.path);
-    } else if (_bodyStreamProvider) {
+                                     _session, fetchRequest, bodyFileURL.path);
+    } else if (self.bodyStreamProvider) {
       newSessionTask = [_session uploadTaskWithStreamedRequest:fetchRequest];
       GTMSESSION_ASSERT_DEBUG_OR_LOG(newSessionTask,
                                      @"Failed uploadTaskWithStreamedRequest for %@, %@",
@@ -801,24 +811,25 @@ static GTMSessionFetcherTestBlock GTM_NULLABLE_TYPE gGlobalTestBlock;
   if (!self.skipBackgroundTask && !_usingBackgroundSession) {
     // Tell UIApplication that we want to continue even when the app is in the
     // background.
-    UIApplication *app = [UIApplication sharedApplication];
+    id<GTMUIApplicationProtocol> app = [[self class] fetcherUIApplication];
 #if DEBUG
     NSString *bgTaskName = [NSString stringWithFormat:@"%@-%@",
-                            NSStringFromClass([self class]), fetchRequest.URL.host];
+                            [self class], fetchRequest.URL.host];
 #else
     NSString *bgTaskName = @"GTMSessionFetcher";
 #endif
-    self.backgroundTaskIdentifier = [app beginBackgroundTaskWithName:bgTaskName
-                                                   expirationHandler:^{
+    __block UIBackgroundTaskIdentifier bgTaskID = [app beginBackgroundTaskWithName:bgTaskName
+                                                                 expirationHandler:^{
       // Background task expiration callback - this block is always invoked by
       // UIApplication on the main thread.
-      UIBackgroundTaskIdentifier identifier = self.backgroundTaskIdentifier;
-      if (identifier != UIBackgroundTaskInvalid) {
-        [[UIApplication sharedApplication] endBackgroundTask:identifier];
-
-        self.backgroundTaskIdentifier = UIBackgroundTaskInvalid;
+      if (bgTaskID != UIBackgroundTaskInvalid) {
+        if (bgTaskID == self.backgroundTaskIdentifier) {
+          self.backgroundTaskIdentifier = UIBackgroundTaskInvalid;
+        }
+        [app endBackgroundTask:bgTaskID];
       }
     }];
+    self.backgroundTaskIdentifier = bgTaskID;
   }
 #endif
 
@@ -839,7 +850,7 @@ static GTMSessionFetcherTestBlock GTM_NULLABLE_TYPE gGlobalTestBlock;
                                     userInfo:nil
                                 requireAsync:NO];
 
-  // The service needs to know our task if it is serving as delegate.
+  // The service needs to know our task if it is serving as NSURLSession delegate.
   [_service fetcherDidBeginFetching:self];
 
   if (_testBlock) {
@@ -898,8 +909,9 @@ NSData * GTM_NULLABLE_TYPE GTMDataFromInputStream(NSInputStream *inputStream, NS
         return;
       }
 
-      if (_bodyStreamProvider) {
-        _bodyStreamProvider(^(NSInputStream *bodyStream){
+      GTMSessionFetcherBodyStreamProvider bodyStreamProvider = self.bodyStreamProvider;
+      if (bodyStreamProvider) {
+        bodyStreamProvider(^(NSInputStream *bodyStream){
           // Read from the input stream into an NSData buffer.  We'll drain the stream
           // explicitly on a background queue.
           [self invokeOnCallbackQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
@@ -920,9 +932,10 @@ NSData * GTM_NULLABLE_TYPE GTMDataFromInputStream(NSInputStream *inputStream, NS
         });
       } else {
         // No input stream; use the supplied data or file URL.
-        if (_bodyFileURL) {
+        NSURL *bodyFileURL = self.bodyFileURL;
+        if (bodyFileURL) {
           NSError *readError;
-          _bodyData = [NSData dataWithContentsOfURL:(NSURL * GTM_NONNULL_TYPE)_bodyFileURL
+          _bodyData = [NSData dataWithContentsOfURL:bodyFileURL
                                             options:NSDataReadingMappedIfSafe
                                               error:&readError];
           error = readError;
@@ -962,8 +975,11 @@ NSData * GTM_NULLABLE_TYPE GTMDataFromInputStream(NSInputStream *inputStream, NS
 
 - (void)simulateDataCallbacksForTestBlockWithBodyData:(NSData * GTM_NULLABLE_TYPE)bodyData
                                              response:(NSURLResponse *)response
-                                         responseData:(NSData *)responseData
-                                                error:(NSError *)error {
+                                         responseData:(NSData *)suppliedData
+                                                error:(NSError *)suppliedError {
+  __block NSData *responseData = suppliedData;
+  __block NSError *responseError = suppliedError;
+
   // This method does the test simulation of callbacks once the upload
   // and download data are known.
   @synchronized(self) {
@@ -979,6 +995,42 @@ NSData * GTM_NULLABLE_TYPE GTMDataFromInputStream(NSInputStream *inputStream, NS
                 // For simulation, we'll assume the app will just continue.
             });
           }
+      }];
+    }
+
+    // If the fetcher has a challenge block, simulate a challenge.
+    //
+    // It might be nice to eventually let the user determine which testBlock
+    // fetches get challenged rather than always executing the supplied
+    // challenge block.
+    if (_challengeBlock) {
+      [self invokeOnCallbackUnsynchronizedQueueAfterUserStopped:YES
+                                                          block:^{
+        if (_challengeBlock) {
+          NSURL *requestURL = _request.URL;
+          NSString *host = requestURL.host;
+          NSURLProtectionSpace *pspace =
+              [[NSURLProtectionSpace alloc] initWithHost:host
+                                                    port:requestURL.port.integerValue
+                                                protocol:requestURL.scheme
+                                                   realm:nil
+                                    authenticationMethod:NSURLAuthenticationMethodHTTPBasic];
+          id<NSURLAuthenticationChallengeSender> unusedSender =
+              (id<NSURLAuthenticationChallengeSender>)[NSNull null];
+          NSURLAuthenticationChallenge *challenge =
+              [[NSURLAuthenticationChallenge alloc] initWithProtectionSpace:pspace
+                                                         proposedCredential:nil
+                                                       previousFailureCount:0
+                                                            failureResponse:nil
+                                                                      error:nil
+                                                                     sender:unusedSender];
+          _challengeBlock(self, challenge, ^(NSURLSessionAuthChallengeDisposition disposition,
+                                             NSURLCredential * GTM_NULLABLE_TYPE credential){
+            // We could change the responseData and responseError based on the disposition,
+            // but it's easier for apps to just supply the expected data and error
+            // directly to the test block. So this simulation ignores the disposition.
+          });
+        }
       }];
     }
 
@@ -1028,7 +1080,7 @@ NSData * GTM_NULLABLE_TYPE GTMDataFromInputStream(NSInputStream *inputStream, NS
                          error:&writeError];
       if (writeError) {
         // Tell the test code that writing failed.
-        error = writeError;
+        responseError = writeError;
       }
     } else {
       // Simulate download to NSData progress.
@@ -1078,15 +1130,15 @@ NSData * GTM_NULLABLE_TYPE GTMDataFromInputStream(NSInputStream *inputStream, NS
   [queue addOperationWithBlock:^{
     // Rather than invoke failToBeginFetchWithError: we want to simulate completion of
     // a connection that started and ended, so we'll call down to finishWithError:
-    NSInteger status = error ? error.code : 200;
+    NSInteger status = responseError ? responseError.code : 200;
     if (status >= 200 && status <= 399) {
       [self finishWithError:nil shouldRetry:NO];
     } else {
       [self shouldRetryNowForStatus:status
-                              error:error
+                              error:responseError
                    forceAssumeRetry:NO
                            response:^(BOOL shouldRetry) {
-          [self finishWithError:error shouldRetry:shouldRetry];
+          [self finishWithError:responseError shouldRetry:shouldRetry];
       }];
     }
   }];
@@ -1397,7 +1449,11 @@ NSData * GTM_NULLABLE_TYPE GTMDataFromInputStream(NSInputStream *inputStream, NS
 }
 
 - (void)failToBeginFetchWithError:(NSError *)error {
-  GTMSessionCheckNotSynchronized(self);
+  @synchronized(self) {
+    GTMSessionMonitorSynchronized(self);
+
+    _hasStoppedFetching = YES;
+  }
 
   if (error == nil) {
     error = [NSError errorWithDomain:kGTMSessionFetcherErrorDomain
@@ -1433,14 +1489,13 @@ NSData * GTM_NULLABLE_TYPE GTMDataFromInputStream(NSInputStream *inputStream, NS
   // We'll wait on _callbackGroup to ensure that any callbacks in flight have executed,
   // and that we access backgroundTaskIdentifier on the main thread, as happens when the
   // task has expired.
-  dispatch_group_notify(_callbackGroup, dispatch_get_main_queue(), ^{
-    UIBackgroundTaskIdentifier identifier = self.backgroundTaskIdentifier;
-    if (identifier != UIBackgroundTaskInvalid) {
-      [[UIApplication sharedApplication] endBackgroundTask:identifier];
+  UIBackgroundTaskIdentifier bgTaskID = self.backgroundTaskIdentifier;
+  if (bgTaskID != UIBackgroundTaskInvalid) {
+    self.backgroundTaskIdentifier = UIBackgroundTaskInvalid;
 
-      self.backgroundTaskIdentifier = UIBackgroundTaskInvalid;
-    }
-  });
+    id<GTMUIApplicationProtocol> app = [[self class] fetcherUIApplication];
+    [app endBackgroundTask:bgTaskID];
+  }
 }
 
 #endif // GTM_BACKGROUND_TASK_FETCHING
@@ -1452,7 +1507,8 @@ NSData * GTM_NULLABLE_TYPE GTMDataFromInputStream(NSInputStream *inputStream, NS
   SEL asyncAuthSel = @selector(authorizeRequest:delegate:didFinishSelector:);
   if ([authorizer respondsToSelector:asyncAuthSel]) {
     SEL callbackSel = @selector(authorizer:request:finishedWithError:);
-    [authorizer authorizeRequest:self.mutableRequest
+    NSMutableURLRequest *mutableRequest = [self.request mutableCopy];
+    [authorizer authorizeRequest:mutableRequest
                         delegate:self
                didFinishSelector:callbackSel];
   } else {
@@ -1466,12 +1522,17 @@ NSData * GTM_NULLABLE_TYPE GTMDataFromInputStream(NSInputStream *inputStream, NS
 }
 
 - (void)authorizer:(id<GTMFetcherAuthorizationProtocol>)auth
-           request:(NSMutableURLRequest *)request
+           request:(NSMutableURLRequest *)authorizedRequest
  finishedWithError:(NSError *)error {
+  GTMSessionCheckNotSynchronized(self);
+
   if (error != nil) {
     // We can't fetch without authorization
     [self failToBeginFetchWithError:error];
   } else {
+    @synchronized(self) {
+      _request = authorizedRequest;
+    }
     [self beginFetchMayDelay:NO
                 mayAuthorize:NO];
   }
@@ -1483,26 +1544,23 @@ NSData * GTM_NULLABLE_TYPE GTMDataFromInputStream(NSInputStream *inputStream, NS
   return YES;
 }
 
-// Returns YES if this is in the process of fetching a URL, or waiting to
-// retry, or waiting for authorization, or waiting to be issued by the
-// service object
+// Returns YES if the fetcher has been started and has not yet stopped.
+//
+// Fetching includes waiting for authorization or for retry, waiting to be allowed by the
+// service object to start the request, and actually fetching the request.
 - (BOOL)isFetching {
-  NSMutableURLRequest *request;
-
   @synchronized(self) {
     GTMSessionMonitorSynchronized(self);
 
-    if (_sessionTask != nil || _retryTimer != nil) return YES;
-
-    request = _request;
-    if (request == nil) return NO;
+    return [self isFetchingUnsynchronized];
   }
+}
 
-  BOOL isAuthorizing = [_authorizer isAuthorizingRequest:request];
-  if (isAuthorizing) return YES;
+- (BOOL)isFetchingUnsynchronized {
+  GTMSessionCheckSynchronized(self);
 
-  BOOL isDelayed = [_service isDelayingFetcher:self];
-  return isDelayed;
+  BOOL hasBegun = (_initialBeginFetchDate != nil);
+  return hasBegun && !_hasStoppedFetching;
 }
 
 - (NSURLResponse * GTM_NULLABLE_TYPE)response {
@@ -1592,6 +1650,7 @@ NSData * GTM_NULLABLE_TYPE GTMDataFromInputStream(NSInputStream *inputStream, NS
 
   self.configurationBlock = nil;
   self.didReceiveResponseBlock = nil;
+  self.challengeBlock = nil;
   self.willRedirectBlock = nil;
   self.sendProgressBlock = nil;
   self.receivedProgressBlock = nil;
@@ -1650,6 +1709,8 @@ NSData * GTM_NULLABLE_TYPE GTMDataFromInputStream(NSInputStream *inputStream, NS
 
   @synchronized(self) {
     GTMSessionMonitorSynchronized(self);
+
+    _hasStoppedFetching = YES;
 
     service = _service;
     request = _request;
@@ -1834,6 +1895,32 @@ NSData * GTM_NULLABLE_TYPE GTMDataFromInputStream(NSInputStream *inputStream, NS
   gGlobalTestBlock = [block copy];
 }
 
+#if TARGET_OS_IPHONE
+
+static GTM_NULLABLE_TYPE id<GTMUIApplicationProtocol> gSubstituteUIApp;
+
++ (void)setSubstituteUIApplication:(nullable id<GTMUIApplicationProtocol>)app {
+  gSubstituteUIApp = app;
+}
+
++ (nullable id<GTMUIApplicationProtocol>)substituteUIApplication {
+  return gSubstituteUIApp;
+}
+
++ (nullable id<GTMUIApplicationProtocol>)fetcherUIApplication {
+  id<GTMUIApplicationProtocol> app = gSubstituteUIApp;
+  if (app) return app;
+
+  // Some projects use GTM_BACKGROUND_TASK_FETCHING to avoid compile-time references
+  // to UIApplication.
+#if GTM_BACKGROUND_TASK_FETCHING
+  return (id<GTMUIApplicationProtocol>) [UIApplication sharedApplication];
+#else
+  return nil;
+#endif
+}
+#endif //  TARGET_OS_IPHONE
+
 #pragma mark NSURLSession Delegate Methods
 
 // NSURLSession documentation indicates that redirectRequest can be passed to the handler
@@ -1856,7 +1943,7 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)redirectResponse
   }
   if (redirectRequest && redirectResponse) {
     // Copy the original request, including the body.
-    NSMutableURLRequest *originalRequest = self.mutableRequest;
+    NSURLRequest *originalRequest = self.request;
     NSMutableURLRequest *newRequest = [originalRequest mutableCopy];
 
     // Disallow scheme changes (say, from https to http).
@@ -1903,8 +1990,8 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)redirectResponse
                                               block:^{
             willRedirectBlock(redirectResponse, redirectRequest, ^(NSURLRequest *clientRequest) {
 
-                // Update the request for future logging
-                self.mutableRequest = [clientRequest mutableCopy];
+                // Update the request for future logging.
+                [self updateMutableRequest:[clientRequest mutableCopy]];
 
                 handler(clientRequest);
             });
@@ -1914,8 +2001,8 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)redirectResponse
     }
     // Continues here if the client did not provide a redirect block.
 
-    // Update the request for future logging
-    self.mutableRequest = [redirectRequest mutableCopy];
+    // Update the request for future logging.
+    [self updateMutableRequest:[redirectRequest mutableCopy]];
   }
   handler(redirectRequest);
 }
@@ -1994,6 +2081,30 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
   GTM_LOG_SESSION_DELEGATE(@"%@ %p URLSession:%@ task:%@ didReceiveChallenge:%@",
                            [self class], self, session, task, challenge);
 
+  GTMSessionFetcherChallengeBlock challengeBlock = self.challengeBlock;
+  if (challengeBlock) {
+    // The fetcher user has provided custom challenge handling.
+    //
+    // We will ultimately need to call back to NSURLSession's handler with the disposition value
+    // for this delegate method even if the user has stopped the fetcher.
+    @synchronized(self) {
+      GTMSessionMonitorSynchronized(self);
+
+      [self invokeOnCallbackQueueAfterUserStopped:YES
+                                            block:^{
+        challengeBlock(self, challenge, handler);
+      }];
+    }
+  } else {
+    // No challenge block was provided by the client.
+    [self respondToChallenge:challenge
+           completionHandler:handler];
+  }
+}
+
+- (void)respondToChallenge:(NSURLAuthenticationChallenge *)challenge
+         completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
+                                     NSURLCredential * GTM_NULLABLE_TYPE credential))handler {
   @synchronized(self) {
     GTMSessionMonitorSynchronized(self);
 
@@ -2024,59 +2135,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
           if (_allowInvalidServerCertificates) {
             callback(serverTrust, YES);
           } else {
-            // Retain the trust object to avoid a SecTrustEvaluate() crash on iOS 7.
-            CFRetain(serverTrust);
-
-            // Evaluate the certificate chain.
-            //
-            // The delegate queue may be the main thread. Trust evaluation could cause some
-            // blocking network activity, so we must evaluate async, as documented at
-            // https://developer.apple.com/library/ios/technotes/tn2232/
-            //
-            // We must also avoid multiple uses of the trust object, per docs:
-            // "It is not safe to call this function concurrently with any other function that uses
-            // the same trust management object, or to re-enter this function for the same trust
-            // management object."
-            //
-            // SecTrustEvaluateAsync both does sync execution of Evaluate and calls back on the
-            // queue passed to it, according to at sources in
-            // http://www.opensource.apple.com/source/libsecurity_keychain/libsecurity_keychain-55050.9/lib/SecTrust.cpp
-            // It would require a global serial queue to ensure the evaluate happens only on a
-            // single thread at a time, so we'll stick with using SecTrustEvaluate on a background
-            // thread.
-            dispatch_queue_t evaluateBackgroundQueue =
-                dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-            dispatch_async(evaluateBackgroundQueue, ^{
-              // It looks like the implementation of SecTrustEvaluate() on Mac grabs a global lock,
-              // so it may be redundant for us to also lock, but it's easy to synchronize here
-              // anyway.
-              SecTrustResultType trustEval = kSecTrustResultInvalid;
-              BOOL shouldAllow;
-              OSStatus trustError;
-              @synchronized([GTMSessionFetcher class]) {
-                trustError = SecTrustEvaluate(serverTrust, &trustEval);
-              }
-              if (trustError != errSecSuccess) {
-                GTMSESSION_LOG_DEBUG(@"Error %d evaluating trust for %@",
-                                     (int)trustError, _request);
-                shouldAllow = NO;
-              } else {
-                // Having a trust level "unspecified" by the user is the usual result, described at
-                //   https://developer.apple.com/library/mac/qa/qa1360
-                if (trustEval == kSecTrustResultUnspecified
-                    || trustEval == kSecTrustResultProceed) {
-                  shouldAllow = YES;
-                } else {
-                  shouldAllow = NO;
-                  GTMSESSION_LOG_DEBUG(@"Challenge SecTrustResultType %u for %@, properties: %@",
-                                       trustEval, _request.URL.host,
-                                       CFBridgingRelease(SecTrustCopyProperties(serverTrust)));
-                }
-              }
-              callback(serverTrust, shouldAllow);
-
-              CFRelease(serverTrust);
-            });
+            [[self class] evaluateServerTrust:serverTrust
+                                   forRequest:_request
+                            completionHandler:callback];
           }
         }
         return;
@@ -2108,6 +2169,69 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
       handler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
     }
   }  // @synchronized(self)
+}
+
+// Validate the certificate chain.
+//
+// This may become a public method if it appears to be useful to users.
++ (void)evaluateServerTrust:(SecTrustRef)serverTrust
+                 forRequest:(NSURLRequest *)request
+          completionHandler:(void (^)(SecTrustRef trustRef, BOOL allow))handler {
+  // Retain the trust object to avoid a SecTrustEvaluate() crash on iOS 7.
+  CFRetain(serverTrust);
+
+  // Evaluate the certificate chain.
+  //
+  // The delegate queue may be the main thread. Trust evaluation could cause some
+  // blocking network activity, so we must evaluate async, as documented at
+  // https://developer.apple.com/library/ios/technotes/tn2232/
+  //
+  // We must also avoid multiple uses of the trust object, per docs:
+  // "It is not safe to call this function concurrently with any other function that uses
+  // the same trust management object, or to re-enter this function for the same trust
+  // management object."
+  //
+  // SecTrustEvaluateAsync both does sync execution of Evaluate and calls back on the
+  // queue passed to it, according to at sources in
+  // http://www.opensource.apple.com/source/libsecurity_keychain/libsecurity_keychain-55050.9/lib/SecTrust.cpp
+  // It would require a global serial queue to ensure the evaluate happens only on a
+  // single thread at a time, so we'll stick with using SecTrustEvaluate on a background
+  // thread.
+  dispatch_queue_t evaluateBackgroundQueue =
+    dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+  dispatch_async(evaluateBackgroundQueue, ^{
+    // It looks like the implementation of SecTrustEvaluate() on Mac grabs a global lock,
+    // so it may be redundant for us to also lock, but it's easy to synchronize here
+    // anyway.
+    SecTrustResultType trustEval = kSecTrustResultInvalid;
+    BOOL shouldAllow;
+    OSStatus trustError;
+    @synchronized([GTMSessionFetcher class]) {
+      GTMSessionMonitorSynchronized([GTMSessionFetcher class]);
+
+      trustError = SecTrustEvaluate(serverTrust, &trustEval);
+    }
+    if (trustError != errSecSuccess) {
+      GTMSESSION_LOG_DEBUG(@"Error %d evaluating trust for %@",
+                           (int)trustError, request);
+      shouldAllow = NO;
+    } else {
+      // Having a trust level "unspecified" by the user is the usual result, described at
+      //   https://developer.apple.com/library/mac/qa/qa1360
+      if (trustEval == kSecTrustResultUnspecified
+          || trustEval == kSecTrustResultProceed) {
+        shouldAllow = YES;
+      } else {
+        shouldAllow = NO;
+        GTMSESSION_LOG_DEBUG(@"Challenge SecTrustResultType %u for %@, properties: %@",
+                             trustEval, request.URL.host,
+                             CFBridgingRelease(SecTrustCopyProperties(serverTrust)));
+      }
+    }
+    handler(serverTrust, shouldAllow);
+
+    CFRelease(serverTrust);
+  });
 }
 
 - (void)invokeOnCallbackQueueUnlessStopped:(void (^)(void))block {
@@ -2511,11 +2635,13 @@ didCompleteWithError:(NSError *)error {
   // header.
   if ((status == 403) && self.usingBackgroundSession) {
     NSURL *redirectURL = self.response.URL;
-    NSMutableURLRequest *request = self.mutableRequest;
+    NSURLRequest *request = self.request;
     if (![request.URL isEqual:redirectURL]) {
       NSString *authorizationHeader = [request.allHTTPHeaderFields objectForKey:@"Authorization"];
       if (authorizationHeader != nil) {
-        request.URL = redirectURL;
+        NSMutableURLRequest *mutableRequest = [request mutableCopy];
+        mutableRequest.URL = redirectURL;
+        [self updateMutableRequest:mutableRequest];
         // Avoid assuming the session is still valid.
         self.session = nil;
         forceAssumeRetry = YES;
@@ -2791,7 +2917,7 @@ didCompleteWithError:(NSError *)error {
   if (hasPrimed) {
     shouldRetryForAuthRefresh = YES;
     _hasAttemptedAuthRefresh = YES;
-    [self.mutableRequest setValue:nil forHTTPHeaderField:@"Authorization"];
+    [self updateRequestValue:nil forHTTPHeaderField:@"Authorization"];
   }
 
   @synchronized(self) {
@@ -3122,32 +3248,27 @@ static NSMutableDictionary *gSystemCompletionHandlers = nil;
             sessionUserInfo = _sessionUserInfo,
             taskDescription = _taskDescription,
             taskPriority = _taskPriority,
-            useBackgroundSession = _userRequestedBackgroundSession,
             usingBackgroundSession = _usingBackgroundSession,
             canShareSession = _canShareSession,
             completionHandler = _completionHandler,
             credential = _credential,
             proxyCredential = _proxyCredential,
             bodyData = _bodyData,
-            bodyFileURL = _bodyFileURL,
             bodyLength = _bodyLength,
-            bodyStreamProvider = _bodyStreamProvider,
-            authorizer = _authorizer,
             service = _service,
             serviceHost = _serviceHost,
-            servicePriority = _servicePriority,
             accumulateDataBlock = _accumulateDataBlock,
             receivedProgressBlock = _receivedProgressBlock,
             downloadProgressBlock = _downloadProgressBlock,
             resumeDataBlock = _resumeDataBlock,
             didReceiveResponseBlock = _didReceiveResponseBlock,
+            challengeBlock = _challengeBlock,
             willRedirectBlock = _willRedirectBlock,
             sendProgressBlock = _sendProgressBlock,
             willCacheURLResponseBlock = _willCacheURLResponseBlock,
             retryBlock = _retryBlock,
             retryFactor = _retryFactor,
             downloadedLength = _downloadedLength,
-            useUploadTask = _useUploadTask,
             allowedInsecureSchemes = _allowedInsecureSchemes,
             allowLocalhostRequest = _allowLocalhostRequest,
             allowInvalidServerCertificates = _allowInvalidServerCertificates,
@@ -3170,24 +3291,76 @@ static NSMutableDictionary *gSystemCompletionHandlers = nil;
             skipBackgroundTask = _skipBackgroundTask;
 #endif
 
-
-- (NSMutableURLRequest * GTM_NULLABLE_TYPE)mutableRequest {
+- (GTM_NULLABLE NSURLRequest *)request {
   @synchronized(self) {
     GTMSessionMonitorSynchronized(self);
+
+    return [_request copy];
+  }  // @synchronized(self)
+}
+
+- (void)setRequest:(GTM_NULLABLE NSURLRequest *)request {
+  @synchronized(self) {
+    GTMSessionMonitorSynchronized(self);
+
+    if (![self isFetchingUnsynchronized]) {
+      _request = [request mutableCopy];
+    } else {
+      GTMSESSION_ASSERT_DEBUG(0, @"request may not be set after beginFetch has been invoked");
+    }
+  }  // @synchronized(self)
+}
+
+- (GTM_NULLABLE NSMutableURLRequest *)mutableRequestForTesting {
+  // Allow tests only to modify the request, useful during retries.
+  return _request;
+}
+
+- (GTM_NULLABLE NSMutableURLRequest *)mutableRequest {
+  @synchronized(self) {
+    GTMSessionMonitorSynchronized(self);
+
+    GTMSESSION_LOG_DEBUG(@"[GTMSessionFetcher mutableRequest] is deprecated; use -request or"
+                         @" -setRequestVaue:forHTTPHeaderField:");
 
     return _request;
   }  // @synchronized(self)
 }
 
-- (NSMutableURLRequest * GTM_NULLABLE_TYPE)mutableRequestUnsynchronized {
-  return _request;
+- (void)setMutableRequest:(GTM_NULLABLE NSMutableURLRequest *)request {
+  GTMSESSION_LOG_DEBUG(@"[GTMSessionFetcher setMutableRequest:] is deprecated; use -request or"
+                       @" -setRequestVaue:forHTTPHeaderField:");
+
+  GTMSESSION_ASSERT_DEBUG(![self isFetching],
+                          @"mutableRequest should not change after beginFetch has been invoked");
+  [self updateMutableRequest:request];
 }
 
-- (void)setMutableRequest:(NSMutableURLRequest * GTM_NULLABLE_TYPE)request {
+// Internal method for updating the request property such as on redirects.
+- (void)updateMutableRequest:(GTM_NULLABLE NSMutableURLRequest *)request {
   @synchronized(self) {
     GTMSessionMonitorSynchronized(self);
 
     _request = request;
+  }  // @synchronized(self)
+}
+
+// Set a header field value on the request. Header field value changes will not
+// affect a fetch after the fetch has begun.
+- (void)setRequestValue:(GTM_NULLABLE NSString *)value forHTTPHeaderField:(NSString *)field {
+  if (![self isFetching]) {
+    [self updateRequestValue:value forHTTPHeaderField:field];
+  } else {
+    GTMSESSION_ASSERT_DEBUG(0, @"request may not be set after beginFetch has been invoked");
+  }
+}
+
+// Internal method for updating request headers.
+- (void)updateRequestValue:(GTM_NULLABLE NSString *)value forHTTPHeaderField:(NSString *)field {
+  @synchronized(self) {
+    GTMSessionMonitorSynchronized(self);
+
+    [_request setValue:value forHTTPHeaderField:field];
   }  // @synchronized(self)
 }
 
@@ -3220,7 +3393,27 @@ static NSMutableDictionary *gSystemCompletionHandlers = nil;
   }  // @synchronized(self)
 }
 
-- (NSURL * GTM_NULLABLE_TYPE)bodyFileURL {
+- (BOOL)useUploadTask {
+  @synchronized(self) {
+    GTMSessionMonitorSynchronized(self);
+
+    return _useUploadTask;
+  }  // @synchronized(self)
+}
+
+- (void)setUseUploadTask:(BOOL)flag {
+  @synchronized(self) {
+    GTMSessionMonitorSynchronized(self);
+
+    if (flag != _useUploadTask) {
+      GTMSESSION_ASSERT_DEBUG(![self isFetchingUnsynchronized],
+                              @"useUploadTask should not change after beginFetch has been invoked");
+      _useUploadTask = flag;
+    }
+  }  // @synchronized(self)
+}
+
+- (GTM_NULLABLE NSURL *)bodyFileURL {
   @synchronized(self) {
     GTMSessionMonitorSynchronized(self);
 
@@ -3228,11 +3421,59 @@ static NSMutableDictionary *gSystemCompletionHandlers = nil;
   }  // @synchronized(self)
 }
 
-- (void)setBodyFileURL:(NSURL * GTM_NULLABLE_TYPE)fileURL {
+- (void)setBodyFileURL:(GTM_NULLABLE NSURL *)fileURL {
   @synchronized(self) {
     GTMSessionMonitorSynchronized(self);
 
-    _bodyFileURL = fileURL;
+    // The comparison here is a trivial optimization and forgiveness for any client that
+    // repeatedly sets the property, so it just uses pointer comparison rather than isEqual:.
+    if (fileURL != _bodyFileURL) {
+      GTMSESSION_ASSERT_DEBUG(![self isFetchingUnsynchronized],
+                              @"fileURL should not change after beginFetch has been invoked");
+
+      _bodyFileURL = fileURL;
+    }
+  }  // @synchronized(self)
+}
+
+- (GTM_NULLABLE GTMSessionFetcherBodyStreamProvider)bodyStreamProvider {
+  @synchronized(self) {
+    GTMSessionMonitorSynchronized(self);
+
+    return _bodyStreamProvider;
+  }  // @synchronized(self)
+}
+
+- (void)setBodyStreamProvider:(GTM_NULLABLE GTMSessionFetcherBodyStreamProvider)block {
+  @synchronized(self) {
+    GTMSessionMonitorSynchronized(self);
+
+    GTMSESSION_ASSERT_DEBUG(![self isFetchingUnsynchronized],
+                            @"stream provider should not change after beginFetch has been invoked");
+
+    _bodyStreamProvider = [block copy];
+  }  // @synchronized(self)
+}
+
+- (GTM_NULLABLE id<GTMFetcherAuthorizationProtocol>)authorizer {
+  @synchronized(self) {
+    GTMSessionMonitorSynchronized(self);
+
+    return _authorizer;
+  }  // @synchronized(self)
+}
+
+- (void)setAuthorizer:(GTM_NULLABLE id<GTMFetcherAuthorizationProtocol>)authorizer {
+  @synchronized(self) {
+    GTMSessionMonitorSynchronized(self);
+
+    if (authorizer != _authorizer) {
+      if ([self isFetchingUnsynchronized]) {
+        GTMSESSION_ASSERT_DEBUG(0, @"authorizer should not change after beginFetch has been invoked");
+      } else {
+        _authorizer = authorizer;
+      }
+    }
   }  // @synchronized(self)
 }
 
@@ -3292,6 +3533,28 @@ static NSMutableDictionary *gSystemCompletionHandlers = nil;
   }  // @synchronized(self)
 }
 
+- (NSInteger)servicePriority {
+  @synchronized(self) {
+    GTMSessionMonitorSynchronized(self);
+
+    return _servicePriority;
+  }  // @synchronized(self)
+}
+
+- (void)setServicePriority:(NSInteger)value {
+  @synchronized(self) {
+    GTMSessionMonitorSynchronized(self);
+
+    if (value != _servicePriority) {
+      GTMSESSION_ASSERT_DEBUG(![self isFetchingUnsynchronized],
+        @"servicePriority should not change after beginFetch has been invoked");
+
+      _servicePriority = value;
+    }
+  }  // @synchronized(self)
+}
+
+
 - (void)setSession:(NSURLSession * GTM_NULLABLE_TYPE)session {
   @synchronized(self) {
     GTMSessionMonitorSynchronized(self);
@@ -3319,7 +3582,6 @@ static NSMutableDictionary *gSystemCompletionHandlers = nil;
 - (BOOL)useBackgroundSession {
   // This reflects if the user requested a background session, not necessarily
   // if one was created. That is tracked with _usingBackgroundSession.
-
   @synchronized(self) {
     GTMSessionMonitorSynchronized(self);
 
@@ -3331,7 +3593,12 @@ static NSMutableDictionary *gSystemCompletionHandlers = nil;
   @synchronized(self) {
     GTMSessionMonitorSynchronized(self);
 
-    _userRequestedBackgroundSession = flag;
+    if (flag != _userRequestedBackgroundSession) {
+      GTMSESSION_ASSERT_DEBUG(![self isFetchingUnsynchronized],
+          @"useBackgroundSession should not change after beginFetch has been invoked");
+
+      _userRequestedBackgroundSession = flag;
+    }
   }  // @synchronized(self)
 }
 
@@ -3379,7 +3646,13 @@ static NSMutableDictionary *gSystemCompletionHandlers = nil;
   @synchronized(self) {
     GTMSessionMonitorSynchronized(self);
 
-    _delegateQueue = queue ?: [NSOperationQueue mainQueue];
+    if (queue != _delegateQueue) {
+      if ([self isFetchingUnsynchronized]) {
+        GTMSESSION_ASSERT_DEBUG(0, @"sessionDelegateQueue should not change after fetch begins");
+      } else {
+        _delegateQueue = queue ?: [NSOperationQueue mainQueue];
+      }
+    }
   }  // @synchronized(self)
 }
 

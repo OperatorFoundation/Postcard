@@ -57,16 +57,17 @@ class MenuViewController: NSViewController
             let newWindowController = storyboard.instantiateControllerWithIdentifier("WelcomeWindowController") as! WelcomeWindowController
             return newWindowController
     }()
-    
-    
-    
 
     
     @IBAction func lockdownClick(sender: NSButton)
     {
         
         //Present Welcome View
+        let storyboard: NSStoryboard = NSStoryboard(name: "Main", bundle: nil)
+        let newContentController = storyboard.instantiateControllerWithIdentifier("Locked View") as! LockedViewController
+        welcomeWindowController.contentViewController = newContentController
         welcomeWindowController.showWindow(sender)
+        
         
         self.view.window?.close()
     }
@@ -125,8 +126,8 @@ class MenuViewController: NSViewController
     {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .Center
-        let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle]
-        let altInboxAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle]
+        let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: NSFont.boldSystemFontOfSize(13)]
+        let altInboxAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: NSFont.boldSystemFontOfSize(13)]
         let altPenpalAttributes = [NSForegroundColorAttributeName: PostcardUI.green, NSParagraphStyleAttributeName: paragraphStyle]
         let altAttributes = [NSForegroundColorAttributeName: PostcardUI.orange, NSParagraphStyleAttributeName: paragraphStyle]
         

@@ -12,14 +12,21 @@ import GoogleAPIClient
 
 class WelcomeViewController: NSViewController
 {
+    @IBOutlet weak var descriptionLabel: NSTextField!
+    @IBOutlet weak var descriptionView: NSView!
 
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
+        //This is to make the title bar transparent so that the BG image is uninterrupted
         view.window?.titlebarAppearsTransparent = true
         view.window?.movableByWindowBackground = true
         view.window?.titleVisibility = NSWindowTitleVisibility.Hidden
+        
+        //The description label should be at the same angle as the Big "Postcard"
+        descriptionView.rotateByAngle(11.0)
+        //let rotation: CGAffineTransform = CGAffineTransformMakeRotation(M_PI/4)
     }
     
     func isAuthorized() -> Bool
@@ -68,7 +75,10 @@ class WelcomeViewController: NSViewController
         //DEV ONLY
         //MailController().sendEmail()
         //MailController().sendKey()
-        MailController().fetchGmailMessagesList()
+        let mailController = MailController()
+        mailController.fetchGmailMessagesList()
+        //mailController.sendKey()
+        PenPalController().getGoogleContacts()
     }
     
     override func viewWillAppear()
@@ -92,15 +102,6 @@ class WelcomeViewController: NSViewController
     @IBAction func googleSignInTap(sender: AnyObject)
     {
         _ = createAuthController()
-    }
-    
-    @IBAction func unlockTap(sender: NSButton)
-    {
-        
-        //Present Home View
-        mainWindowController.showWindow(self)
-        
-        view.window?.close()
     }
     
     //MARK: OAuth2 Methods

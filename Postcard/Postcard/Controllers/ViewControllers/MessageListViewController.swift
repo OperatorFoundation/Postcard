@@ -10,6 +10,7 @@ import Cocoa
 
 class MessageListViewController: NSViewController
 {
+    @IBOutlet var postcardsArrayController: NSArrayController!
     var managedContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     override func viewDidLoad()
@@ -17,6 +18,20 @@ class MessageListViewController: NSViewController
         super.viewDidLoad()
         // Do view setup here.
     }
+    
+    @IBAction func rowSelected(sender: NSTableView)
+    {
+        
+        if let selectedPostcard = postcardsArrayController.selectedObjects[0] as? NSManagedObject
+        {
+            let splitVC = parentViewController as! NSSplitViewController
+            if let messageVC: MessageViewController = splitVC.childViewControllers[1] as? MessageViewController
+            {
+                messageVC.postcardObjectController.content = selectedPostcard
+            }
+        }
+    }
+
     
 }
 
@@ -28,4 +43,17 @@ class MessagesTableCell: NSTableCellView
     @IBOutlet weak var timeLabel: NSTextField!
     @IBOutlet weak var snippetLabel: NSTextField!
     @IBOutlet weak var penPalImageView: NSImageView!
+    
+    override func drawRect(dirtyRect: NSRect)
+    {
+        super.drawRect(dirtyRect)
+        
+        //When a cell is selected the system sets background style to dark by default
+        //Use this to change the cell color
+        if backgroundStyle == NSBackgroundStyle.Dark
+        {
+            NSColor.whiteColor().setFill()
+            NSRectFill(dirtyRect)
+        }
+    }
 }

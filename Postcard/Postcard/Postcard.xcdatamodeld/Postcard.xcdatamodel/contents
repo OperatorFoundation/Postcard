@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15F34" minimumToolsVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10171" systemVersion="15F34" minimumToolsVersion="Automatic">
     <entity name="PenPal" representedClassName=".PenPal" syncable="YES">
         <attribute name="addedDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="email" attributeType="String" syncable="YES"/>
-        <attribute name="key" attributeType="Binary" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" defaultValueString="PenPal" syncable="YES"/>
+        <attribute name="key" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="photo" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="sentKey" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Postcard" inverseName="from" inverseEntity="Postcard" syncable="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -21,6 +22,7 @@
         <attribute name="receivedDate" attributeType="Date" syncable="YES"/>
         <attribute name="snippet" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="subject" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="to" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="from" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PenPal" inverseName="messages" inverseEntity="PenPal" syncable="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -29,7 +31,7 @@
         </uniquenessConstraints>
     </entity>
     <elements>
-        <element name="PenPal" positionX="-63" positionY="-18" width="128" height="135"/>
-        <element name="Postcard" positionX="-54" positionY="18" width="128" height="165"/>
+        <element name="PenPal" positionX="-63" positionY="-18" width="128" height="150"/>
+        <element name="Postcard" positionX="-54" positionY="18" width="128" height="180"/>
     </elements>
 </model>
