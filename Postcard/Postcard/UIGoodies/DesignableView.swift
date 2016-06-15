@@ -27,6 +27,22 @@ import Cocoa
             layer?.backgroundColor = viewColor.CGColor
         }
     }
+    
+    @IBInspectable var borderWidth: CGFloat = 0
+        {
+        didSet
+        {
+            layer?.borderWidth = borderWidth
+        }
+    }
+    
+    @IBInspectable var borderColor: NSColor = NSColor.grayColor()
+    {
+        didSet
+        {
+            layer?.borderColor = borderColor.CGColor
+        }
+    }
 
     required init?(coder: NSCoder)
     {
@@ -38,6 +54,8 @@ import Cocoa
     {
         layer?.cornerRadius = cornerRounding
         layer?.backgroundColor = viewColor.CGColor
+        layer?.borderColor = borderColor.CGColor
+        layer?.borderWidth = borderWidth
     }
     
 }

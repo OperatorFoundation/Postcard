@@ -46,16 +46,25 @@ class ComposeViewController: NSViewController
     
     func styleButtons()
     {
+        //Alignment
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .Center
-        let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: NSFont.boldSystemFontOfSize(13)]
-        let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: NSFont.boldSystemFontOfSize(13)]
         
-        sendButton.attributedTitle = NSAttributedString(string: "Send", attributes: attributes)
-        sendButton.attributedAlternateTitle = NSAttributedString(string: "Send", attributes: altAttributes)
+        //Font
+        var buttonFont = NSFont.boldSystemFontOfSize(13)
+        if let maybeFont = NSFont(name: PostcardUI.boldFutura, size: 13)
+        {
+            buttonFont = maybeFont
+        }
         
-        attachmentButton.attributedTitle = NSAttributedString(string: "Attachment", attributes: attributes)
-        attachmentButton.attributedAlternateTitle = NSAttributedString(string: "Attachment", attributes: altAttributes)
+        let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
+        let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
+        
+        sendButton.attributedTitle = NSAttributedString(string: "SEND", attributes: attributes)
+        sendButton.attributedAlternateTitle = NSAttributedString(string: "SEND", attributes: altAttributes)
+        
+        attachmentButton.attributedTitle = NSAttributedString(string: "ATTACHMENT", attributes: attributes)
+        attachmentButton.attributedAlternateTitle = NSAttributedString(string: "ATTACHMENT", attributes: altAttributes)
     }
     
     //MARK: Actions
@@ -90,6 +99,7 @@ class ComposeViewController: NSViewController
                     for thisURL in urls
                     {
                         self.attachments.append(thisURL)
+                        
                         if let pathString = thisURL.path
                         {
                             let urlParts = pathString.componentsSeparatedByString(".")
@@ -106,17 +116,38 @@ class ComposeViewController: NSViewController
                             containerView.layer?.backgroundColor = NSColor.whiteColor().CGColor
                             
                             //Attachment Button
-                            let attachmentButton = NSButton(frame: NSRect(x: 0, y: 0, width: 79, height: 21))
-                            attachmentButton.title = fileName
+                            let attachmentButton = AttachmentButton(frame: NSRect(x: 0, y: 0, width: 79, height: 21), attachmentURL: thisURL)
+                            
+                            //Alignment
+                            let paragraphStyle = NSMutableParagraphStyle()
+                            paragraphStyle.alignment = .Center
+                            
+                            //Font
+                            var buttonFont = NSFont.systemFontOfSize(13)
+                            if let maybeFont = NSFont(name: PostcardUI.regularAFont, size: 13)
+                            {
+                                buttonFont = maybeFont
+                            }
+                            
+                            let attributes = [NSForegroundColorAttributeName: PostcardUI.black, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
+                            attachmentButton.attributedTitle = NSAttributedString(string: fileName, attributes: attributes)
                             attachmentButton.bordered = false
                             
                             //Remove Attachment Button
-                            let removeButton = NSButton(frame: NSRect(x: 79, y: 2, width: 30, height: 21))
+                            let removeButton = AttachmentButton(frame: NSRect(x: 79, y: 2, width: 30, height: 21), attachmentURL: thisURL)
                             removeButton.bordered = false
-                            let paragraphStyle = NSMutableParagraphStyle()
-                            paragraphStyle.alignment = .Center
-                            let attributes = [NSForegroundColorAttributeName: PostcardUI.red, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: NSFont.boldSystemFontOfSize(14)]
-                            removeButton.attributedTitle = NSAttributedString(string: "x", attributes: attributes)
+                            
+                            //Font
+                            var removeButtonFont = NSFont.boldSystemFontOfSize(14)
+                            if let maybeFont = NSFont(name: PostcardUI.boldFutura, size: 14)
+                            {
+                                removeButtonFont = maybeFont
+                            }
+
+                            let removeAttributes = [NSForegroundColorAttributeName: PostcardUI.red, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: removeButtonFont]
+                            removeButton.attributedTitle = NSAttributedString(string: "x", attributes: removeAttributes)
+                            removeButton.target = self
+                            removeButton.action = #selector(ComposeViewController.removeAttachment)
                             
                             containerView.addSubview(attachmentButton)
                             containerView.addSubview(removeButton)
@@ -134,6 +165,48 @@ class ComposeViewController: NSViewController
     {
         
     }
+    
+    func removeAttachment(sender: AnyObject)
+    {
+        if let attachmentSender = sender as? AttachmentButton
+        {
+            //Remove the attachment button from the view
+            if let containerView = attachmentSender.superview
+            {
+                containerView.removeFromSuperview()
+            }
+            
+            //Remove the attachment URL from the list of items to attach to the message
+            
+            if let index = attachments.indexOf(sender.attachmentURL)
+            {
+                attachments.removeAtIndex(index)
+            }
+        }
+        else
+        {
+            print(sender.description)
+        }
+        
+    }
+    
+}
 
+class AttachmentButton: NSButton
+{
+    var attachmentURL: NSURL
+    
+    init(frame frameRect: NSRect, attachmentURL: NSURL)
+    {
+        self.attachmentURL = attachmentURL
+        
+        super.init(frame: frameRect)
+    }
+    
+    required init?(coder: NSCoder)
+    {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     
 }

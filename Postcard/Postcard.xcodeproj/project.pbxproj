@@ -29,6 +29,7 @@
 		461C0A621CE6664200C5B5A5 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A601CE6664200C5B5A5 /* MessageViewController.swift */; };
 		461C0A641CE682AF00C5B5A5 /* DesignableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A631CE682AF00C5B5A5 /* DesignableView.swift */; };
 		461C0A671CE696E300C5B5A5 /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A661CE696E300C5B5A5 /* MainSplitViewController.swift */; };
+		463E68531D0B43E600F70845 /* SignPainter.otf in Resources */ = {isa = PBXBuildFile; fileRef = 463E68521D0B434300F70845 /* SignPainter.otf */; };
 		466FC5F61D01FB1A00B8AABB /* PenPal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466FC5F21D01FB1A00B8AABB /* PenPal+CoreDataProperties.swift */; };
 		466FC5F71D01FB1A00B8AABB /* PenPal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466FC5F31D01FB1A00B8AABB /* PenPal.swift */; };
 		466FC5F81D01FB1A00B8AABB /* Postcard+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466FC5F41D01FB1A00B8AABB /* Postcard+CoreDataProperties.swift */; };
@@ -90,6 +91,7 @@
 		461C0A601CE6664200C5B5A5 /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageViewController.swift; path = Controllers/ViewControllers/MessageViewController.swift; sourceTree = "<group>"; };
 		461C0A631CE682AF00C5B5A5 /* DesignableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DesignableView.swift; path = UIGoodies/DesignableView.swift; sourceTree = "<group>"; };
 		461C0A661CE696E300C5B5A5 /* MainSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainSplitViewController.swift; path = Controllers/ViewControllers/MainSplitViewController.swift; sourceTree = "<group>"; };
+		463E68521D0B434300F70845 /* SignPainter.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SignPainter.otf; sourceTree = "<group>"; };
 		466FC5F21D01FB1A00B8AABB /* PenPal+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PenPal+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		466FC5F31D01FB1A00B8AABB /* PenPal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PenPal.swift; sourceTree = "<group>"; };
 		466FC5F41D01FB1A00B8AABB /* Postcard+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Postcard+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 		B4238F5E1CD2DF050054E7EF /* KeyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KeyController.swift; path = Controllers/KeyController.swift; sourceTree = "<group>"; };
 		B4238F601CD2DF630054E7EF /* Postcard-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Postcard-Bridging-Header.h"; sourceTree = "<group>"; };
 		B430D5EA1CF7C31D0025365E /* WelcomeWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeWindowController.swift; path = Controllers/ViewControllers/WelcomeWindowController.swift; sourceTree = "<group>"; };
+		B455798C1D10C99B00E56D6D /* FuturaT_Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaT_Bold.ttf; sourceTree = "<group>"; };
 		B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LockedViewController.swift; path = Controllers/ViewControllers/LockedViewController.swift; sourceTree = "<group>"; };
 		B4EDBB4D1CEF6BC50094853F /* ComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComposeViewController.swift; path = Controllers/ViewControllers/ComposeViewController.swift; sourceTree = "<group>"; };
 		B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeViewController.swift; path = Controllers/ViewControllers/WelcomeViewController.swift; sourceTree = "<group>"; };
@@ -176,7 +179,6 @@
 				461891B21CC17B9A009C577D /* Assets.xcassets */,
 				461891B41CC17B9A009C577D /* Main.storyboard */,
 				B4056FD01CC99B3A00D81301 /* GTMOAuth2Window.xib */,
-				461891B71CC17B9A009C577D /* Info.plist */,
 				B4BF355A1CDAC02F00C3CDD0 /* DataModels */,
 				B4238F5A1CD2C0E50054E7EF /* Controllers */,
 				B4238F5D1CD2C4C50054E7EF /* SupportingFiles */,
@@ -206,6 +208,8 @@
 		461C0A651CE682B800C5B5A5 /* UIGoodies */ = {
 			isa = PBXGroup;
 			children = (
+				463E68521D0B434300F70845 /* SignPainter.otf */,
+				B455798C1D10C99B00E56D6D /* FuturaT_Bold.ttf */,
 				466FC5FC1D021BA100B8AABB /* Proxima Nova Font Free */,
 				461C0A631CE682AF00C5B5A5 /* DesignableView.swift */,
 			);
@@ -226,6 +230,7 @@
 		B4238F5D1CD2C4C50054E7EF /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
+				461891B71CC17B9A009C577D /* Info.plist */,
 				B4238F601CD2DF630054E7EF /* Postcard-Bridging-Header.h */,
 				B4238F5B1CD2C11C0054E7EF /* Constants.swift */,
 			);
@@ -408,6 +413,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				463E68531D0B43E600F70845 /* SignPainter.otf in Resources */,
 				461891B31CC17B9A009C577D /* Assets.xcassets in Resources */,
 				461891B61CC17B9A009C577D /* Main.storyboard in Resources */,
 				B4056FD11CC99B3A00D81301 /* GTMOAuth2Window.xib in Resources */,

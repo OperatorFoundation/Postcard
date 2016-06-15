@@ -126,15 +126,29 @@ class MenuViewController: NSViewController
     {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .Center
-        let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: NSFont.boldSystemFontOfSize(13)]
-        let altInboxAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: NSFont.boldSystemFontOfSize(13)]
-        let altPenpalAttributes = [NSForegroundColorAttributeName: PostcardUI.green, NSParagraphStyleAttributeName: paragraphStyle]
-        let altAttributes = [NSForegroundColorAttributeName: PostcardUI.orange, NSParagraphStyleAttributeName: paragraphStyle]
+        
+        var buttonFont = NSFont.boldSystemFontOfSize(13)
+        if let maybeFont = NSFont(name: PostcardUI.boldFutura, size: 13)
+        {
+            buttonFont = maybeFont
+        }
+        
+        var buttonFont2 = NSFont.boldSystemFontOfSize(13)
+        if let maybeFont2 = NSFont(name: PostcardUI.boldAFont, size: 13)
+        {
+            buttonFont2 = maybeFont2
+        }
+        
+        let composeAttributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
+        let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont2]
+        let altInboxAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont2]
+        let altPenpalAttributes = [NSForegroundColorAttributeName: PostcardUI.green, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont2]
+        let altAttributes = [NSForegroundColorAttributeName: PostcardUI.orange, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont2]
         
         inboxButton.attributedTitle = NSAttributedString(string: "Inbox", attributes: attributes)
         inboxButton.attributedAlternateTitle = NSAttributedString(string: "Inbox", attributes: altInboxAttributes)
         
-        composeButton.attributedTitle = NSAttributedString(string: "Compose", attributes: attributes)
+        composeButton.attributedTitle = NSAttributedString(string: "COMPOSE", attributes: composeAttributes)
         
         penPalsButton.attributedTitle = NSAttributedString(string: "PenPals", attributes: attributes)
         penPalsButton.attributedAlternateTitle = NSAttributedString(string: "PenPals", attributes: altPenpalAttributes)

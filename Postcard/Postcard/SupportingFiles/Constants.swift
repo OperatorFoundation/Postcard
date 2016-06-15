@@ -10,6 +10,21 @@ import Foundation
 import GoogleAPIClient
 import GoogleAPIClientForREST
 
+/*
+ Font Names
+ ProximaNova-Black
+ ProximaNova-Bold
+ ProximaNovaA-Black
+ ProximaNovaA-Bold
+ ProximaNovaA-Extrabld
+ ProximaNovaA-Light
+ ProximaNovaA-Regular
+ ProximaNovaACond-Light
+ ProximaNovaACond-Thin
+ ProximaNovaAExCn-Bold
+ ProximaNovaAExCn-Light
+ */
+
 struct GmailProps
 {
     static let service = GTLServiceGmail()
@@ -37,6 +52,19 @@ struct PostcardUI
     static let green = NSColor(calibratedRed: 0.20, green: 0.70, blue: 0.53, alpha: 1.0)
     static let black = NSColor(calibratedRed: 0.18, green: 0.20, blue: 0.23, alpha: 1.0)
     static let gray = NSColor(calibratedRed: 0.93, green: 0.93, blue: 0.93, alpha: 1.0)
+    
+    static let blackFont = "ProximaNova-Black"
+    static let boldFont = "ProximaNova-Bold"
+    static let blackAFont = "ProximaNovaA-Black"
+    static let boldAFont = "ProximaNovaA-Bold"
+    static let extraBoldAFont = "ProximaNovaA-Extrabld"
+    static let lightAFont = "ProximaNovaA-Light"
+    static let regularAFont = "ProximaNovaA-Regular"
+    static let lightACondensedFont = "ProximaNovaACond-Light"
+    static let thinACondensedFont = "ProximaNovaACond-Thin"
+    static let boldAExtraCondensed = "ProximaNovaAExCn-Bold"
+    static let lightAExtraCondensed = "ProximaNovaAExCn-Light"
+    static let boldFutura = "FuturaT-Bold"
 }
 
 struct UDKey

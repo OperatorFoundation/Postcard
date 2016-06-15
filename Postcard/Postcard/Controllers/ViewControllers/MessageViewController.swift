@@ -48,13 +48,19 @@ class MessageViewController: NSViewController
     {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .Center
-        let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: NSFont.boldSystemFontOfSize(13)]
-        let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: NSFont.boldSystemFontOfSize(13)]
+        var buttonFont = NSFont.boldSystemFontOfSize(13)
+        if let maybeFont = NSFont(name: PostcardUI.boldFutura, size: 13)
+        {
+            buttonFont = maybeFont
+        }
         
-        replyButton.attributedTitle = NSAttributedString(string: "Reply", attributes: attributes)
-        replyButton.attributedAlternateTitle = NSAttributedString(string: "Reply", attributes: altAttributes)
+        let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
+        let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
         
-        deleteButton.attributedTitle = NSAttributedString(string: "Delete", attributes: attributes)
-        deleteButton.attributedAlternateTitle = NSAttributedString(string: "Delete", attributes: altAttributes)
+        replyButton.attributedTitle = NSAttributedString(string: "REPLY", attributes: attributes)
+        replyButton.attributedAlternateTitle = NSAttributedString(string: "REPLY", attributes: altAttributes)
+        
+        deleteButton.attributedTitle = NSAttributedString(string: "DELETE", attributes: attributes)
+        deleteButton.attributedAlternateTitle = NSAttributedString(string: "DELETE", attributes: altAttributes)
     }
 }

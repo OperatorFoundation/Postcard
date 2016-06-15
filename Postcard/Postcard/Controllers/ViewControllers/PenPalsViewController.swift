@@ -72,12 +72,17 @@ class PenPalTableCell: NSTableCellView
             {
                 let paragraphStyle = NSMutableParagraphStyle()
                 paragraphStyle.alignment = .Center
-                let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: NSFont.boldSystemFontOfSize(13)]
-                let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: NSFont.boldSystemFontOfSize(13)]
+                var buttonFont = NSFont.boldSystemFontOfSize(13)
+                if let maybeFont = NSFont(name: PostcardUI.boldFutura, size: 13)
+                {
+                    buttonFont = maybeFont
+                }
+                let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
+                let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
                 
                 if penPal.key == nil && penPal.sentKey == false
                 {
-                    actionTitle = "Invite"
+                    actionTitle = "INVITE"
                     actionButton.image = NSImage(named: "greenButton")
                     actionButton.target = self
                     actionButton.action = #selector(inviteAction)
@@ -85,7 +90,7 @@ class PenPalTableCell: NSTableCellView
                 }
                 else if penPal.key != nil && penPal.sentKey == false
                 {
-                    actionTitle = "Add"
+                    actionTitle = "ADD"
                     actionButton.image = NSImage(named: "redButton")
                     actionButton.target = self
                     actionButton.action = #selector(addAction)

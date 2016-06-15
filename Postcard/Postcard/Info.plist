@@ -5,6 +5,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Proxima Nova Alt Black.otf</string>
+		<string>FuturaT_Bold.ttf</string>
 		<string>Proxima Nova Alt Bold.otf</string>
 		<string>Proxima Nova Alt Condensed Light.otf</string>
 		<string>Proxima Nova Alt Condensed Thin.otf</string>
@@ -15,6 +16,7 @@
 		<string>Proxima Nova Alt Regular.otf</string>
 		<string>Proxima Nova Black.otf</string>
 		<string>Proxima Nova Bold.otf</string>
+		<string>SignPainter.otf</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
