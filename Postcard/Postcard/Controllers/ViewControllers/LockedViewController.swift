@@ -8,9 +8,11 @@
 
 import Cocoa
 
-class LockedViewController: NSViewController {
+class LockedViewController: NSViewController
+{
     
-    lazy var mainWindowController: MainWindowController = {
+    lazy var mainWindowController: MainWindowController =
+    {
         let storyboard: NSStoryboard = NSStoryboard(name: "Main", bundle: nil)
         let newWindowController = storyboard.instantiateControllerWithIdentifier("MainWindowController") as! MainWindowController
         return newWindowController

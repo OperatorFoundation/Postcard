@@ -19,11 +19,6 @@ class WelcomeViewController: NSViewController
     {
         super.viewDidLoad()
         
-        //This is to make the title bar transparent so that the BG image is uninterrupted
-        view.window?.titlebarAppearsTransparent = true
-        view.window?.movableByWindowBackground = true
-        view.window?.titleVisibility = NSWindowTitleVisibility.Hidden
-        
         //The description label should be at the same angle as the Big "Postcard"
         descriptionView.rotateByAngle(11.0)
         //let rotation: CGAffineTransform = CGAffineTransformMakeRotation(M_PI/4)

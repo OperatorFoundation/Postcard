@@ -28,9 +28,7 @@ class ComposeViewController: NSViewController
         
         styleButtons()
         
-        self.view.window?.titlebarAppearsTransparent = true
-        //self.view.window?.styleMask |= NSFullSizeContentViewWindowMask
-        self.view.window?.movableByWindowBackground  = true
+        
         
         //Check For Prepopulated values
         if !sendTo.isEmpty
@@ -42,6 +40,18 @@ class ComposeViewController: NSViewController
         {
             subjectTextField.stringValue = reSubject
         }
+    }
+    
+    override func viewDidAppear() {
+        //This is to make the title bar transparent so that the BG image is uninterrupted
+        if let window = self.view.window
+        {
+            print(window.description)
+        }
+        view.window?.titlebarAppearsTransparent = true
+        view.window?.movableByWindowBackground = true
+        view.window?.titleVisibility = NSWindowTitleVisibility.Hidden
+        self.view.window?.viewsNeedDisplay = true
     }
     
     func styleButtons()

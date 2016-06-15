@@ -12,6 +12,8 @@ class PenPalsViewController: NSViewController, NSTableViewDelegate
 {
     @IBOutlet weak var penPalsTableView: NSTableView!
     @IBOutlet var penPalsArrayController: NSArrayController!
+    
+    
     var managedContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     override func viewDidLoad()
@@ -59,6 +61,7 @@ class PenPalTableCell: NSTableCellView
     @IBOutlet weak var subtitleLabel: NSTextField!
     @IBOutlet weak var penPalImageView: NSImageView!
     @IBOutlet weak var actionButton: NSButton!
+    @IBOutlet weak var backgroundView: DesignableView!
     
     var actionTitle = ""
     var managedContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
@@ -83,21 +86,25 @@ class PenPalTableCell: NSTableCellView
                 if penPal.key == nil && penPal.sentKey == false
                 {
                     actionTitle = "INVITE"
-                    actionButton.image = NSImage(named: "greenButton")
+                    actionButton.image = NSImage(named: "redButton")
                     actionButton.target = self
                     actionButton.action = #selector(inviteAction)
+                    backgroundView.viewColor = PostcardUI.gray
                     
                 }
                 else if penPal.key != nil && penPal.sentKey == false
                 {
                     actionTitle = "ADD"
-                    actionButton.image = NSImage(named: "redButton")
+                    actionButton.image = NSImage(named: "greenButton")
                     actionButton.target = self
                     actionButton.action = #selector(addAction)
+                    
+                    backgroundView.viewColor = NSColor.whiteColor()
                 }
                 else
                 {
                     actionButton.hidden = true
+                    backgroundView.viewColor = PostcardUI.gray
                 }
                 actionButton.attributedTitle = NSAttributedString(string: actionTitle, attributes: attributes)
                 actionButton.attributedAlternateTitle = NSAttributedString(string: actionTitle, attributes: altAttributes)

@@ -52,10 +52,10 @@ class MenuViewController: NSViewController
     }
     
     lazy var welcomeWindowController: WelcomeWindowController =
-        {
-            let storyboard: NSStoryboard = NSStoryboard(name: "Main", bundle: nil)
-            let newWindowController = storyboard.instantiateControllerWithIdentifier("WelcomeWindowController") as! WelcomeWindowController
-            return newWindowController
+    {
+        let storyboard: NSStoryboard = NSStoryboard(name: "Main", bundle: nil)
+        let newWindowController = storyboard.instantiateControllerWithIdentifier("WelcomeWindowController") as! WelcomeWindowController
+        return newWindowController
     }()
 
     
@@ -124,8 +124,11 @@ class MenuViewController: NSViewController
     
     func styleButtons()
     {
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .Center
+        let paragraphStyleCenter = NSMutableParagraphStyle()
+        paragraphStyleCenter.alignment = .Center
+        
+        let paragraphStyleLeft = NSMutableParagraphStyle()
+        paragraphStyleLeft.alignment = .Justified
         
         var buttonFont = NSFont.boldSystemFontOfSize(13)
         if let maybeFont = NSFont(name: PostcardUI.boldFutura, size: 13)
@@ -139,25 +142,25 @@ class MenuViewController: NSViewController
             buttonFont2 = maybeFont2
         }
         
-        let composeAttributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
-        let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont2]
-        let altInboxAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont2]
-        let altPenpalAttributes = [NSForegroundColorAttributeName: PostcardUI.green, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont2]
-        let altAttributes = [NSForegroundColorAttributeName: PostcardUI.orange, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont2]
+        let composeAttributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyleCenter, NSFontAttributeName: buttonFont]
+        let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyleLeft, NSFontAttributeName: buttonFont2]
+        let altInboxAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyleLeft, NSFontAttributeName: buttonFont2]
+        let altPenpalAttributes = [NSForegroundColorAttributeName: PostcardUI.green, NSParagraphStyleAttributeName: paragraphStyleLeft, NSFontAttributeName: buttonFont2]
+        let altAttributes = [NSForegroundColorAttributeName: PostcardUI.orange, NSParagraphStyleAttributeName: paragraphStyleLeft, NSFontAttributeName: buttonFont2]
         
-        inboxButton.attributedTitle = NSAttributedString(string: "Inbox", attributes: attributes)
-        inboxButton.attributedAlternateTitle = NSAttributedString(string: "Inbox", attributes: altInboxAttributes)
+        inboxButton.attributedTitle = NSAttributedString(string: "  Inbox", attributes: attributes)
+        inboxButton.attributedAlternateTitle = NSAttributedString(string: "  Inbox", attributes: altInboxAttributes)
         
         composeButton.attributedTitle = NSAttributedString(string: "COMPOSE", attributes: composeAttributes)
         
-        penPalsButton.attributedTitle = NSAttributedString(string: "PenPals", attributes: attributes)
-        penPalsButton.attributedAlternateTitle = NSAttributedString(string: "PenPals", attributes: altPenpalAttributes)
+        penPalsButton.attributedTitle = NSAttributedString(string: "  PenPals", attributes: attributes)
+        penPalsButton.attributedAlternateTitle = NSAttributedString(string: "  PenPals", attributes: altPenpalAttributes)
         
-        lockdownButton.attributedTitle = NSAttributedString(string: "Lockdown", attributes: attributes)
-        lockdownButton.attributedAlternateTitle = NSAttributedString(string: "Lockdown", attributes: altAttributes)
+        lockdownButton.attributedTitle = NSAttributedString(string: "  Lockdown", attributes: attributes)
+        lockdownButton.attributedAlternateTitle = NSAttributedString(string: "  Lockdown", attributes: altAttributes)
         
-        logoutButton.attributedTitle = NSAttributedString(string: "Logout", attributes: attributes)
-        logoutButton.attributedAlternateTitle = NSAttributedString(string: "Logout", attributes: altAttributes)
+        logoutButton.attributedTitle = NSAttributedString(string: "  Logout", attributes: attributes)
+        logoutButton.attributedAlternateTitle = NSAttributedString(string: "  Logout", attributes: altAttributes)
     }
     
 }
