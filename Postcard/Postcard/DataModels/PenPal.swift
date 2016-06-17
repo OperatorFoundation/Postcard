@@ -2,7 +2,7 @@
 //  PenPal.swift
 //  Postcard
 //
-//  Created by Adelita Schule on 6/3/16.
+//  Created by Adelita Schule on 6/16/16.
 //  Copyright © 2016 operatorfoundation.org. All rights reserved.
 //
 

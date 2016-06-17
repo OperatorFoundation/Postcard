@@ -2,7 +2,7 @@
 //  PenPal+CoreDataProperties.swift
 //  Postcard
 //
-//  Created by Adelita Schule on 6/3/16.
+//  Created by Adelita Schule on 6/16/16.
 //  Copyright © 2016 operatorfoundation.org. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -14,12 +14,12 @@ import CoreData
 
 extension PenPal {
 
-    @NSManaged var addedDate: NSDate?
+    @NSManaged var addedDate: NSTimeInterval
     @NSManaged var email: String?
     @NSManaged var key: NSData?
     @NSManaged var name: String?
     @NSManaged var photo: NSObject?
-    @NSManaged var sentKey: NSNumber?
+    @NSManaged var sentKey: Bool
     @NSManaged var messages: NSSet?
 
 }

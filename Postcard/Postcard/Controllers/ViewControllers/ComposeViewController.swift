@@ -19,6 +19,7 @@ class ComposeViewController: NSViewController
     
     var sendTo = ""
     var reSubject = ""
+    var bodyText = ""
     var attachments = [NSURL]()
     
     override func viewDidLoad()
@@ -28,18 +29,17 @@ class ComposeViewController: NSViewController
         
         styleButtons()
         
-        
+        //Set Default Font
+        if let font = NSFont(name: PostcardUI.regularAFont, size: 14)
+        {
+            let attributes = [NSFontAttributeName: font]
+            bodyTextView.typingAttributes = attributes
+        }
         
         //Check For Prepopulated values
-        if !sendTo.isEmpty
-        {
-            toTextField.stringValue = sendTo
-        }
-        
-        if !reSubject.isEmpty
-        {
-            subjectTextField.stringValue = reSubject
-        }
+        if !sendTo.isEmpty {toTextField.stringValue = sendTo}
+        if !reSubject.isEmpty {subjectTextField.stringValue = reSubject}
+        if !bodyText.isEmpty {bodyTextView.string = bodyText}
     }
     
     override func viewDidAppear() {

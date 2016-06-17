@@ -37,6 +37,7 @@ class MailController: NSObject
         {
             let query = GTLQueryGmail.queryForUsersMessagesList()
             //query.q = "Subject:Postcard has:attachment"
+            query.labelIds = ["INBOX"]
             
             GmailProps.service.executeQuery(query, completionHandler: {(ticket, response, error) in
                 if let listMessagesResponse = response as? GTLGmailListMessagesResponse
@@ -65,60 +66,59 @@ class MailController: NSObject
                 //Save each message
                 if let message = maybeMessage as? GTLGmailMessage, parts = message.payload.parts as? [GTLGmailMessagePart]
                 {
-                    //Debug: Print info about this message
-//                                                        print("PAYLOAD: " + message.payload.description + "\n")
-//                                                        if let headers = message.payload.headers
-//                                                        {
-//                                                            for thisHeader in headers
-//                                                            {
-//                                                                print("HEADER: " + thisHeader.description + "\n")
-//                                                            }
-//                                                        }
-                    
-//                                                        print("PARTS: " + message.payload.parts.description + "\n")
-
-                    for thisPart in parts
+                    //This is a key/penpal invitation
+                    for thisPart in parts where thisPart.mimeType == "application/postcard-key"
                     {
-                        //This is a postcard attachment
-                        if thisPart.mimeType == "application/postcard-encrypted"
+                        //Download the attachment
+                        let attachmentQuery = GTLQueryGmail.queryForUsersMessagesAttachmentsGet()
+                        attachmentQuery.identifier = thisPart.body.attachmentId
+                        attachmentQuery.messageId = messageMeta.identifier
+                        
+                        GmailProps.service.executeQuery(attachmentQuery, completionHandler: {(ticket, maybeAttachment, error) in
+                            if let attachment = maybeAttachment as? GTLGmailMessagePartBody
+                            {
+                                self.processPenPalKeyAttachment(attachment, forMessage: message)
+                            }
+                        })
+                    }
+                    
+                    //Debug: Print info about this message
+                    //print("PAYLOAD: " + message.payload.description + "\n")
+                    if let headers = message.payload.headers as? [GTLGmailMessagePartHeader]
+                    {
+                        var sender = ""
+                        for header in headers where header.name == "From"
                         {
-                            //Message has an attachment of the correct mime type, save it
-                            //This is a Postcard
-                            
-                            //TODO: Right now we will process the main message
-                            //The message SHOULD actually be in the encrypted attachment
+                            sender = header.value
+                        }
+                        
+                        //Check to see if we have this sender as a Penpal
+                        //TODO: This needs to be checking against penpal keys in coredata!
+                        if !sender.isEmpty && PostCardProps.penPalEmailSet.contains(sender)
+                        {
+                            print("We are already friends with \(sender) we can decrypt this postcard!")
                             self.processPostcard(message)
                             
-                            
-                            //Download the attachment
-                            let attachmentQuery = GTLQueryGmail.queryForUsersMessagesAttachmentsGet()
-                            attachmentQuery.identifier = thisPart.body.attachmentId
-                            attachmentQuery.messageId = messageMeta.identifier
-                            GmailProps.service.executeQuery(attachmentQuery, completionHandler: {(ticket, maybeAttachment, error) in
-                                if let attachment = maybeAttachment as? GTLGmailMessagePartBody
-                                {
-                                    //self.processPostcard(attachment, forMessage: message)
-                                }
-                            })
-                        }
-                            
-                        //This is a key/penpal invitation
-                        else if thisPart.mimeType == "application/postcard-key"
-                        {
-                            //Download the attachment
-                            let attachmentQuery = GTLQueryGmail.queryForUsersMessagesAttachmentsGet()
-                            attachmentQuery.identifier = thisPart.body.attachmentId
-                            attachmentQuery.messageId = messageMeta.identifier
-                            
-//                            print("Attachment ID: \(thisPart.body.attachmentId) \n")
-//                            print("Message ID: \(messageMeta.identifier) \n")
-                            
-                            GmailProps.service.executeQuery(attachmentQuery, completionHandler: {(ticket, maybeAttachment, error) in
-                                if let attachment = maybeAttachment as? GTLGmailMessagePartBody
-                                {
-                                    self.processPenPalKeyAttachment(attachment, forMessage: message)
-                                }
-                            })
+                            //Looking for Postcard Specific Attachments
+                            for thisPart in parts where thisPart.mimeType == "application/postcard-encrypted"
+                            {
+                                //This is a postcard attachment
+                                
+                                //TODO: Right now we will process the main message
+                                //The message SHOULD actually be in the encrypted attachment
+                                
+                                //Download the attachment
+                                let attachmentQuery = GTLQueryGmail.queryForUsersMessagesAttachmentsGet()
+                                attachmentQuery.identifier = thisPart.body.attachmentId
+                                attachmentQuery.messageId = messageMeta.identifier
+                                GmailProps.service.executeQuery(attachmentQuery, completionHandler: {(ticket, maybeAttachment, error) in
+                                    if let attachment = maybeAttachment as? GTLGmailMessagePartBody
+                                    {
+                                        //self.processPostcard(attachment, forMessage: message)
+                                        //self.processPostcard(message)
+                                    }
+                                })
+                            }
                         }
                     }
                 }
@@ -126,12 +126,11 @@ class MailController: NSObject
         }
     }
     
-    //Process Different Message Types
+    //MARK: Process Different Message Types
     
     //Check if the downloaded attachment is valid and save the information as a new penpal to core data
     func processPenPalKeyAttachment(attachment: GTLGmailMessagePartBody, forMessage message: GTLGmailMessage)
     {
-        
         //Check the headers for the message sender
         if let headers = message.payload.headers as? [GTLGmailMessagePartHeader]
         {
@@ -159,7 +158,7 @@ class MailController: NSObject
                             let newPal = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
                             newPal.email = sender
                             newPal.key = data
-                            newPal.addedDate = NSDate()//.timeIntervalSinceReferenceDate
+                            newPal.addedDate = NSDate().timeIntervalSinceReferenceDate
                             
                             //Save this PenPal to core data
                             do {
@@ -336,7 +335,8 @@ class MailController: NSObject
                     //print("NewCard From:" + (newCard.from?.email)! + "\n")
                     PostCardProps.penPalEmailSet.insert(newPal4.email!)
                 }
-                catch {
+                catch
+                {
                     let saveError = error as NSError
                     print("\(saveError)")
                 }
@@ -350,92 +350,117 @@ class MailController: NSObject
         //Check the headers for the message sender
         if let headers = message.payload.headers as? [GTLGmailMessagePartHeader]
         {
-            for header in headers where header.name == "From"
+            //Get the Penpal record to create the sender relationship for this Postcard
+            if let entity = NSEntityDescription.entityForName("Postcard", inManagedObjectContext: self.managedObjectContext!)
             {
-                let sender = header.value
+                //Create New Postcard Record
+                let newCard = Postcard(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
                 
-                if PostCardProps.penPalEmailSet.contains(sender)
+                //Postcard Sender/Penpal
+                var sender = ""
+                for header in headers where header.name == "From"
                 {
-                    print("We are already friends with \(sender) we can decrypt this postcard!")
-                    
-                    //Get the Penpal record to create the sender relationship for this Postcard
-                    if let entity = NSEntityDescription.entityForName("Postcard", inManagedObjectContext: self.managedObjectContext!)
+                    sender = header.value
+                }
+                
+                let fetchRequest = NSFetchRequest(entityName: "PenPal")
+                fetchRequest.predicate = NSPredicate(format: "email == %@", sender)
+                do
+                {
+                    let result = try self.managedObjectContext?.executeFetchRequest(fetchRequest)
+                    if result?.count > 0, let thisPenpal = result?[0] as? PenPal
                     {
-                        //Create New Postcard Record
-                        let newCard = Postcard(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-                        
-                        let fetchRequest = NSFetchRequest(entityName: "PenPal")
-                        fetchRequest.predicate = NSPredicate(format: "email == %@", sender)
-                        do
+                        newCard.from = thisPenpal
+                    }
+                }
+                catch
+                {
+                    //Could not fetch this Penpal from core data
+                    let fetchError = error as NSError
+                    print(fetchError)
+                }
+                
+                //Message Body
+                for thisPart in message.payload.parts
+                {
+                    if let thisPart = thisPart as? GTLGmailMessagePart
+                    {
+                        if thisPart.mimeType == "text/plain"
                         {
-                            let result = try self.managedObjectContext?.executeFetchRequest(fetchRequest)
-                            if result?.count > 0, let thisPenpal = result?[0] as? PenPal
+                            if let bodyData = GTLDecodeBase64(thisPart.body.data), let bodyText = String(data: bodyData, encoding: NSUTF8StringEncoding)
                             {
-                                newCard.from = thisPenpal
+                                newCard.body = bodyText
                             }
-                        }
-                        catch
-                        {
-                            //Could not fetch this Penpal from core data
-                            let fetchError = error as NSError
-                            print(fetchError)
-                        }
-                        
-                        //Message Body
-                        for thisPart in message.payload.parts
-                        {
-                            if let thisPart = thisPart as? GTLGmailMessagePart
-                            {
-                                if thisPart.mimeType == "text/plain"
-                                {
-                                    if let bodyData = GTLDecodeBase64(thisPart.body.data), let bodyText = String(data: bodyData, encoding: NSUTF8StringEncoding)
-                                    {
-                                        newCard.body = bodyText
-                                    }
-                                }
-                            }
-                        }                        
-                        //Message Snippet
-                        newCard.snippet = message.snippet
-                        
-                        //Date
-                        //newCard.receivedDate = NSDate(timeIntervalSince1970: (message.internalDate).doubleValue/1000.0)
-                        for dateHeader in headers where dateHeader.name == "Date"
-                        {
-                            let formatter = NSDateFormatter()
-                            formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
-                            newCard.receivedDate = formatter.dateFromString(dateHeader.value)
-                        }
-                        
-                        //Subject
-                        for subjectHeader in headers where subjectHeader.name == "Subject"
-                        {
-                            newCard.subject = subjectHeader.value
-                        }
-                        
-                        //Unique Identifier
-                        for idHeader in headers where idHeader.name == "Message-ID"
-                        {
-                            newCard.identifier = idHeader.value
-                        }
-                        
-                        //Delivered To
-                        for toHeader in headers where toHeader.name == "Delivered-To"
-                        {
-                            newCard.to = toHeader.value
-                        }
-                        
-                        //Save this Postcard to core data
-                        do {
-                            try newCard.managedObjectContext?.save()
-                            //print("NewCard From:" + (newCard.from?.email)! + "\n")
-                        }
-                        catch {
-                            let saveError = error as NSError
-                            print("\(saveError)")
                         }
                     }
-                    
+                }
+                
+                //Message Snippet
+                newCard.snippet = message.snippet
+                
+                //Date
+                for dateHeader in headers where dateHeader.name == "Date"
+                {
+                    let formatter = NSDateFormatter()
+                    formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
+                    if let receivedDate = formatter.dateFromString(dateHeader.value)
+                    {
+                        newCard.receivedDate = receivedDate.timeIntervalSinceReferenceDate
+                    }
+                }
+                
+                //Subject
+                for subjectHeader in headers where subjectHeader.name == "Subject"
+                {
+                    newCard.subject = subjectHeader.value
+                }
+                
+                //Unique Identifier
+                for idHeader in headers where (idHeader.name == "Message-ID" || idHeader.name == "Message-Id")
+                {
+                    newCard.identifier = idHeader.value
+                }
+                
+                //Delivered To
+                for toHeader in headers where toHeader.name == "Delivered-To"
+                {
+                    newCard.to = toHeader.value
+                }
+                
+                //Attachment?
+                for contentHeader in headers where contentHeader.name == "Content-Type"
+                {
+                    if contentHeader.value.containsString("multipart/mixed")
+                    {
+                        for maybeAttachmentPart in message.payload.parts
+                        {
+                            if let attachmentPart = maybeAttachmentPart as? GTLGmailMessagePart
+                            {
+                                if !attachmentPart.filename.isEmpty
+                                {
+                                    //print("This attachment has a filename: \(attachmentPart.filename)\n")
+                                }
+                                //There's an attachment
+                                newCard.hasPackage = true
+                            }
+                        }
+                    }
+                        
+                    else
+                    {
+                        newCard.hasPackage = false
+                    }
+                }
+                print("NewCard Subject: \(newCard.subject)\nHasAttachment:\(newCard.hasPackage.boolValue)\n")
+                //Save this Postcard to core data
+                do
+                {
+                    try newCard.managedObjectContext?.save()
+                }
+                catch
+                {
+                    let saveError = error as NSError
+                    print("\(saveError)")
                 }
             }
         }
@@ -446,7 +471,6 @@ class MailController: NSObject
     {
         let gmailMessage = GTLGmailMessage()
         gmailMessage.raw = generateMessage(sendToEmail: to, subject: subject, body: body, maybeAttachments: maybeAttachments)
-        
         
         let query = GTLQueryGmail.queryForUsersMessagesSendWithUploadParameters(nil)
         query.message = gmailMessage
@@ -479,7 +503,6 @@ class MailController: NSObject
     func generateMessage(sendToEmail to: String, subject: String, body: String, maybeAttachments: [NSURL]?) -> String
     {
         let messageBuilder = MCOMessageBuilder()
-        //messageBuilder.header.to = [MCOAddress(mailbox: "brandon.wiley@gmail.com")]
         messageBuilder.header.to = [MCOAddress(mailbox: to)]
         messageBuilder.header.subject = subject
         messageBuilder.textBody = body

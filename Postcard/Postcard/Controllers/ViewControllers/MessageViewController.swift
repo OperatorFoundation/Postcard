@@ -13,6 +13,9 @@ class MessageViewController: NSViewController
     @IBOutlet weak var replyButton: NSButton!
     @IBOutlet weak var deleteButton: NSButton!
     @IBOutlet var postcardObjectController: NSObjectController!
+    @IBOutlet var bodyTextView: NSTextView!
+    @IBOutlet weak var attachmentView: DesignableView!
+    @IBOutlet weak var attachmentButton: NSButton!
     
     var managedContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
@@ -21,7 +24,32 @@ class MessageViewController: NSViewController
         super.viewDidLoad()
         
         // Do view setup here.
+        
         styleButtons()
+        
+        //Do we have an attacchment?
+        if let thisPostcard = postcardObjectController.content as? Postcard
+        {
+            attachmentButton.hidden = !(thisPostcard.hasPackage)
+        }
+    }
+    
+    override func viewWillAppear()
+    {
+        super.viewWillAppear()
+        
+        //TODO: Font setting doesn't work currently
+        //Set Default Font
+        if let font = NSFont(name: PostcardUI.regularAFont, size: 14)
+        {
+//            let attributes = [NSFontAttributeName: font]
+//            bodyTextView.typingAttributes = attributes
+            bodyTextView.font = font
+            if let textStorage = bodyTextView.textStorage
+            {
+                textStorage.font = font
+            }
+        }
     }
     
     override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?)

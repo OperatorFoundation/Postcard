@@ -1085,7 +1085,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="none" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="80" viewBased="YES" id="FXQ-fy-7ax">
-                                            <rect key="frame" x="0.0" y="0.0" width="925" height="638"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="925" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" red="0.92549020051956177" green="0.92549020051956177" blue="0.92549020051956177" alpha="1" colorSpace="calibratedRGB"/>
@@ -1253,7 +1253,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="80" viewBased="YES" id="oEu-v1-5Hm">
-                                            <rect key="frame" x="0.0" y="0.0" width="248" height="638"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="248" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <color key="backgroundColor" red="0.92549019610000005" green="0.92549019610000005" blue="0.92549019610000005" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
@@ -1535,61 +1535,118 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </customView>
-                            <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GFe-h9-TQS">
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="vCR-56-T6E" userLabel="Attachment View" customClass="DesignableView" customModule="Postcard" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="677" height="554"/>
-                                <clipView key="contentView" id="BrQ-Fg-jIJ">
-                                    <rect key="frame" x="1" y="1" width="660" height="552"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <textView focusRingType="none" editable="NO" importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="qz1-Hw-UIC">
-                                            <rect key="frame" x="0.0" y="0.0" width="660" height="552"/>
+                                <subviews>
+                                    <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GFe-h9-TQS">
+                                        <rect key="frame" x="2" y="160" width="673" height="393"/>
+                                        <clipView key="contentView" copiesOnScroll="NO" id="BrQ-Fg-jIJ">
+                                            <rect key="frame" x="0.0" y="0.0" width="673" height="393"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                            <color key="textColor" red="0.1764705882" green="0.20784313730000001" blue="0.2274509804" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <size key="minSize" width="660" height="552"/>
-                                            <size key="maxSize" width="677" height="10000000"/>
-                                            <attributedString key="textStorage">
-                                                <fragment>
-                                                    <string key="content">I was wondering if you could come pick me up tomorrow. I've been looking around but can't get another ride through time and space.</string>
-                                                    <attributes>
-                                                        <color key="NSColor" red="0.1764705882" green="0.20784313730000001" blue="0.2274509804" alpha="1" colorSpace="calibratedRGB"/>
-                                                        <font key="NSFont" size="14" name="ProximaNovaA-Regular"/>
-                                                        <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" paragraphSpacing="1" paragraphSpacingBefore="1" firstLineHeadIndent="4" headIndent="4" tighteningFactorForTruncation="0.0"/>
-                                                    </attributes>
-                                                </fragment>
-                                            </attributedString>
-                                            <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                            <size key="minSize" width="660" height="552"/>
-                                            <size key="maxSize" width="677" height="10000000"/>
-                                            <connections>
-                                                <binding destination="pmd-tL-J5K" name="attributedString" keyPath="selection.body" id="2s7-EN-Pd4"/>
-                                            </connections>
-                                        </textView>
-                                    </subviews>
-                                    <color key="backgroundColor" red="0.98823529409999999" green="0.96470588239999999" blue="0.94901960780000005" alpha="1" colorSpace="calibratedRGB"/>
-                                </clipView>
-                                <edgeInsets key="contentInsets" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
-                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="MB6-X9-xWI">
-                                    <rect key="frame" x="-100" y="-100" width="87" height="18"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </scroller>
-                                <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="dSL-NL-xtE">
-                                    <rect key="frame" x="661" y="1" width="15" height="552"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </scroller>
-                            </scrollView>
+                                            <subviews>
+                                                <textView focusRingType="none" editable="NO" importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="qz1-Hw-UIC">
+                                                    <rect key="frame" x="0.0" y="0.0" width="682" height="393"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <color key="textColor" red="0.1764705882" green="0.20784313730000001" blue="0.2274509804" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <size key="minSize" width="673" height="393"/>
+                                                    <size key="maxSize" width="682" height="10000000"/>
+                                                    <attributedString key="textStorage">
+                                                        <fragment>
+                                                            <string key="content">I was wondering if you could come pick me up tomorrow. I've been looking around but can't get another ride through time and space.</string>
+                                                            <attributes>
+                                                                <color key="NSColor" red="0.1764705882" green="0.20784313730000001" blue="0.2274509804" alpha="1" colorSpace="calibratedRGB"/>
+                                                                <font key="NSFont" size="14" name="ProximaNovaA-Regular"/>
+                                                                <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" paragraphSpacing="1" paragraphSpacingBefore="1" firstLineHeadIndent="4" headIndent="4" tighteningFactorForTruncation="0.0"/>
+                                                            </attributes>
+                                                        </fragment>
+                                                    </attributedString>
+                                                    <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <size key="minSize" width="673" height="393"/>
+                                                    <size key="maxSize" width="682" height="10000000"/>
+                                                    <connections>
+                                                        <binding destination="pmd-tL-J5K" name="attributedString" keyPath="selection.body" id="9bC-Z8-HfK">
+                                                            <dictionary key="options">
+                                                                <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                                                <bool key="NSConditionallySetsEditable" value="NO"/>
+                                                                <string key="NSNoSelectionPlaceholder">No Message Selected</string>
+                                                                <string key="NSNullPlaceholder">No Message Text Available</string>
+                                                            </dictionary>
+                                                        </binding>
+                                                    </connections>
+                                                </textView>
+                                            </subviews>
+                                            <color key="backgroundColor" red="0.98823529409999999" green="0.96470588239999999" blue="0.94901960780000005" alpha="1" colorSpace="calibratedRGB"/>
+                                        </clipView>
+                                        <edgeInsets key="contentInsets" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
+                                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="MB6-X9-xWI">
+                                            <rect key="frame" x="-100" y="-100" width="87" height="18"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </scroller>
+                                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="dSL-NL-xtE">
+                                            <rect key="frame" x="-100" y="-100" width="15" height="393"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </scroller>
+                                    </scrollView>
+                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZsQ-cs-6Ri">
+                                        <rect key="frame" x="20" y="20" width="132" height="132"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="132" id="Igy-ut-cpB"/>
+                                            <constraint firstAttribute="height" constant="132" id="OEh-TB-D2F"/>
+                                        </constraints>
+                                        <buttonCell key="cell" type="bevel" title="Download Attachment" bezelStyle="rounded" image="attachicon" imagePosition="overlaps" alignment="center" imageScaling="proportionallyDown" inset="2" id="UfB-r3-qi8">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" size="11" name="ProximaNova-Bold"/>
+                                        </buttonCell>
+                                    </button>
+                                    <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="pjA-Hc-31F">
+                                        <rect key="frame" x="0.0" y="84" width="677" height="5"/>
+                                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <font key="titleFont" metaFont="system"/>
+                                    </box>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="ZsQ-cs-6Ri" secondAttribute="bottom" constant="20" id="2rg-dC-Lta"/>
+                                    <constraint firstItem="pjA-Hc-31F" firstAttribute="leading" secondItem="vCR-56-T6E" secondAttribute="leading" id="7zQ-dH-qh8"/>
+                                    <constraint firstItem="GFe-h9-TQS" firstAttribute="width" secondItem="vCR-56-T6E" secondAttribute="width" constant="-4" id="BOe-9i-Koo"/>
+                                    <constraint firstItem="ZsQ-cs-6Ri" firstAttribute="leading" secondItem="vCR-56-T6E" secondAttribute="leading" constant="20" id="Ncw-0X-gLj"/>
+                                    <constraint firstItem="pjA-Hc-31F" firstAttribute="centerY" secondItem="ZsQ-cs-6Ri" secondAttribute="centerY" id="Rvl-b4-hfk"/>
+                                    <constraint firstAttribute="trailing" secondItem="pjA-Hc-31F" secondAttribute="trailing" id="b4a-X6-Hiq"/>
+                                    <constraint firstItem="ZsQ-cs-6Ri" firstAttribute="top" secondItem="GFe-h9-TQS" secondAttribute="bottom" constant="8" id="bCi-4u-hTB"/>
+                                    <constraint firstItem="GFe-h9-TQS" firstAttribute="centerX" secondItem="vCR-56-T6E" secondAttribute="centerX" id="e4k-D7-QXq"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="viewColor">
+                                        <color key="value" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRounding">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                        <real key="value" value="0.5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                        <color key="value" red="0.47843137250000001" green="0.48627450979999998" blue="0.49019607840000001" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </customView>
                         </subviews>
                         <constraints>
                             <constraint firstItem="bTf-Ih-gdx" firstAttribute="leading" secondItem="MkB-XQ-WuK" secondAttribute="leading" id="1Ry-0n-SfY"/>
-                            <constraint firstItem="GFe-h9-TQS" firstAttribute="leading" secondItem="MkB-XQ-WuK" secondAttribute="leading" id="NlO-8w-n0I"/>
+                            <constraint firstItem="vCR-56-T6E" firstAttribute="leading" secondItem="MkB-XQ-WuK" secondAttribute="leading" id="2Tx-5Z-nvQ"/>
+                            <constraint firstItem="vCR-56-T6E" firstAttribute="top" secondItem="bTf-Ih-gdx" secondAttribute="bottom" id="IpX-S3-GKG"/>
+                            <constraint firstAttribute="bottom" secondItem="vCR-56-T6E" secondAttribute="bottom" id="NYk-hK-U8t"/>
+                            <constraint firstItem="GFe-h9-TQS" firstAttribute="top" secondItem="bTf-Ih-gdx" secondAttribute="bottom" constant="1" id="UXo-M2-pC3"/>
+                            <constraint firstAttribute="trailing" secondItem="vCR-56-T6E" secondAttribute="trailing" id="ZCu-W9-skf"/>
                             <constraint firstItem="bTf-Ih-gdx" firstAttribute="top" secondItem="MkB-XQ-WuK" secondAttribute="top" id="o6Z-wN-FRd"/>
-                            <constraint firstAttribute="trailing" secondItem="GFe-h9-TQS" secondAttribute="trailing" id="pfb-8n-Hoh"/>
                             <constraint firstAttribute="trailing" secondItem="bTf-Ih-gdx" secondAttribute="trailing" id="t1s-d0-rFy"/>
-                            <constraint firstAttribute="bottom" secondItem="GFe-h9-TQS" secondAttribute="bottom" id="uPH-h8-8F2"/>
-                            <constraint firstItem="GFe-h9-TQS" firstAttribute="top" secondItem="bTf-Ih-gdx" secondAttribute="bottom" id="wZR-gB-8hk"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="attachmentButton" destination="ZsQ-cs-6Ri" id="H27-AX-zD4"/>
+                        <outlet property="attachmentView" destination="vCR-56-T6E" id="HxS-VB-RPe"/>
+                        <outlet property="bodyTextView" destination="qz1-Hw-UIC" id="dXs-R9-ZKe"/>
                         <outlet property="deleteButton" destination="5f0-dr-wCr" id="ytx-IZ-c2L"/>
                         <outlet property="postcardObjectController" destination="pmd-tL-J5K" id="Vt4-KS-UnN"/>
                         <outlet property="replyButton" destination="6sF-P3-REH" id="9fm-YG-07f"/>
@@ -1744,6 +1801,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="attachicon" width="130" height="130"/>
         <image name="blueButton" width="77" height="24"/>
         <image name="btn_google_signin_light_normal_web-1" width="191" height="46"/>
         <image name="composeTop" width="635" height="18"/>
@@ -1765,6 +1823,6 @@
         <image name="welcomeBG" width="535" height="320"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Ouy-3e-cTq"/>
+        <segue reference="pkb-71-Y9W"/>
     </inferredMetricsTieBreakers>
 </document>
