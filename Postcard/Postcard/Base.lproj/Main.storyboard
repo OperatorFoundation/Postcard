@@ -921,11 +921,11 @@
                             <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZqX-NR-IcW">
                                 <rect key="frame" x="0.0" y="41" width="635" height="360"/>
                                 <clipView key="contentView" id="yWJ-5o-YoQ">
-                                    <rect key="frame" x="0.0" y="0.0" width="620" height="360"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="635" height="360"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textView importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" linkDetection="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="fTO-Yo-Dj2">
-                                            <rect key="frame" x="0.0" y="0.0" width="620" height="360"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="635" height="360"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <size key="minSize" width="620" height="360"/>
@@ -968,7 +968,7 @@
                                 </constraints>
                                 <buttonCell key="cell" type="bevel" title="ATTACHMENT" bezelStyle="rounded" image="redButtonLarge" imagePosition="overlaps" alignment="center" imageScaling="proportionallyDown" inset="2" id="Zho-5J-P4h">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" size="13" name="FuturaT-Bold"/>
+                                    <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
                                     <action selector="attachClick:" target="NgT-Wc-b8b" id="163-5b-Z6Z"/>
@@ -982,7 +982,7 @@
                                 </constraints>
                                 <buttonCell key="cell" type="bevel" title="SEND" bezelStyle="rounded" image="redButton" imagePosition="overlaps" alignment="center" imageScaling="proportionallyDown" inset="2" id="QeF-29-MlR">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" size="13" name="FuturaT-Bold"/>
+                                    <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
                                     <action selector="sendClick:" target="NgT-Wc-b8b" id="xLz-Ox-t5C"/>
@@ -1155,7 +1155,7 @@
                                                                             </constraints>
                                                                             <buttonCell key="cell" type="bevel" title="ADD" bezelStyle="rounded" image="blueButton" imagePosition="overlaps" alignment="center" inset="2" id="nRn-Ha-car">
                                                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                                                <font key="font" size="13" name="FuturaT-Bold"/>
+                                                                                <font key="font" metaFont="system"/>
                                                                             </buttonCell>
                                                                         </button>
                                                                     </subviews>
@@ -1289,13 +1289,24 @@
                                                                         <binding destination="75a-Fl-exd" name="value" keyPath="objectValue.from.email" id="jZV-l3-CmX"/>
                                                                     </connections>
                                                                 </textField>
-                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Vmj-U1-XWP">
+                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pdf-bU-9BY" userLabel="locked Image View">
+                                                                    <rect key="frame" x="3" y="37" width="40" height="40"/>
+                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="encryptedicon" id="CN6-l5-8wn"/>
+                                                                </imageView>
+                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Vmj-U1-XWP" userLabel="Penpal Image View">
                                                                     <rect key="frame" x="3" y="37" width="40" height="40"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="40" id="a28-Fj-Qdx"/>
                                                                         <constraint firstAttribute="width" constant="40" id="qaZ-ap-T3G"/>
                                                                     </constraints>
-                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="defaultUserv3" id="14z-Zq-uI7"/>
+                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="defaultUserv2" id="14z-Zq-uI7"/>
+                                                                    <connections>
+                                                                        <binding destination="75a-Fl-exd" name="hidden" keyPath="objectValue.decrypted" id="wWC-uO-QG2">
+                                                                            <dictionary key="options">
+                                                                                <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                                                            </dictionary>
+                                                                        </binding>
+                                                                    </connections>
                                                                 </imageView>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kfh-Q7-hYv">
                                                                     <rect key="frame" x="178" y="55" width="64" height="19"/>
@@ -1344,15 +1355,19 @@
                                                                 <constraint firstAttribute="trailing" secondItem="kfh-Q7-hYv" secondAttribute="trailing" constant="8" id="4Lg-DR-3Rm"/>
                                                                 <constraint firstItem="Vmj-U1-XWP" firstAttribute="leading" secondItem="75a-Fl-exd" secondAttribute="leading" constant="3" id="ACc-JT-Z0S"/>
                                                                 <constraint firstItem="LQa-E6-Vuq" firstAttribute="leading" secondItem="Vmj-U1-XWP" secondAttribute="trailing" constant="8" id="G5Z-JV-2Ae"/>
+                                                                <constraint firstItem="pdf-bU-9BY" firstAttribute="centerY" secondItem="Vmj-U1-XWP" secondAttribute="centerY" id="OYA-cb-O8Q"/>
                                                                 <constraint firstItem="kfh-Q7-hYv" firstAttribute="top" secondItem="75a-Fl-exd" secondAttribute="top" constant="6" id="PZe-Dr-lZP"/>
+                                                                <constraint firstItem="pdf-bU-9BY" firstAttribute="width" secondItem="Vmj-U1-XWP" secondAttribute="width" id="PyO-lz-wvk"/>
                                                                 <constraint firstItem="kfh-Q7-hYv" firstAttribute="leading" secondItem="LQa-E6-Vuq" secondAttribute="trailing" constant="3" id="R5g-kq-HBQ"/>
                                                                 <constraint firstItem="Vmj-U1-XWP" firstAttribute="top" secondItem="75a-Fl-exd" secondAttribute="top" constant="3" id="R9W-cV-cov"/>
                                                                 <constraint firstAttribute="trailing" secondItem="AaP-ka-inf" secondAttribute="trailing" constant="3" id="SkA-Lj-zkG"/>
                                                                 <constraint firstItem="4uM-R6-uGz" firstAttribute="top" secondItem="kfh-Q7-hYv" secondAttribute="bottom" id="SqW-nh-9Rf"/>
                                                                 <constraint firstItem="AaP-ka-inf" firstAttribute="top" secondItem="4uM-R6-uGz" secondAttribute="bottom" constant="1" id="T5l-5r-eRo"/>
                                                                 <constraint firstItem="AaP-ka-inf" firstAttribute="leading" secondItem="75a-Fl-exd" secondAttribute="leading" constant="3" id="YLV-h0-Xcc"/>
+                                                                <constraint firstItem="pdf-bU-9BY" firstAttribute="centerX" secondItem="Vmj-U1-XWP" secondAttribute="centerX" id="fP8-3r-nLJ"/>
                                                                 <constraint firstItem="4uM-R6-uGz" firstAttribute="leading" secondItem="Vmj-U1-XWP" secondAttribute="trailing" constant="8" id="jtY-Ua-JKn"/>
                                                                 <constraint firstItem="LQa-E6-Vuq" firstAttribute="top" secondItem="75a-Fl-exd" secondAttribute="top" constant="3" id="rlU-5I-pT3"/>
+                                                                <constraint firstItem="pdf-bU-9BY" firstAttribute="height" secondItem="Vmj-U1-XWP" secondAttribute="height" id="vIg-mO-7va"/>
                                                             </constraints>
                                                         </tableCellView>
                                                     </prototypeCellViews>
@@ -1363,6 +1378,7 @@
                                             </tableColumns>
                                             <connections>
                                                 <action selector="rowSelected:" target="474-wC-NF5" id="U08-7m-Kq9"/>
+                                                <outlet property="delegate" destination="474-wC-NF5" id="Oey-VW-IRX"/>
                                             </connections>
                                         </tableView>
                                     </subviews>
@@ -1436,7 +1452,7 @@
                                         </constraints>
                                         <buttonCell key="cell" type="bevel" title="REPLY" bezelStyle="regularSquare" image="redButton" imagePosition="overlaps" alignment="center" imageScaling="proportionallyDown" inset="2" id="xaH-wQ-gG5">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" size="13" name="FuturaT-Bold"/>
+                                            <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
                                             <segue destination="NgT-Wc-b8b" kind="modal" identifier="Reply To Message" id="pkb-71-Y9W"/>
@@ -1496,7 +1512,7 @@
                                         </constraints>
                                         <buttonCell key="cell" type="bevel" title="DELETE" bezelStyle="rounded" image="orangeButton" imagePosition="overlaps" alignment="center" imageScaling="proportionallyDown" inset="2" id="rOj-aE-0OK">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" size="13" name="FuturaT-Bold"/>
+                                            <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
                                             <action selector="remove:" target="pmd-tL-J5K" id="It4-qe-17t"/>
@@ -1718,7 +1734,7 @@
                                         <rect key="frame" x="5" y="604" width="126" height="24"/>
                                         <buttonCell key="cell" type="bevel" title="COMPOSE" bezelStyle="regularSquare" image="redButtonLarge" imagePosition="overlaps" alignment="center" inset="2" id="yHo-lj-eWW">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" size="14" name="FuturaT-Bold"/>
+                                            <font key="font" metaFont="system" size="14"/>
                                         </buttonCell>
                                         <connections>
                                             <action selector="composeClick:" target="shR-rX-Fv3" id="iDl-oW-Y3o"/>
@@ -1806,7 +1822,9 @@
         <image name="btn_google_signin_light_normal_web-1" width="191" height="46"/>
         <image name="composeTop" width="635" height="18"/>
         <image name="defaultUser" width="57" height="57"/>
+        <image name="defaultUserv2" width="57" height="57"/>
         <image name="defaultUserv3" width="57" height="57"/>
+        <image name="encryptedicon" width="32" height="32"/>
         <image name="exit" width="28" height="28"/>
         <image name="exitWhite" width="28" height="28"/>
         <image name="inbox" width="28" height="28"/>

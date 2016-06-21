@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class MessageListViewController: NSViewController
+class MessageListViewController: NSViewController, NSTableViewDelegate
 {
     @IBOutlet var postcardsArrayController: NSArrayController!
     var managedContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
@@ -21,9 +21,20 @@ class MessageListViewController: NSViewController
     
     @IBAction func rowSelected(sender: NSTableView)
     {
-        
-        if let selectedPostcard = postcardsArrayController.selectedObjects[0] as? NSManagedObject
+        if let selectedPostcard = postcardsArrayController.selectedObjects[0] as? Postcard
         {
+            selectedPostcard.decrypted = true
+            //Save this Postcard to core data
+            do
+            {
+                try selectedPostcard.managedObjectContext?.save()
+            }
+            catch
+            {
+                let saveError = error as NSError
+                print("\(saveError)")
+            }
+            
             let splitVC = parentViewController as! NSSplitViewController
             if let messageVC: MessageViewController = splitVC.childViewControllers[1] as? MessageViewController
             {
@@ -32,7 +43,6 @@ class MessageListViewController: NSViewController
         }
     }
 
-    
 }
 
 
@@ -56,4 +66,6 @@ class MessagesTableCell: NSTableCellView
             NSRectFill(dirtyRect)
         }
     }
+    
+    
 }

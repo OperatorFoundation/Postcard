@@ -37,9 +37,12 @@ struct GmailProps
 
 struct PostCardProps
 {
-    static let from = "postcard@postcard.com"
     static let subject = "You've Received a Postcard"
     static let body = "If you don't know how to read your Postcards yet, you can get more information at http://operatorfoundation.org."
+    
+    static let postcardMimeType = "application/postcard-encrypted"
+    static let packageMimeType = "application/postcard-package-encrypted"
+    static let keyMimeType = "application/postcard-key"
     
     static var penPalEmailSet = Set<String>()
 }

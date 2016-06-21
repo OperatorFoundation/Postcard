@@ -9,6 +9,7 @@
 import Cocoa
 import GoogleAPIClient
 import CoreData
+import Sodium
 
 class MailController: NSObject
 {
@@ -30,7 +31,7 @@ class MailController: NSObject
     {
         //TESTING ONLY
         //makeMeSomeFriends()
-        
+        //sendKey()
         
         //First get all penpal emails from core data so that we can compare them to new invites
         PenPalController().getPenPalEmails
@@ -93,20 +94,11 @@ class MailController: NSObject
                         }
                         
                         //Check to see if we have this sender as a Penpal
-                        //TODO: This needs to be checking against penpal keys in coredata!
-                        if !sender.isEmpty && PostCardProps.penPalEmailSet.contains(sender)
+                        if !sender.isEmpty
                         {
-                            print("We are already friends with \(sender) we can decrypt this postcard!")
-                            self.processPostcard(message)
-                            
-                            //Looking for Postcard Specific Attachments
-                            for thisPart in parts where thisPart.mimeType == "application/postcard-encrypted"
+                            //This is a postcard message/attachment
+                            for thisPart in parts where thisPart.mimeType == PostCardProps.postcardMimeType
                             {
-                                //This is a postcard attachment
-                                
-                                //TODO: Right now we will process the main message
-                                //The message SHOULD actually be in the encrypted attachment
-                                
                                 //Download the attachment
                                 let attachmentQuery = GTLQueryGmail.queryForUsersMessagesAttachmentsGet()
                                 attachmentQuery.identifier = thisPart.body.attachmentId
@@ -114,8 +106,33 @@ class MailController: NSObject
                                 GmailProps.service.executeQuery(attachmentQuery, completionHandler: {(ticket, maybeAttachment, error) in
                                     if let attachment = maybeAttachment as? GTLGmailMessagePartBody
                                     {
-                                        //self.processPostcard(attachment, forMessage: message)
-                                        //self.processPostcard(message)
+                                        //We already have this Penpal and their key
+                                        if let thisPenPal = self.fetchPenPal(sender), let penPalKey = thisPenPal.key
+                                        {
+                                            print("We are already friends with \(sender) and we have their KEY we can decrypt this postcard!")
+                                            //Decode - GTLBase64
+                                            if let postcardData = GTLDecodeBase64(attachment.data)
+                                            {
+                                                //Decrypt - Sodium
+                                                if let sodium = Sodium(), let secretKey = KeyController().myPrivateKey
+                                                {
+                                                    if let decryptedPostcard = sodium.box.open(postcardData, senderPublicKey: penPalKey, recipientSecretKey: secretKey)
+                                                    {
+                                                        print(decryptedPostcard)
+                                                    }
+                                                    else
+                                                    {
+                                                        print("We could not decrypt this postcard!! We may not have the correct key for \(sender)\n")
+                                                    }
+                                                    
+                                                }
+                                            }
+                                        }
+
+                                        //Save to CoreData
+                                        
+                                        //Display
+
                                     }
                                 })
                             }
@@ -124,6 +141,30 @@ class MailController: NSObject
                 }
             })
         }
+    }
+    
+    func fetchPenPal(emailAddress: String) -> PenPal?
+    {
+        let fetchRequest = NSFetchRequest(entityName: "PenPal")
+        fetchRequest.predicate = NSPredicate(format: "email == %@", emailAddress)
+        do
+        {
+            let result = try self.managedObjectContext?.executeFetchRequest(fetchRequest)
+            if result?.count > 0, let thisPenpal = result?[0] as? PenPal
+            {
+                return thisPenpal
+            }
+        }
+        catch
+        {
+            //Could not fetch this Penpal from core data
+            let fetchError = error as NSError
+            print(fetchError)
+            
+            return nil
+        }
+        
+        return nil
     }
     
     //MARK: Process Different Message Types
@@ -141,31 +182,37 @@ class MailController: NSObject
                     let sender = header.value
                     
                     //Check if we have this email address saved as a penpal
-                    //Ignore message andprint error, we already have this key
-                    if PostCardProps.penPalEmailSet.contains(sender)
+                    if let thisPenPal = self.fetchPenPal(sender)
                     {
                         print("We are already friends with \(sender)!")
-                        return
+                        if thisPenPal.key != nil
+                        {
+                            //We have a key for this PenPal
+                            return
+                        }
                     }
                     
                     //If not check for a key and create a new PenPal
-                    if let data = NSData(base64EncodedString: attachment.data, options: []) where sender != ""
+                    let attachmentData = attachment.data
+                    let decodedAttachment = GTLDecodeBase64(attachmentData)
+                    if sender != ""
                     {
                         //Create New PenPal Record
-                        
                         if let entity = NSEntityDescription.entityForName("PenPal", inManagedObjectContext: self.managedObjectContext!)
                         {
                             let newPal = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
                             newPal.email = sender
-                            newPal.key = data
+                            newPal.key = decodedAttachment
                             newPal.addedDate = NSDate().timeIntervalSinceReferenceDate
                             
                             //Save this PenPal to core data
-                            do {
+                            do
+                            {
                                 try newPal.managedObjectContext?.save()
                                 print("NewPal Saved.\n")
                             }
-                            catch {
+                            catch
+                            {
                                 let saveError = error as NSError
                                 print("\(saveError), \(saveError.userInfo)")
                                 self.showAlert("Warning: We could not save this contact.")
@@ -282,8 +329,6 @@ class MailController: NSObject
                     print("\(saveError)")
                 }
             }
-
-            
             
             let newPal2 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
             newPal2.email = "corie@operatorFoundation.org"
@@ -307,7 +352,6 @@ class MailController: NSObject
             let newPal3 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
             newPal3.email = "jess@gmail.com"
             newPal3.name = "Jess Hill"
-            
             
             if !PostCardProps.penPalEmailSet.contains(newPal3.email!)
             {
@@ -427,6 +471,9 @@ class MailController: NSObject
                     newCard.to = toHeader.value
                 }
                 
+                //Decrypted
+                newCard.decrypted = false
+                
                 //Attachment?
                 for contentHeader in headers where contentHeader.name == "Content-Type"
                 {
@@ -469,17 +516,21 @@ class MailController: NSObject
     //MARK: DEV ONLY (move this to a window controller)
     func sendEmail(to: String, subject: String, body: String, maybeAttachments:[NSURL]?)
     {
-        let gmailMessage = GTLGmailMessage()
-        gmailMessage.raw = generateMessage(sendToEmail: to, subject: subject, body: body, maybeAttachments: maybeAttachments)
         
-        let query = GTLQueryGmail.queryForUsersMessagesSendWithUploadParameters(nil)
-        query.message = gmailMessage
-        
-        GmailProps.service.executeQuery(query, completionHandler: {(ticket, response, error) in
-            print("send email ticket: \(ticket)\n")
-            print("send email response: \(response)\n")
-            print("send email error: \(error)\n")
-        })
+        if let rawMessage = generateMessage(sendToEmail: to, subject: subject, body: body, maybeAttachments: maybeAttachments)
+        {
+            let gmailMessage = GTLGmailMessage()
+            gmailMessage.raw = rawMessage
+            
+            let query = GTLQueryGmail.queryForUsersMessagesSendWithUploadParameters(nil)
+            query.message = gmailMessage
+            
+            GmailProps.service.executeQuery(query, completionHandler: {(ticket, response, error) in
+                print("send email ticket: \(ticket)\n")
+                print("send email response: \(response)\n")
+                print("send email error: \(error)\n")
+            })
+        }
     }
     
     func sendKey()
@@ -498,80 +549,159 @@ class MailController: NSObject
     }
     
     //MARK: Create the message
+//    func generateMessagePackage(maybeAttachments: [NSURL]?) -> NSData
+//    {
+//        if let attachmentURLs = maybeAttachments where !attachmentURLs.isEmpty
+//        {
+//            for attachmentURL in attachmentURLs
+//            {
+//                if let fileData = NSData(contentsOfURL: attachmentURL)
+//                {
+//                    if let urlString: String = attachmentURL.path
+//                    {
+//                        let urlParts = urlString.componentsSeparatedByString(".")
+//                        let pathParts = urlParts.first?.componentsSeparatedByString("/")
+//                        let fileName = pathParts?.last ?? ""
+//                        let fileExtension = attachmentURL.pathExtension
+//                        
+//                        var mimeType = ""
+//                        if fileExtension == "jpg"
+//                        {
+//                            mimeType = "image/jpeg"
+//                        }
+//                        else if fileExtension == "png"
+//                        {
+//                            mimeType = "image/png"
+//                        }
+//                        else if fileExtension == "doc"
+//                        {
+//                            mimeType = "application/msword"
+//                        }
+//                        else if fileExtension == "ppt"
+//                        {
+//                            mimeType = "application/vnd.ms-powerpoint"
+//                        }
+//                        else if fileExtension == "html"
+//                        {
+//                            mimeType = "text/html"
+//                        }
+//                        else if fileExtension == "pdf"
+//                        {
+//                            mimeType = "application/pdf"
+//                        }
+//                        
+//                        if !mimeType.isEmpty
+//                        {
+//                            if let attachment = MCOAttachment(data: fileData, filename: fileName)
+//                            {
+//                                attachment.mimeType = mimeType
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
+    func generateMessage(sendToEmail to: String, subject: String, body: String, maybeAttachments: [NSURL]?) -> String?
+    {
+        //This is the actual User's Message
+        if let messageData = generateMessagePostcard(sendToEmail: to, subject: subject, body: body)
+        {
+            //TODO: This will call generateMessagePackage for user's attachments
+            let packageData:NSData? = nil
+            
+            //This is the postcard wrapper email
+            let mimeMessageString = generateMessageMime(sendToEmail: to, subject: PostCardProps.subject, body: PostCardProps.body, messageData: messageData, maybePackage: packageData)
+            
+            return mimeMessageString
+        }
+        else
+        {
+            return nil
+        }
+    }
     
     //Main Wrapper Message This is what the user will see in any email client
-    func generateMessage(sendToEmail to: String, subject: String, body: String, maybeAttachments: [NSURL]?) -> String
+    func generateMessageMime(sendToEmail to: String, subject: String, body: String, messageData: NSData, maybePackage: NSData?) -> String
     {
         let messageBuilder = MCOMessageBuilder()
         messageBuilder.header.to = [MCOAddress(mailbox: to)]
         messageBuilder.header.subject = subject
         messageBuilder.textBody = body
         
-        if let attachmentURLs = maybeAttachments where !attachmentURLs.isEmpty
+        let messageAttachment = MCOAttachment(data: messageData, filename: "Postcard")
+        messageAttachment.mimeType = PostCardProps.postcardMimeType
+        messageBuilder.addAttachment(messageAttachment)
+        
+        if let packageData = maybePackage, let packageAttachment = MCOAttachment(data: packageData, filename: "Postcard")
         {
-            for attachmentURL in attachmentURLs
-            {
-                if let fileData = NSData(contentsOfURL: attachmentURL)
-                {
-                    if let urlString: String = attachmentURL.path
-                    {
-                        let urlParts = urlString.componentsSeparatedByString(".")
-                        let pathParts = urlParts.first?.componentsSeparatedByString("/")
-                        let fileName = pathParts?.last ?? ""
-                        let fileExtension = attachmentURL.pathExtension
-                        
-                        var mimeType = ""
-                        if fileExtension == "jpg"
-                        {
-                            mimeType = "image/jpeg"
-                        }
-                        else if fileExtension == "png"
-                        {
-                            mimeType = "image/png"
-                        }
-                        else if fileExtension == "doc"
-                        {
-                            mimeType = "application/msword"
-                        }
-                        else if fileExtension == "ppt"
-                        {
-                            mimeType = "application/vnd.ms-powerpoint"
-                        }
-                        else if fileExtension == "html"
-                        {
-                            mimeType = "text/html"
-                        }
-                        else if fileExtension == "pdf"
-                        {
-                            mimeType = "application/pdf"
-                        }
-                        
-                        if !mimeType.isEmpty
-                        {
-                            if let attachment = MCOAttachment(data: fileData, filename: fileName)
-                            {
-                                attachment.mimeType = mimeType
-                                messageBuilder.addAttachment(attachment)
-                            }
-                        }
-                    }
-                    
-                    //self.attachments.append(fileData)
-                }
-            }
+            packageAttachment.mimeType = PostCardProps.packageMimeType
+            messageBuilder.addAttachment(packageAttachment)
         }
-        
-//        //Generate the main Postcard Attachment.
-//        if let postcardWrapperAttachment = MCOAttachment(data: generatePostcardAttachment(), filename: "Postcard")
-//        {
-//            postcardWrapperAttachment.mimeType = "application/postcard-encrypted"
-//            messageBuilder.addAttachment(postcardWrapperAttachment)
-//        }
-        
+
         return GTLEncodeWebSafeBase64(messageBuilder.data())
     }
     
-    //This is the actual Postcard Message.
+    func generateMessagePostcard(sendToEmail to: String, subject: String, body: String) -> NSData?
+    {
+        let fetchRequest = NSFetchRequest(entityName: "PenPal")
+        fetchRequest.predicate = NSPredicate(format: "email == %@", to)
+        do
+        {
+            let result = try self.managedObjectContext?.executeFetchRequest(fetchRequest)
+            if result?.count > 0, let thisPenpal = result?[0] as? PenPal
+            {
+                if let penPalKey = thisPenpal.key
+                {
+                    let messageBuilder = MCOMessageBuilder()
+                    messageBuilder.header.to = [MCOAddress(mailbox: to)]
+                    messageBuilder.header.subject = subject
+                    messageBuilder.textBody = body
+                    
+                    let keyAttachment = MCOAttachment(data: KeyController().mySharedKey, filename: "postcard.key")
+                    messageBuilder.addAttachment(keyAttachment)
+                    
+                    if let sodium = Sodium(), let secretKey = KeyController().myPrivateKey
+                    {
+                        
+                        if let encryptedMessageData: NSData = sodium.box.seal(messageBuilder.data(), recipientPublicKey:penPalKey, senderSecretKey: secretKey)
+                        {
+                            return encryptedMessageData
+                        }
+                        else
+                        {
+                            print("We could not encrypt this message.")
+                        }
+                    }
+                    else
+                    {
+                        print("Couldn't send a Postcard because either sodium blew up, or we couldn't find your secret key DX")
+                    }
+                }
+                else
+                {
+                    showAlert("You cannot send a Postcard to \(to) becuase you do not have their key! :(")
+                    print("You cannot send a message to \(to) becuase you do not have their key! :(\n")
+                }
+            }
+            else
+            {
+                showAlert("You cannot send a postcard to this person, they are not in your contacts yet.")
+                print("This email is not in the PenPals group, could not generate a message to: \(to)")
+            }
+        }
+        catch
+        {
+            //Could not fetch this Penpal from core data
+            let fetchError = error as NSError
+            showAlert("Sorry we could not send your Postcard, something blew up!")
+            print(fetchError)
+        }
+        
+        return nil
+    }
+    
     func generatePostcardAttachment() -> NSData
     {
         let textBody = "If you can read this, you have my key."
@@ -592,19 +722,16 @@ class MailController: NSObject
         //Generate the main Postcard Attachment.
         if let postcardWrapperAttachment = MCOAttachment(data: generateKeyAttachment(), filename: "Postcard")
         {
-            postcardWrapperAttachment.mimeType = "application/postcard-key"
+            postcardWrapperAttachment.mimeType = PostCardProps.keyMimeType
             messageBuilder.addAttachment(postcardWrapperAttachment)
         }
         
         return GTLEncodeWebSafeBase64(messageBuilder.data())
     }
     
-    func generateKeyAttachment() -> NSData
+    func generateKeyAttachment() -> NSData?
     {
-        //Get Public Key from User Defaults
-        
-        //TO DO: encrypt encoded data with sodium
-        return "My Key".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
+        return KeyController().mySharedKey
     }
     
     //MARK: Helper Methods
