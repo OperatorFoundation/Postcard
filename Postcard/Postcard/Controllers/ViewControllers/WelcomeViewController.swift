@@ -14,6 +14,7 @@ class WelcomeViewController: NSViewController
 {
     @IBOutlet weak var descriptionLabel: NSTextField!
     @IBOutlet weak var descriptionView: NSView!
+    @IBOutlet weak var googleLoginButton: NSButton!
 
     override func viewDidLoad()
     {
@@ -21,7 +22,8 @@ class WelcomeViewController: NSViewController
         
         //The description label should be at the same angle as the Big "Postcard"
         descriptionView.rotateByAngle(11.0)
-        //let rotation: CGAffineTransform = CGAffineTransformMakeRotation(M_PI/4)
+        
+        
     }
     
     func isAuthorized() -> Bool
@@ -60,7 +62,6 @@ class WelcomeViewController: NSViewController
         }
         else
         {
-            
             return false
         }
     }
@@ -68,25 +69,28 @@ class WelcomeViewController: NSViewController
     func fetchGoodies()
     {
         //DEV ONLY
-        //MailController().sendEmail()
-        //MailController().sendKey()
         let mailController = MailController()
         mailController.fetchGmailMessagesList()
-        //mailController.sendKey()
         PenPalController().getGoogleContacts()
     }
     
-    override func viewWillAppear()
+    override func viewDidAppear()
     {
-        //Windows?
-        
-        let windows = NSApplication.sharedApplication().windows
-        
-        print(windows)
-        
+        if isAuthorized()
+        {
+            //Present Home View
+            mainWindowController.showWindow(self)
+            
+            view.window?.close()
+        }
+        else
+        {
+            googleLoginButton.enabled = true
+        }
     }
     
-    lazy var mainWindowController: MainWindowController = {
+    lazy var mainWindowController: MainWindowController =
+    {
         let storyboard: NSStoryboard = NSStoryboard(name: "Main", bundle: nil)
         let newWindowController = storyboard.instantiateControllerWithIdentifier("MainWindowController") as! MainWindowController
         return newWindowController

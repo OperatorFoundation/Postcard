@@ -31,27 +31,23 @@ class MailController: NSObject
     {
         //TESTING ONLY
         //makeMeSomeFriends()
-        //sendKey()
+        //sendKey("looklita@gmail.com")
         
-        //First get all penpal emails from core data so that we can compare them to new invites
-        PenPalController().getPenPalEmails
-        {
-            let query = GTLQueryGmail.queryForUsersMessagesList()
-            //query.q = "Subject:Postcard has:attachment"
-            query.labelIds = ["INBOX"]
-            
-            GmailProps.service.executeQuery(query, completionHandler: {(ticket, response, error) in
-                if let listMessagesResponse = response as? GTLGmailListMessagesResponse
+        let query = GTLQueryGmail.queryForUsersMessagesList()
+        //query.q = "Subject:Postcard has:attachment"
+        query.labelIds = ["INBOX"]
+        
+        GmailProps.service.executeQuery(query, completionHandler: {(ticket, response, error) in
+            if let listMessagesResponse = response as? GTLGmailListMessagesResponse
+            {
+                //If there are messages that meet the query criteria in the list, get the message payload from Gmail
+                if let metaMessages = listMessagesResponse.messages as? [GTLGmailMessage]
                 {
-                    //If there are messages that meet the query criteria in the list, get the message payload from Gmail
-                    if let metaMessages = listMessagesResponse.messages as? [GTLGmailMessage]
-                    {
-                        //Get message payloads
-                        self.fetchAndSaveGmailPayloads(metaMessages)
-                    }
+                    //Get message payloads
+                    self.fetchAndSaveGmailPayloads(metaMessages)
                 }
-            })
-        }
+            }
+        })
     }
     
     func fetchAndSaveGmailPayloads(messages: [GTLGmailMessage])
@@ -68,7 +64,7 @@ class MailController: NSObject
                 if let message = maybeMessage as? GTLGmailMessage, parts = message.payload.parts as? [GTLGmailMessagePart]
                 {
                     //This is a key/penpal invitation
-                    for thisPart in parts where thisPart.mimeType == "application/postcard-key"
+                    for thisPart in parts where thisPart.mimeType == PostCardProps.keyMimeType
                     {
                         //Download the attachment
                         let attachmentQuery = GTLQueryGmail.queryForUsersMessagesAttachmentsGet()
@@ -109,30 +105,29 @@ class MailController: NSObject
                                         //We already have this Penpal and their key
                                         if let thisPenPal = self.fetchPenPal(sender), let penPalKey = thisPenPal.key
                                         {
-                                            print("We are already friends with \(sender) and we have their KEY we can decrypt this postcard!")
+                                            print("We are already friends with \(sender) and we have their KEY we can decrypt this postcard!\n")
+                                            print("\(sender)'s Key?: \(penPalKey)\n")
                                             //Decode - GTLBase64
                                             if let postcardData = GTLDecodeBase64(attachment.data)
                                             {
+                                                print("Decoded postcard data from \(sender)(still encrypted):\n \(postcardData.description)\n")
                                                 //Decrypt - Sodium
                                                 if let sodium = Sodium(), let secretKey = KeyController().myPrivateKey
                                                 {
+                                                    print("My Secret Key!!: \(secretKey)\n")
+                                                    
                                                     if let decryptedPostcard = sodium.box.open(postcardData, senderPublicKey: penPalKey, recipientSecretKey: secretKey)
                                                     {
-                                                        print(decryptedPostcard)
+                                                        print("Decrypted Postcard?\n\(decryptedPostcard)\n")
+                                                        //Save to CoreData so it will Display
                                                     }
                                                     else
                                                     {
                                                         print("We could not decrypt this postcard!! We may not have the correct key for \(sender)\n")
                                                     }
-                                                    
                                                 }
                                             }
                                         }
-
-                                        //Save to CoreData
-                                        
-                                        //Display
-
                                     }
                                 })
                             }
@@ -180,22 +175,70 @@ class MailController: NSObject
                 if header.name == "From"
                 {
                     let sender = header.value
+                    let attachmentData = attachment.data
+                    let decodedAttachment = GTLDecodeBase64(attachmentData)
                     
                     //Check if we have this email address saved as a penpal
                     if let thisPenPal = self.fetchPenPal(sender)
                     {
                         print("We are already friends with \(sender)!")
-                        if thisPenPal.key != nil
+                        if let thisPenPalKey = thisPenPal.key
                         {
-                            //We have a key for this PenPal
-                            return
+                            if thisPenPalKey == decodedAttachment
+                            {
+                                print("We have the key for \(sender) and it matches the new one we received. Hooray \n")
+                            }
+                            else
+                            {
+                                print("We have a key for \(sender): \(thisPenPalKey), but it is different from the one we just received: \(decodedAttachment)")
+                                showAlert("We received a new key from \(sender) and it does not match the key we have stored. This is a problem")
+                            }
                         }
+                        else
+                        {
+                            thisPenPal.key = decodedAttachment
+                            //Save this PenPal to core data
+                            do
+                            {
+                                try thisPenPal.managedObjectContext?.save()
+                                print("New PenPal Key Saved.\n")
+                            }
+                            catch
+                            {
+                                let saveError = error as NSError
+                                print("\(saveError), \(saveError.userInfo)")
+                                self.showAlert("Warning: We could not save this contacts key.")
+                            }
+                        }
+                        
+//                        if thisPenPal.key != nil
+//                        {
+//                            //We have a key for this PenPal
+//                            return
+//                        }
+//                        else
+//                        {
+//                            //We have this pal but not a key
+//                            //Update the record
+//                            thisPenPal.key = decodedAttachment
+//                            //Save this PenPal to core data
+//                            do
+//                            {
+//                                try thisPenPal.managedObjectContext?.save()
+//                                print("NewPal Saved.\n")
+//                            }
+//                            catch
+//                            {
+//                                let saveError = error as NSError
+//                                print("\(saveError), \(saveError.userInfo)")
+//                                self.showAlert("Warning: We could not save this contact.")
+//                            }
+//                        }
                     }
                     
                     //If not check for a key and create a new PenPal
-                    let attachmentData = attachment.data
-                    let decodedAttachment = GTLDecodeBase64(attachmentData)
-                    if sender != ""
+                    
+                    else if sender != ""
                     {
                         //Create New PenPal Record
                         if let entity = NSEntityDescription.entityForName("PenPal", inManagedObjectContext: self.managedObjectContext!)
@@ -223,89 +266,8 @@ class MailController: NSObject
             }
         }
     }
-    
-//    //Check if the downloaded attachment is valid and save the information as a new postcard to core data
-//    func processPostcard(attachment: GTLGmailMessagePartBody, forMessage message: GTLGmailMessage)
-//    {
-//        //Check the headers for the message sender
-//        if let headers = message.payload.headers as? [GTLGmailMessagePartHeader]
-//        {
-//            for header in headers where header.name == "From"
-//            {
-//                let sender = header.value
-//                
-//                if PostCardProps.penPalEmailSet.contains(sender)
-//                {
-//                    print("We are already friends with \(sender) we can decrypt this postcard!")
-//                    
-//                    //TODO: Check if we have this email saved as a postcard
-//                    //Ignore message, we already have this postcard
-//                    
-//                    //If not create a new Postcard
-//                    //TODO: Postcard will actually be an attachment to this message that will need to be downloaded
-//                    
-//                    //Get the Penpal record to create the sender relationship for this Postcard
-//                    if let entity = NSEntityDescription.entityForName("Postcard", inManagedObjectContext: self.managedObjectContext!)
-//                    {
-//                        //Create New Postcard Record
-//                        let newCard = Postcard(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-//                        
-//                        let fetchRequest = NSFetchRequest(entityName: "PenPal")
-//                        fetchRequest.predicate = NSPredicate(format: "email == %@", sender)
-//                        do
-//                        {
-//                            let result = try self.managedObjectContext?.executeFetchRequest(fetchRequest)
-//                            if result?.count > 0, let thisPenpal = result?[0] as? PenPal
-//                            {
-//                                newCard.from = thisPenpal
-//                            }
-//                        }
-//                        catch
-//                        {
-//                            //Could not fetch this Penpal from core data
-//                            let fetchError = error as NSError
-//                            print(fetchError)
-//                        }
-//                        newCard.body = message.payload.body.data
-//                        newCard.snippet = message.snippet
-//                        
-//                        //Date
-//                        //newCard.receivedDate = NSDate(timeIntervalSince1970: (message.internalDate).doubleValue/1000.0)
-//                        for dateHeader in headers where dateHeader.name == "Date"
-//                        {
-//                            let formatter = NSDateFormatter()
-//                            formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
-//                            newCard.receivedDate = formatter.dateFromString(dateHeader.value)
-//                        }
-//                        
-//                        //Subject
-//                        for subjectHeader in headers where subjectHeader.name == "Subject"
-//                        {
-//                            newCard.subject = subjectHeader.value
-//                        }
-//                        
-//                        //Unique Identifier
-//                        for idHeader in headers where idHeader.name == "Message-Id"
-//                        {
-//                            newCard.identifier = idHeader.value
-//                        }
-//
-//                        //Save this Postcard to core data
-//                        do {
-//                            try newCard.managedObjectContext?.save()
-//                            //print("NewCard From:" + (newCard.from?.email)! + "\n")
-//                        }
-//                        catch {
-//                            let saveError = error as NSError
-//                            print("\(saveError), \(saveError.userInfo)")
-//                            self.showAlert("Warning: We could not save this contact.")
-//                        }
-//                    }
-//                    
-//                }
-//            }
-//        }
-//    }
+
+    //DEV ONLY: create contacts
     func makeMeSomeFriends()
     {
         //Create New PenPal record
@@ -316,18 +278,16 @@ class MailController: NSObject
             newPal.email = "brandon@operatorFoundation.org"
             newPal.name = "Brandon Wiley"
             
-            if !PostCardProps.penPalEmailSet.contains(newPal.email!)
+            //Save this PenPal to core data
+            do
             {
-                //Save this PenPal to core data
-                do {
-                    try newPal.managedObjectContext?.save()
-                    //print("NewCard From:" + (newCard.from?.email)! + "\n")
-                    PostCardProps.penPalEmailSet.insert(newPal.email!)
-                }
-                catch {
-                    let saveError = error as NSError
-                    print("\(saveError)")
-                }
+                try newPal.managedObjectContext?.save()
+                //print("NewCard From:" + (newCard.from?.email)! + "\n")
+            }
+            catch
+            {
+                let saveError = error as NSError
+                print("\(saveError)")
             }
             
             let newPal2 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
@@ -335,57 +295,69 @@ class MailController: NSObject
             newPal2.name = "Corie Johnson"
             newPal2.sentKey = true
             
-            if !PostCardProps.penPalEmailSet.contains(newPal2.email!)
+            //Save this PenPal to core data
+            do
             {
-                //Save this PenPal to core data
-                do {
-                    try newPal2.managedObjectContext?.save()
-                    //print("NewCard From:" + (newCard.from?.email)! + "\n")
-                    PostCardProps.penPalEmailSet.insert(newPal2.email!)
-                }
-                catch {
-                    let saveError = error as NSError
-                    print("\(saveError)")
-                }
+                try newPal2.managedObjectContext?.save()
+                //print("NewCard From:" + (newCard.from?.email)! + "\n")
+            }
+            catch
+            {
+                let saveError = error as NSError
+                print("\(saveError)")
             }
             
             let newPal3 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-            newPal3.email = "jess@gmail.com"
-            newPal3.name = "Jess Hill"
+            newPal3.email = "litaDev@gmail.com"
+            newPal3.name = "Lita Schule"
             
-            if !PostCardProps.penPalEmailSet.contains(newPal3.email!)
+            //Save this PenPal to core data
+            do
             {
-                //Save this PenPal to core data
-                do {
-                    try newPal3.managedObjectContext?.save()
-                    //print("NewCard From:" + (newCard.from?.email)! + "\n")
-                    PostCardProps.penPalEmailSet.insert(newPal3.email!)
-                }
-                catch {
-                    let saveError = error as NSError
-                    print("\(saveError)")
-                }
+                try newPal3.managedObjectContext?.save()
+                //print("NewCard From:" + (newCard.from?.email)! + "\n")
+            }
+            catch
+            {
+                let saveError = error as NSError
+                print("\(saveError)")
             }
             
             let newPal4 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-            newPal4.email = "SarahJane@bluebox.com"
-            newPal4.name = "Sarah Jane"
+            newPal4.email = "looklita@gmail.com"
+            newPal4.name = "Lita Consuelo"
             
-            if !PostCardProps.penPalEmailSet.contains(newPal4.email!)
+            //Save this PenPal to core data
+            do
             {
-                //Save this PenPal to core data
-                do {
-                    try newPal4.managedObjectContext?.save()
-                    //print("NewCard From:" + (newCard.from?.email)! + "\n")
-                    PostCardProps.penPalEmailSet.insert(newPal4.email!)
-                }
-                catch
-                {
-                    let saveError = error as NSError
-                    print("\(saveError)")
-                }
+                try newPal4.managedObjectContext?.save()
+                //print("NewCard From:" + (newCard.from?.email)! + "\n")
+            }
+            catch
+            {
+                let saveError = error as NSError
+                print("\(saveError)")
             }
         }
+        
+//            let newPal4 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
+//            newPal4.email = "adelita.schule@gmail.com"
+//            newPal4.name = "Adelita Schule"
+//            
+//            if !PostCardProps.penPalEmailSet.contains(newPal4.email!)
+//            {
+//                //Save this PenPal to core data
+//                do {
+//                    try newPal4.managedObjectContext?.save()
+//                    //print("NewCard From:" + (newCard.from?.email)! + "\n")
+//                    PostCardProps.penPalEmailSet.insert(newPal4.email!)
+//                }
+//                catch
+//                {
+//                    let saveError = error as NSError
+//                    print("\(saveError)")
+//                }
+//            }
     }
     
     //TODO: This message is exactly the same as above
@@ -516,7 +488,6 @@ class MailController: NSObject
     //MARK: DEV ONLY (move this to a window controller)
     func sendEmail(to: String, subject: String, body: String, maybeAttachments:[NSURL]?)
     {
-        
         if let rawMessage = generateMessage(sendToEmail: to, subject: subject, body: body, maybeAttachments: maybeAttachments)
         {
             let gmailMessage = GTLGmailMessage()
@@ -531,21 +502,6 @@ class MailController: NSObject
                 print("send email error: \(error)\n")
             })
         }
-    }
-    
-    func sendKey()
-    {
-        let gmailMessage = GTLGmailMessage()
-        gmailMessage.raw = generateKeyMessage()
-        
-        let query = GTLQueryGmail.queryForUsersMessagesSendWithUploadParameters(nil)
-        query.message = gmailMessage
-        
-        GmailProps.service.executeQuery(query, completionHandler: {(ticket, response, error) in
-            print("send email ticket: \(ticket)\n")
-            print("send email response: \(response)\n")
-            print("send email error: \(error)\n")
-        })
     }
     
     //MARK: Create the message
@@ -610,7 +566,7 @@ class MailController: NSObject
         {
             //TODO: This will call generateMessagePackage for user's attachments
             let packageData:NSData? = nil
-            
+
             //This is the postcard wrapper email
             let mimeMessageString = generateMessageMime(sendToEmail: to, subject: PostCardProps.subject, body: PostCardProps.body, messageData: messageData, maybePackage: packageData)
             
@@ -630,9 +586,16 @@ class MailController: NSObject
         messageBuilder.header.subject = subject
         messageBuilder.textBody = body
         
+        //This is the actual user's message as an attachment to the gmail message
         let messageAttachment = MCOAttachment(data: messageData, filename: "Postcard")
         messageAttachment.mimeType = PostCardProps.postcardMimeType
         messageBuilder.addAttachment(messageAttachment)
+        
+        //Add a key attachment to this message
+        let keyData = generateKeyAttachment()
+        let keyAttachment = MCOAttachment(data: keyData, filename: "Key")
+        keyAttachment.mimeType = PostCardProps.keyMimeType
+        messageBuilder.addAttachment(keyAttachment)
         
         if let packageData = maybePackage, let packageAttachment = MCOAttachment(data: packageData, filename: "Postcard")
         {
@@ -710,12 +673,10 @@ class MailController: NSObject
         return textBody.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
     }
     
-    func generateKeyMessage() -> String
+    func generateKeyMessage(emailAddress: String) -> String
     {
         let messageBuilder = MCOMessageBuilder()
-        //messageBuilder.header.to = [MCOAddress(mailbox: "brandon.wiley@gmail.com")]
-        messageBuilder.header.to = [MCOAddress(mailbox: "looklita@gmail.com")]
-        //messageBuilder.header.to = [MCOAddress(mailbox: "adelita.schule@gmail.com")]
+        messageBuilder.header.to = [MCOAddress(mailbox: emailAddress)]
         messageBuilder.header.subject = PostCardProps.subject
         messageBuilder.textBody = PostCardProps.body
         

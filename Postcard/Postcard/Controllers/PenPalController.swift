@@ -11,6 +11,7 @@ import GoogleAPIClientForREST
 
 class PenPalController: NSObject
 {
+    //TODO: This is not currently used
     func getPenPalEmails(completionHandler:() -> Void)
     {
         let appDel: AppDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
@@ -18,26 +19,16 @@ class PenPalController: NSObject
         
         let request = NSFetchRequest(entityName: "PenPal")
         var results: [AnyObject]? = nil
-        do{
+        do
+        {
             results = try managedObjectContext.executeFetchRequest(request)
         }
-        catch{
+        catch
+        {
             fatalError("Failed to fetch penpals: \(error)\n")
         }
-        if let penPals = results as? [NSManagedObject]
-        {
-            for penPal in penPals
-            {
-                let thisPal = penPal as! PenPal
-                if let email = thisPal.email
-                {
-                    PostCardProps.penPalEmailSet.insert(email)
-                }
-            }
-        }
+
         completionHandler()
-        print("This is my penpal email set: \n")
-        print(PostCardProps.penPalEmailSet)
     }
     
     func getGoogleContacts()

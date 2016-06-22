@@ -43,8 +43,6 @@ struct PostCardProps
     static let postcardMimeType = "application/postcard-encrypted"
     static let packageMimeType = "application/postcard-package-encrypted"
     static let keyMimeType = "application/postcard-key"
-    
-    static var penPalEmailSet = Set<String>()
 }
 
 struct PostcardUI
@@ -72,6 +70,7 @@ struct PostcardUI
 
 struct UDKey
 {
+    //TODO: We need these to very based on the logged in user (Private key as well)
     static let emailAddressKey = "emailAddress"
     static let publicKeyKey = "publicKey"
 }

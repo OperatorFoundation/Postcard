@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import GTMOAuth2
 
 enum SelectedMode
 {
@@ -74,6 +75,9 @@ class MenuViewController: NSViewController
     
     @IBAction func logoutClick(sender: NSButton)
     {
+        //Remove google Auth Token
+        GTMOAuth2WindowController.removeAuthFromKeychainForName(GmailProps.kKeychainItemName)
+
         //Present Welcome View
         welcomeWindowController.showWindow(sender)
         

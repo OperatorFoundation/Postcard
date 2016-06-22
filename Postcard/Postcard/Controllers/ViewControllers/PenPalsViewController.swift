@@ -115,21 +115,28 @@ class PenPalTableCell: NSTableCellView
     //We already have their key, but they don't have ours
     func addAction()
     {
-        //TODO: Send key email to this user
+        //Send key email to this user
+        if let penPal = objectValue as? PenPal
+        {
+            let keyController = KeyController()
+            keyController.sendKey(toPenPal: penPal)
+        }
         
-        //TODO: Update sentKey to "true"
         actionButton.hidden = true
     }
     
     //We don't have their key, and they don't have ours
     func inviteAction()
     {
-        //TODO: Send key email to this user
+        //Send key email to this user
+        if let penPal = objectValue as? PenPal
+        {
+            let keyController = KeyController()
+            keyController.sendKey(toPenPal: penPal)
+        }
         
-        //TODO: Update sentKey to "true"
         actionButton.hidden = true
     }
-    
     
     
 }
