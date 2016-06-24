@@ -41,13 +41,11 @@ class KeyController: NSObject
             {
                 if let sharedKey = NSUserDefaults.standardUserDefaults().objectForKey(sharedKeyKey) as? NSData
                 {
-                    print("My shared key is: \(sharedKey)\n")
                     mySharedKey = sharedKey
                 }
                 else
                 {
                     missingKey = true
-                    print("Could not find our shared key in the user defaults using defaults key: \(sharedKeyKey)\n")
                 }
             }
                 

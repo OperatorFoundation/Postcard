@@ -113,16 +113,17 @@ class MailController: NSObject
                                         //We already have this Penpal and their key
                                         if let thisPenPal = self.fetchPenPal(sender), let penPalKey = thisPenPal.key
                                         {
-                                            print("We are already friends with \(sender) and we have their KEY we can decrypt this postcard!\n")
-                                            print("\(sender)'s Key?: \(penPalKey)\n")
+                                            print("\(sender)'s Key: \(penPalKey)\n")
                                             //Decode - GTLBase64
                                             if let postcardData = GTLDecodeBase64(attachment.data)
                                             {
-                                                print("Decoded postcard data from \(sender)(still encrypted):\n \(postcardData.description)\n")
                                                 //Decrypt - Sodium
                                                 if let sodium = Sodium(), let secretKey = KeyController.sharedInstance.myPrivateKey
                                                 {
-                                                    print("My Secret Key!!: \(secretKey)\n")
+                                                    print("Attempting to decrypt a postcard:\n")
+                                                    print("Sender's Public Key: \(penPalKey))\n")
+                                                    print("Recipient's Secret Key: \(secretKey)\n")
+                                                    print("Recipient's Public Key: \(KeyController.sharedInstance.mySharedKey)\n")
                                                     
                                                     if let decryptedPostcard = sodium.box.open(postcardData, senderPublicKey: penPalKey, recipientSecretKey: secretKey)
                                                     {
@@ -189,7 +190,6 @@ class MailController: NSObject
                     //Check if we have this email address saved as a penpal
                     if let thisPenPal = self.fetchPenPal(sender)
                     {
-                        print("We are already friends with \(sender)!")
                         if let thisPenPalKey = thisPenPal.key
                         {
                             if thisPenPalKey == decodedAttachment
@@ -198,7 +198,6 @@ class MailController: NSObject
                             }
                             else
                             {
-                                print("We have a key for \(sender): \(thisPenPalKey), but it is different from the one we just received: \(decodedAttachment)")
                                 thisPenPal.key = decodedAttachment
                                 //Save this PenPal to core data
                                 do
@@ -210,9 +209,9 @@ class MailController: NSObject
                                 {
                                     let saveError = error as NSError
                                     print("\(saveError), \(saveError.userInfo)")
-                                    self.showAlert("Warning: We could not save this contacts key.")
+                                    self.showAlert("Warning: We could not save this contacts key.\n")
                                 }
-                                showAlert("We received a new key from \(sender) and it does not match the key we have stored. This is a problem. For now we have decided to save the new key.")
+                                showAlert("We received a new key from \(sender) and it does not match the key we have stored. This is a problem. For now we have decided to save the new key.\n")
                                 
                             }
                         }
@@ -229,7 +228,7 @@ class MailController: NSObject
                             {
                                 let saveError = error as NSError
                                 print("\(saveError), \(saveError.userInfo)")
-                                self.showAlert("Warning: We could not save this contacts key.")
+                                self.showAlert("Warning: We could not save this contacts key.\n")
                             }
                         }
                         
@@ -274,7 +273,6 @@ class MailController: NSObject
                             do
                             {
                                 try newPal.managedObjectContext?.save()
-                                print("NewPal Saved.\n")
                             }
                             catch
                             {
@@ -487,7 +485,6 @@ class MailController: NSObject
                         newCard.hasPackage = false
                     }
                 }
-                print("NewCard Subject: \(newCard.subject)\nHasAttachment:\(newCard.hasPackage.boolValue)\n")
                 //Save this Postcard to core data
                 do
                 {
@@ -645,6 +642,10 @@ class MailController: NSObject
                     
                     if let sodium = Sodium(), let secretKey = KeyController.sharedInstance.myPrivateKey
                     {
+                        print("Encrypting a message to send.\n")
+                        print("Private Key: \(secretKey) \n")
+                        print("Public Key: \(KeyController.sharedInstance.mySharedKey)\n")
+                        print("This Pal's Key: \(penPalKey)")
                         
                         if let encryptedMessageData: NSData = sodium.box.seal(messageBuilder.data(), recipientPublicKey:penPalKey, senderSecretKey: secretKey)
                         {
