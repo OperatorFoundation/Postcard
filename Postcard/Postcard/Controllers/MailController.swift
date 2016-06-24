@@ -26,6 +26,14 @@ class MailController: NSObject
     
     //TODO: Make sure that deleting emails via bindings to the array congtroller also removes them from  gmail
     
+    func updateMail()
+    {
+        fetchGmailMessagesList()
+        
+        //Refresh every few minutes (counted in seconds)
+        _ = NSTimer.scheduledTimerWithTimeInterval(150, target: self, selector: (#selector(fetchGmailMessagesList)), userInfo: nil, repeats: true)
+    }
+    
     //This gets a bare list of messages that meet our criteria and then calls a func to retrieve the payload for each one
     func fetchGmailMessagesList()
     {
@@ -191,7 +199,21 @@ class MailController: NSObject
                             else
                             {
                                 print("We have a key for \(sender): \(thisPenPalKey), but it is different from the one we just received: \(decodedAttachment)")
-                                showAlert("We received a new key from \(sender) and it does not match the key we have stored. This is a problem")
+                                thisPenPal.key = decodedAttachment
+                                //Save this PenPal to core data
+                                do
+                                {
+                                    try thisPenPal.managedObjectContext?.save()
+                                    print("New PenPal Key Saved.\n")
+                                }
+                                catch
+                                {
+                                    let saveError = error as NSError
+                                    print("\(saveError), \(saveError.userInfo)")
+                                    self.showAlert("Warning: We could not save this contacts key.")
+                                }
+                                showAlert("We received a new key from \(sender) and it does not match the key we have stored. This is a problem. For now we have decided to save the new key.")
+                                
                             }
                         }
                         else
@@ -282,7 +304,6 @@ class MailController: NSObject
             do
             {
                 try newPal.managedObjectContext?.save()
-                //print("NewCard From:" + (newCard.from?.email)! + "\n")
             }
             catch
             {
@@ -299,7 +320,6 @@ class MailController: NSObject
             do
             {
                 try newPal2.managedObjectContext?.save()
-                //print("NewCard From:" + (newCard.from?.email)! + "\n")
             }
             catch
             {
@@ -315,7 +335,6 @@ class MailController: NSObject
             do
             {
                 try newPal3.managedObjectContext?.save()
-                //print("NewCard From:" + (newCard.from?.email)! + "\n")
             }
             catch
             {
@@ -323,41 +342,39 @@ class MailController: NSObject
                 print("\(saveError)")
             }
             
+//            let newPal4 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
+//            newPal4.email = "looklita@gmail.com"
+//            newPal4.name = "Lita Consuelo"
+//            
+//            //Save this PenPal to core data
+//            do
+//            {
+//                try newPal4.managedObjectContext?.save()
+//                //print("NewCard From:" + (newCard.from?.email)! + "\n")
+//            }
+//            catch
+//            {
+//                let saveError = error as NSError
+//                print("\(saveError)")
+//            }
+            
             let newPal4 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-            newPal4.email = "looklita@gmail.com"
-            newPal4.name = "Lita Consuelo"
+            newPal4.email = "adelita.schule@gmail.com"
+            newPal4.name = "Adelita Schule"
+            
             
             //Save this PenPal to core data
             do
             {
                 try newPal4.managedObjectContext?.save()
-                //print("NewCard From:" + (newCard.from?.email)! + "\n")
             }
             catch
             {
                 let saveError = error as NSError
                 print("\(saveError)")
             }
+            
         }
-        
-//            let newPal4 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-//            newPal4.email = "adelita.schule@gmail.com"
-//            newPal4.name = "Adelita Schule"
-//            
-//            if !PostCardProps.penPalEmailSet.contains(newPal4.email!)
-//            {
-//                //Save this PenPal to core data
-//                do {
-//                    try newPal4.managedObjectContext?.save()
-//                    //print("NewCard From:" + (newCard.from?.email)! + "\n")
-//                    PostCardProps.penPalEmailSet.insert(newPal4.email!)
-//                }
-//                catch
-//                {
-//                    let saveError = error as NSError
-//                    print("\(saveError)")
-//                }
-//            }
     }
     
     //TODO: This message is exactly the same as above

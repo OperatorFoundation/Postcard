@@ -75,6 +75,13 @@ class MenuViewController: NSViewController
     
     @IBAction func logoutClick(sender: NSButton)
     {
+        //Clear Core Data (probably shouldn't so this)
+        clearDataStore()
+        
+        //Remove current user email/ID from Defaults
+        NSUserDefaults.standardUserDefaults().removeObjectForKey(UDKey.emailAddressKey)
+        NSUserDefaults.standardUserDefaults().removeObjectForKey(UDKey.publicKeyKey + UDKey.emailAddressKey)
+        
         //Remove google Auth Token
         GTMOAuth2WindowController.removeAuthFromKeychainForName(GmailProps.kKeychainItemName)
 
@@ -82,6 +89,38 @@ class MenuViewController: NSViewController
         welcomeWindowController.showWindow(sender)
         
         self.view.window?.close()
+    }
+    
+    
+    //TODO: Not working, Not a good plan to delete the data anyway, need pal keys to persist. Let's create a user entity.
+    func clearDataStore()
+    {
+//        let managedObjectModel = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectModel
+//        let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+//        if let persistentStoreCoordinator = managedObjectContext.persistentStoreCoordinator
+//        {
+//            let entities = managedObjectModel.entities
+//            for entity in entities where !entities.isEmpty
+//            {
+//                let fetchRequest = NSFetchRequest(entityName: entity.name!)
+//                let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+//                do
+//                {
+//                    try persistentStoreCoordinator.executeRequest(deleteRequest, withContext: managedObjectContext)
+//                    print("Batch Delete for Entity \(entity.name)")
+//                }
+//                catch
+//                {
+//                    print("Unable to clear the core data : \(entity.name)")
+//                }
+//            }
+//        }
+//        else
+//        {
+//            print("Unable to execute delete request no persistent store coordinator was found on the app delegate >:( \n")
+//        }
+        
+        
     }
     
     //MARK: Content

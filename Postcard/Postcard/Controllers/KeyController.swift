@@ -18,7 +18,8 @@ class KeyController: NSObject
     var mySharedKey: NSData
     {
         get{
-            if let sharedKey = NSUserDefaults.standardUserDefaults().objectForKey(UDKey.publicKeyKey) as? NSData
+            //Access the shared key by using a combination of the publicKey key and userID (email) address to keep this unique per log on
+            if let userID = NSUserDefaults.standardUserDefaults().stringForKey(UDKey.emailAddressKey), let sharedKeyKey: String = userID + UDKey.publicKeyKey, let sharedKey = NSUserDefaults.standardUserDefaults().objectForKey(sharedKeyKey) as? NSData
             {
                 return sharedKey
             }
@@ -101,7 +102,9 @@ class KeyController: NSObject
         SSKeychain.setPasswordData(privateKey, forService: service, account: userID)
         
         //Save public key to NSUser Defaults
-        defaults.setValue(publicKey, forKey: UDKey.publicKeyKey)
+        //NOTE: The user defaults key should always have the userID appended
+        //TODO: This should probably be set in constants file
+        defaults.setValue(publicKey, forKey: UDKey.publicKeyKey + userID)
     }
     
     private func createNewKeyPair() -> Box.KeyPair

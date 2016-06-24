@@ -68,9 +68,8 @@ class WelcomeViewController: NSViewController
     
     func fetchGoodies()
     {
-        //DEV ONLY
         let mailController = MailController()
-        mailController.fetchGmailMessagesList()
+        mailController.updateMail()
         PenPalController().getGoogleContacts()
     }
     
