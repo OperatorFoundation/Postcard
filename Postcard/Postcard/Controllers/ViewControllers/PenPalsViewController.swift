@@ -13,7 +13,6 @@ class PenPalsViewController: NSViewController, NSTableViewDelegate
     @IBOutlet weak var penPalsTableView: NSTableView!
     @IBOutlet var penPalsArrayController: NSArrayController!
     
-    
     var managedContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     override func viewDidLoad()
@@ -118,8 +117,7 @@ class PenPalTableCell: NSTableCellView
         //Send key email to this user
         if let penPal = objectValue as? PenPal
         {
-            let keyController = KeyController()
-            keyController.sendKey(toPenPal: penPal)
+            KeyController.sharedInstance.sendKey(toPenPal: penPal)
         }
         
         actionButton.hidden = true
@@ -131,8 +129,7 @@ class PenPalTableCell: NSTableCellView
         //Send key email to this user
         if let penPal = objectValue as? PenPal
         {
-            let keyController = KeyController()
-            keyController.sendKey(toPenPal: penPal)
+            KeyController.sharedInstance.sendKey(toPenPal: penPal)
         }
         
         actionButton.hidden = true

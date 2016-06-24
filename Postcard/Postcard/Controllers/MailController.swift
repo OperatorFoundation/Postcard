@@ -120,7 +120,7 @@ class MailController: NSObject
                                             {
                                                 print("Decoded postcard data from \(sender)(still encrypted):\n \(postcardData.description)\n")
                                                 //Decrypt - Sodium
-                                                if let sodium = Sodium(), let secretKey = KeyController().myPrivateKey
+                                                if let sodium = Sodium(), let secretKey = KeyController.sharedInstance.myPrivateKey
                                                 {
                                                     print("My Secret Key!!: \(secretKey)\n")
                                                     
@@ -610,6 +610,7 @@ class MailController: NSObject
         
         //Add a key attachment to this message
         let keyData = generateKeyAttachment()
+        
         let keyAttachment = MCOAttachment(data: keyData, filename: "Key")
         keyAttachment.mimeType = PostCardProps.keyMimeType
         messageBuilder.addAttachment(keyAttachment)
@@ -639,10 +640,10 @@ class MailController: NSObject
                     messageBuilder.header.subject = subject
                     messageBuilder.textBody = body
                     
-                    let keyAttachment = MCOAttachment(data: KeyController().mySharedKey, filename: "postcard.key")
+                    let keyAttachment = MCOAttachment(data: KeyController.sharedInstance.mySharedKey, filename: "postcard.key")
                     messageBuilder.addAttachment(keyAttachment)
                     
-                    if let sodium = Sodium(), let secretKey = KeyController().myPrivateKey
+                    if let sodium = Sodium(), let secretKey = KeyController.sharedInstance.myPrivateKey
                     {
                         
                         if let encryptedMessageData: NSData = sodium.box.seal(messageBuilder.data(), recipientPublicKey:penPalKey, senderSecretKey: secretKey)
@@ -709,7 +710,10 @@ class MailController: NSObject
     
     func generateKeyAttachment() -> NSData?
     {
-        return KeyController().mySharedKey
+        let keyData = KeyController.sharedInstance.mySharedKey
+        print("Attaching my shared key to a message: \(keyData)\n")
+        
+        return keyData
     }
     
     //MARK: Helper Methods
