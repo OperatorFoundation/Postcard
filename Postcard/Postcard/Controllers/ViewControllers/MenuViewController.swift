@@ -78,9 +78,7 @@ class MenuViewController: NSViewController
         //Clear Core Data (probably shouldn't so this)
         clearDataStore()
         
-        //Remove current user email/ID from Defaults
-        NSUserDefaults.standardUserDefaults().removeObjectForKey(UDKey.emailAddressKey)
-        NSUserDefaults.standardUserDefaults().removeObjectForKey(UDKey.publicKeyKey + UDKey.emailAddressKey)
+        //Remove current user email/ID from Defaults?
         
         //Remove google Auth Token
         GTMOAuth2WindowController.removeAuthFromKeychainForName(GmailProps.kKeychainItemName)

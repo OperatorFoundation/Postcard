@@ -125,8 +125,12 @@ class MailController: NSObject
                                                     print("Recipient's Secret Key: \(secretKey)\n")
                                                     print("Recipient's Public Key: \(KeyController.sharedInstance.mySharedKey)\n")
                                                     
+                                                    print("Postcard Data:\n")
+                                                    print("\(postcardData)\n")
+                                                    
                                                     if let decryptedPostcard = sodium.box.open(postcardData, senderPublicKey: penPalKey, recipientSecretKey: secretKey)
                                                     {
+                                                        
                                                         print("Decrypted Postcard?\n\(decryptedPostcard)\n")
                                                         //Save to CoreData so it will Display
                                                     }
@@ -646,6 +650,8 @@ class MailController: NSObject
                         print("Private Key: \(secretKey) \n")
                         print("Public Key: \(KeyController.sharedInstance.mySharedKey)\n")
                         print("This Pal's Key: \(penPalKey)")
+                        print("This message data:\n")
+                        print("\(messageBuilder.data())\n")
                         
                         if let encryptedMessageData: NSData = sodium.box.seal(messageBuilder.data(), recipientPublicKey:penPalKey, senderSecretKey: secretKey)
                         {
