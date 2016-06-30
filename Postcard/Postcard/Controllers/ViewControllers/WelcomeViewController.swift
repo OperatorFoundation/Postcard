@@ -22,8 +22,6 @@ class WelcomeViewController: NSViewController
         
         //The description label should be at the same angle as the Big "Postcard"
         descriptionView.rotateByAngle(11.0)
-        
-        
     }
     
     func isAuthorized() -> Bool
@@ -38,21 +36,67 @@ class WelcomeViewController: NSViewController
         if let authorizer = GmailProps.service.authorizer, canAuth = authorizer.canAuthorize where canAuth
         {
             //If we do not already have the user's email saved fetch it
-            let userDefaults = NSUserDefaults.standardUserDefaults()
-            if let _ = userDefaults.objectForKey(UDKey.emailAddressKey) as? String
+            if let _ = Constants.currentUser?.emailAddress
             {
                 fetchGoodies()
             }
             else
             {
-                //Get user profile
+                //Get user profile information
                 let query = GTLQueryGmail.queryForUsersGetProfile()
                 GmailProps.service.executeQuery(query, completionHandler: { (ticket, maybeProfile, error) in
                     if let profile = maybeProfile as? GTLGmailProfile
                     {
                         print("\(profile)\n")
-                        //save email to user defaults
-                        userDefaults.setValue(profile.emailAddress, forKey: UDKey.emailAddressKey)
+                        //Check if a user entity already exists
+                        //Get this User Entity
+                        let fetchRequest = NSFetchRequest(entityName: "User")
+                        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+                        let managedObjectContext = appDelegate.managedObjectContext
+                        fetchRequest.predicate = NSPredicate(format: "emailAddress == %@", profile.emailAddress)
+                        do
+                        {
+                            let result = try managedObjectContext.executeFetchRequest(fetchRequest)
+                            if result.count > 0, let thisUser = result[0] as? User
+                            {
+                                Constants.currentUser = thisUser
+                            }
+                            else
+                            {
+                                //If not, create one
+                                if let userEntity = NSEntityDescription.entityForName("User", inManagedObjectContext: managedObjectContext)
+                                {
+                                    let newUser = User(entity: userEntity, insertIntoManagedObjectContext: managedObjectContext)
+                                    newUser.emailAddress = profile.emailAddress
+                                    
+                                    //Save this user to core Data
+                                    do
+                                    {
+                                        try newUser.managedObjectContext?.save()
+                                        Constants.currentUser = newUser
+                                    }
+                                    catch
+                                    {
+                                        
+                                        let saveError = error as NSError
+                                        print("Unable to save new user to core data. \n\(saveError)\n")
+                                        return
+                                    }
+                                }
+                                else
+                                {
+                                    print("Unable to fetch user from core data, or create a new one. That's weird.")
+                                    return
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            //Could not fetch this Penpal from core data
+                            let fetchError = error as NSError
+                            print(fetchError)
+                        }
+                                                
                         self.fetchGoodies()
                     }
                 })

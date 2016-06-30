@@ -97,7 +97,6 @@ class MailController: NSObject
                             sender = header.value
                         }
                         
-                        //Check to see if we have this sender as a Penpal
                         if !sender.isEmpty
                         {
                             //This is a postcard message/attachment
@@ -113,9 +112,9 @@ class MailController: NSObject
                                         //We already have this Penpal and their key
                                         if let thisPenPal = self.fetchPenPal(sender), let penPalKey = thisPenPal.key
                                         {
-                                            print("\(sender)'s Key: \(penPalKey)\n")
+                                            let attachmentData = attachment.data
                                             //Decode - GTLBase64
-                                            if let postcardData = GTLDecodeBase64(attachment.data)
+                                            if let postcardData = GTLDecodeWebSafeBase64(attachmentData)
                                             {
                                                 //Decrypt - Sodium
                                                 if let sodium = Sodium(), let secretKey = KeyController.sharedInstance.myPrivateKey
@@ -130,7 +129,6 @@ class MailController: NSObject
                                                     
                                                     if let decryptedPostcard = sodium.box.open(postcardData, senderPublicKey: penPalKey, recipientSecretKey: secretKey)
                                                     {
-                                                        
                                                         print("Decrypted Postcard?\n\(decryptedPostcard)\n")
                                                         //Save to CoreData so it will Display
                                                     }
@@ -616,12 +614,20 @@ class MailController: NSObject
         keyAttachment.mimeType = PostCardProps.keyMimeType
         messageBuilder.addAttachment(keyAttachment)
         
-        if let packageData = maybePackage, let packageAttachment = MCOAttachment(data: packageData, filename: "Postcard")
-        {
-            packageAttachment.mimeType = PostCardProps.packageMimeType
-            messageBuilder.addAttachment(packageAttachment)
-        }
-
+        
+//        if let packageData = maybePackage
+//        {
+//            if let packageAttachment = MCOAttachment(data: packageData, filename: "Postcard")
+//            {
+//                packageAttachment.mimeType = PostCardProps.packageMimeType
+//                messageBuilder.addAttachment(packageAttachment)
+//            }
+//        }
+        print("We have not encoded this message but it should be encrypted:\n")
+        print("\(messageData)\n")
+        print("Is the message attachment encoded now?\n")
+        print("\(messageBuilder.data())")
+        
         return GTLEncodeWebSafeBase64(messageBuilder.data())
     }
     

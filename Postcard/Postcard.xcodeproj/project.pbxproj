@@ -31,6 +31,8 @@
 		461C0A671CE696E300C5B5A5 /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A661CE696E300C5B5A5 /* MainSplitViewController.swift */; };
 		463E68531D0B43E600F70845 /* SignPainter.otf in Resources */ = {isa = PBXBuildFile; fileRef = 463E68521D0B434300F70845 /* SignPainter.otf */; };
 		466FC5FD1D021BA100B8AABB /* Proxima Nova Font Free in Resources */ = {isa = PBXBuildFile; fileRef = 466FC5FC1D021BA100B8AABB /* Proxima Nova Font Free */; };
+		4695FD671D21AE1F00160CB2 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4695FD651D21AE1F00160CB2 /* User+CoreDataProperties.swift */; };
+		4695FD681D21AE1F00160CB2 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4695FD661D21AE1F00160CB2 /* User.swift */; };
 		46A6F4AE1CEFB578007C2D17 /* MainContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A6F4AD1CEFB578007C2D17 /* MainContainerViewController.swift */; };
 		B4056FD11CC99B3A00D81301 /* GTMOAuth2Window.xib in Resources */ = {isa = PBXBuildFile; fileRef = B4056FD01CC99B3A00D81301 /* GTMOAuth2Window.xib */; };
 		B4238F551CD2A24D0054E7EF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4238F541CD2A24D0054E7EF /* Security.framework */; };
@@ -93,6 +95,8 @@
 		461C0A661CE696E300C5B5A5 /* MainSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainSplitViewController.swift; path = Controllers/ViewControllers/MainSplitViewController.swift; sourceTree = "<group>"; };
 		463E68521D0B434300F70845 /* SignPainter.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SignPainter.otf; sourceTree = "<group>"; };
 		466FC5FC1D021BA100B8AABB /* Proxima Nova Font Free */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Proxima Nova Font Free"; sourceTree = "<group>"; };
+		4695FD651D21AE1F00160CB2 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "User+CoreDataProperties.swift"; path = "DataModels/User+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		4695FD661D21AE1F00160CB2 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = DataModels/User.swift; sourceTree = "<group>"; };
 		46A6F4AD1CEFB578007C2D17 /* MainContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainContainerViewController.swift; path = Controllers/ViewControllers/MainContainerViewController.swift; sourceTree = "<group>"; };
 		4D53A4297FA3F7402E52D098 /* Pods_PostcardUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostcardUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		611C5D787BC8FC1916D45E9A /* Pods-Postcard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Postcard.release.xcconfig"; path = "Pods/Target Support Files/Pods-Postcard/Pods-Postcard.release.xcconfig"; sourceTree = "<group>"; };
@@ -267,6 +271,8 @@
 		B4BF355A1CDAC02F00C3CDD0 /* DataModels */ = {
 			isa = PBXGroup;
 			children = (
+				4695FD651D21AE1F00160CB2 /* User+CoreDataProperties.swift */,
+				4695FD661D21AE1F00160CB2 /* User.swift */,
 				B4EAA8F51D1361D000E9169F /* Postcard+CoreDataProperties.swift */,
 				B4EAA8F61D1361D000E9169F /* Postcard.swift */,
 				B4EAA8F71D1361D000E9169F /* PenPal+CoreDataProperties.swift */,
@@ -567,6 +573,8 @@
 			files = (
 				461C0A581CE663D500C5B5A5 /* ContentViewController.swift in Sources */,
 				461C0A611CE6664200C5B5A5 /* MessageViewController.swift in Sources */,
+				4695FD671D21AE1F00160CB2 /* User+CoreDataProperties.swift in Sources */,
+				4695FD681D21AE1F00160CB2 /* User.swift in Sources */,
 				B4EAA8FA1D1361D000E9169F /* Postcard.swift in Sources */,
 				461891B11CC17B9A009C577D /* Postcard.xcdatamodeld in Sources */,
 				B4238F5F1CD2DF050054E7EF /* KeyController.swift in Sources */,

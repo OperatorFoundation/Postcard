@@ -11,14 +11,22 @@ import SSKeychain
 import Sodium
 import GoogleAPIClient
 
+private let _singletonInstance = KeyController()
+
 class KeyController: NSObject
 {
-    static let sharedInstance = KeyController()
+    //static let sharedInstance = KeyController()
+    
+    class var sharedInstance: KeyController
+    {
+        return _singletonInstance
+    }
     
     let service = "org.operatorfoundation.Postcard"
     
     var mySharedKey: NSData?
     var myPrivateKey:NSData?
+    
     
     override init()
     {
@@ -26,43 +34,98 @@ class KeyController: NSObject
         
         var missingKey = false
         
-        if let userID = NSUserDefaults.standardUserDefaults().stringForKey(UDKey.emailAddressKey)
+        //If there is a userID available (i.e. email address)
+        if let emailAddress: String = Constants.currentUser?.emailAddress where !emailAddress.isEmpty
         {
-            if let secretKey = SSKeychain.passwordDataForService(service, account: userID)
+            //Check the keychain for the private key
+            if let privateKey = SSKeychain.passwordDataForService(service, account: emailAddress)
             {
-                myPrivateKey = secretKey
+                myPrivateKey = privateKey
             }
             else
             {
                 missingKey = true
             }
             
-            if let sharedKeyKey: String = makeLookupKey(userID)
+            //Check the user for a public key
+            if let sharedKey = Constants.currentUser?.publicKey
             {
-                if let sharedKey = NSUserDefaults.standardUserDefaults().objectForKey(sharedKeyKey) as? NSData
-                {
-                    mySharedKey = sharedKey
-                }
-                else
-                {
-                    missingKey = true
-                }
+                mySharedKey = sharedKey
             }
-                
             else
             {
                 missingKey = true
-                print("Couldn't find my user id so I don't know what my secret key is!!!!")
             }
             
+//            //Check the keychain for the serialized KeyPair
+//            if let keyPairData = SSKeychain.passwordDataForService(service, account: emailAddress)
+//            {
+//                //Deserialize the KeyPair
+//                if let keyPair = NSKeyedUnarchiver.unarchiveObjectWithData(keyPairData) as? Box.KeyPair
+//                {
+//                    myPrivateKey = keyPair.secretKey
+//                    mySharedKey = keyPair.publicKey
+//                }
+//                else
+//                {
+//                    missingKey = true
+//                }
+//            }
+//            else
+//            {
+//                missingKey = true
+//            }
+            
+            //If we do not already have a key pair make one.
             if missingKey
             {
                 let newKeyPair = createNewKeyPair()
                 mySharedKey = newKeyPair.publicKey
                 myPrivateKey = newKeyPair.secretKey
                 
-                //Save it to the keychain.
-                saveUserKeys(newKeyPair.secretKey, publicKey: newKeyPair.publicKey, userID: userID)
+                //Save it to the Keychain
+                SSKeychain.setPasswordData(myPrivateKey, forService: service, account: emailAddress)
+                
+                //Save Public Key to Core Data
+                if let appDelegate = NSApplication.sharedApplication().delegate as? AppDelegate
+                {
+                    //Fetch the correct user
+                    let managedObjectContext = appDelegate.managedObjectContext
+                    let fetchRequest = NSFetchRequest(entityName: "User")
+                    fetchRequest.predicate = NSPredicate(format: "email == %@", emailAddress)
+                    do
+                    {
+                        let result = try managedObjectContext.executeFetchRequest(fetchRequest)
+                        
+                        if result.count > 0, let thisUser = result[0] as? User
+                        {
+                            thisUser.publicKey = mySharedKey
+                            
+                            //Save this user
+                            do
+                            {
+                                try thisUser.managedObjectContext?.save()
+                            }
+                            catch
+                            {
+                                let saveError = error as NSError
+                                print(saveError)
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        let fetchError = error as NSError
+                        print(fetchError)
+                    }
+                }
+                
+                
+//                //Serialize the keypair so that they can be stored together in the keychain
+//                if let keyPairData: NSData = NSKeyedArchiver.archivedDataWithRootObject(newKeyPair as! AnyObject)
+//                {
+//                    //Save it to the Keychain
+//                }
             }
         }
         else
@@ -71,10 +134,10 @@ class KeyController: NSObject
         }
     }
     
-    func makeLookupKey(userID: String) -> String
-    {
-        return userID + UDKey.publicKeyKey
-    }
+//    func makeLookupKey(userID: String) -> String
+//    {
+//        return userID + UDKey.publicKeyKey
+//    }
     
     func sendKey(toPenPal penPal: PenPal)
     {
@@ -112,16 +175,16 @@ class KeyController: NSObject
         }
     }
     
-    private func saveUserKeys(privateKey: NSData, publicKey: NSData, userID: String)
-    {
-        let defaults = NSUserDefaults.standardUserDefaults()
-        
-        //Save secret key in the keychain with the user's email address
-        SSKeychain.setPasswordData(privateKey, forService: service, account: userID)
-        
-        //Save public key to NSUser Defaults
-        defaults.setValue(publicKey, forKey: makeLookupKey(userID))
-    }
+//    private func saveUserKeys(privateKey: NSData, publicKey: NSData, userID: String)
+//    {
+//        let defaults = NSUserDefaults.standardUserDefaults()
+//        
+//        //Save secret key in the keychain with the user's email address
+//        SSKeychain.setPasswordData(privateKey, forService: service, account: userID)
+//        
+//        //Save public key to NSUser Defaults
+//        defaults.setValue(publicKey, forKey: makeLookupKey(userID))
+//    }
     
     private func createNewKeyPair() -> Box.KeyPair
     {

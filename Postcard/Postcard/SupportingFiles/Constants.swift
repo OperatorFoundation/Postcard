@@ -35,6 +35,12 @@ struct GmailProps
     static let kClientID = "313251347973-cpo986nne3t21bus5499b4kt1kb8thrm.apps.googleusercontent.com"
 }
 
+struct Constants
+{
+    static var userEmailAddress = ""
+    static var currentUser: User?
+}
+
 struct PostCardProps
 {
     static let subject = "You've Received a Postcard"
