@@ -35,14 +35,16 @@ class WelcomeViewController: NSViewController
         //Ensure Gmail API service is authorized and perform API calls (fetch postcards)
         if let authorizer = GmailProps.service.authorizer, canAuth = authorizer.canAuthorize where canAuth
         {
-            //If we do not already have the user's email saved fetch it
-            if let _ = Constants.currentUser?.emailAddress
+            
+            if let currentEmailAddress = Constants.currentUser?.emailAddress
             {
+                print("Already logged in as: \(currentEmailAddress)\n")
                 fetchGoodies()
             }
             else
             {
                 //Get user profile information
+                //If we do not already have the user's email saved fetch it
                 let query = GTLQueryGmail.queryForUsersGetProfile()
                 GmailProps.service.executeQuery(query, completionHandler: { (ticket, maybeProfile, error) in
                     if let profile = maybeProfile as? GTLGmailProfile
@@ -60,6 +62,7 @@ class WelcomeViewController: NSViewController
                             if result.count > 0, let thisUser = result[0] as? User
                             {
                                 Constants.currentUser = thisUser
+                                print("Found this user in core data. Current user is now set to: \(thisUser.emailAddress)\n")
                             }
                             else
                             {
@@ -74,6 +77,7 @@ class WelcomeViewController: NSViewController
                                     {
                                         try newUser.managedObjectContext?.save()
                                         Constants.currentUser = newUser
+                                        print("Logged in and created a new user:\(newUser.emailAddress)\n")
                                     }
                                     catch
                                     {
@@ -112,9 +116,8 @@ class WelcomeViewController: NSViewController
     
     func fetchGoodies()
     {
-        let mailController = MailController()
-        mailController.updateMail()
-        PenPalController().getGoogleContacts()
+        MailController.sharedInstance.updateMail()
+        PenPalController.sharedInstance.getGoogleContacts()
     }
     
     override func viewDidAppear()

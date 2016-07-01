@@ -83,7 +83,7 @@ class ComposeViewController: NSViewController
     {
         if let recipient:String = toTextField.stringValue where !recipient.isEmpty, let subject:String = subjectTextField.stringValue, let body: String = bodyTextView.string
         {
-            MailController().sendEmail(recipient, subject: subject, body: body, maybeAttachments: attachments)
+            MailController.sharedInstance.sendEmail(recipient, subject: subject, body: body, maybeAttachments: attachments)
         }
         
         //Close Window

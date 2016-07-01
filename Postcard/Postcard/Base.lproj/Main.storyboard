@@ -1407,7 +1407,7 @@
                     </connections>
                 </viewController>
                 <customObject id="2SL-sk-FMS" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <arrayController mode="entity" entityName="Postcard" automaticallyPreparesContent="YES" id="YdW-2W-c4E" userLabel="Postcards">
+                <arrayController mode="entity" entityName="Postcard" fetchPredicateFormat="owner == Constants.currentUSer" automaticallyPreparesContent="YES" id="YdW-2W-c4E" userLabel="Postcards">
                     <connections>
                         <binding destination="474-wC-NF5" name="managedObjectContext" keyPath="managedContext" id="Y0O-Bs-ucc"/>
                     </connections>
@@ -1842,6 +1842,6 @@
         <image name="welcomeBG" width="535" height="320"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="pkb-71-Y9W"/>
+        <segue reference="Ouy-3e-cTq"/>
     </inferredMetricsTieBreakers>
 </document>

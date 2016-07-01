@@ -11,16 +11,9 @@ import SSKeychain
 import Sodium
 import GoogleAPIClient
 
-private let _singletonInstance = KeyController()
-
 class KeyController: NSObject
 {
-    //static let sharedInstance = KeyController()
-    
-    class var sharedInstance: KeyController
-    {
-        return _singletonInstance
-    }
+    static let sharedInstance = KeyController()
     
     let service = "org.operatorfoundation.Postcard"
     
@@ -28,7 +21,7 @@ class KeyController: NSObject
     var myPrivateKey:NSData?
     
     
-    override init()
+    private override init()
     {
         super.init()
         
@@ -92,7 +85,7 @@ class KeyController: NSObject
                     //Fetch the correct user
                     let managedObjectContext = appDelegate.managedObjectContext
                     let fetchRequest = NSFetchRequest(entityName: "User")
-                    fetchRequest.predicate = NSPredicate(format: "email == %@", emailAddress)
+                    fetchRequest.predicate = NSPredicate(format: "emailAddress == %@", emailAddress)
                     do
                     {
                         let result = try managedObjectContext.executeFetchRequest(fetchRequest)
@@ -146,7 +139,7 @@ class KeyController: NSObject
             //Send key email to this user
             
             let gmailMessage = GTLGmailMessage()
-            gmailMessage.raw = MailController().generateKeyMessage(emailAddress)
+            gmailMessage.raw = MailController.sharedInstance.generateKeyMessage(emailAddress)
             
             let query = GTLQueryGmail.queryForUsersMessagesSendWithUploadParameters(nil)
             query.message = gmailMessage

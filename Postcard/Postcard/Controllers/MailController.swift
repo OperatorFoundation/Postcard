@@ -13,12 +13,14 @@ import Sodium
 
 class MailController: NSObject
 {
+    static let sharedInstance = MailController()
+    
     var allPostcards = [GTLGmailMessage]()
     var allPenpals = [PenPal]()
     let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
     var managedObjectContext: NSManagedObjectContext?
     
-    override init()
+    private override init()
     {
         super.init()
         managedObjectContext = appDelegate.managedObjectContext

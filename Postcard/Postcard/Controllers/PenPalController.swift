@@ -11,6 +11,10 @@ import GoogleAPIClientForREST
 
 class PenPalController: NSObject
 {
+    static let sharedInstance = PenPalController()
+    
+    private override init() {}
+    
     //TODO: This is not currently used
     func getPenPalEmails(completionHandler:() -> Void)
     {
