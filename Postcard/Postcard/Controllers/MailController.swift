@@ -122,12 +122,12 @@ class MailController: NSObject
                                                 if let sodium = Sodium(), let secretKey = KeyController.sharedInstance.myPrivateKey
                                                 {
                                                     print("Attempting to decrypt a postcard:\n")
-                                                    print("Sender's Public Key: \(penPalKey))\n")
-                                                    print("Recipient's Secret Key: \(secretKey)\n")
+                                                    print("Sender's Public Key: \(self.dataToString(penPalKey)))\n")
+                                                    print("Recipient's Secret Key: \(self.dataToString(secretKey))\n")
                                                     print("Recipient's Public Key: \(KeyController.sharedInstance.mySharedKey)\n")
                                                     
                                                     print("Postcard Data:\n")
-                                                    print("\(postcardData)\n")
+                                                    print("\(self.dataToString(postcardData))\n")
                                                     
                                                     if let decryptedPostcard = sodium.box.open(postcardData, senderPublicKey: penPalKey, recipientSecretKey: secretKey)
                                                     {
@@ -149,6 +149,22 @@ class MailController: NSObject
                 }
             })
         }
+    }
+    
+    func dataToString(data: NSData) -> String
+    {
+        let newString: String = data.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
+        
+        return newString
+    }
+    
+    func stringToData(string: String) -> NSData?
+    {
+        if let newData: NSData = NSData(base64EncodedString: string, options: NSDataBase64DecodingOptions(rawValue: 0))
+        {
+            return newData
+        }
+        else {return nil}
     }
     
     func fetchPenPal(emailAddress: String) -> PenPal?
@@ -272,6 +288,7 @@ class MailController: NSObject
                             newPal.email = sender
                             newPal.key = decodedAttachment
                             newPal.addedDate = NSDate().timeIntervalSinceReferenceDate
+                            newPal.owner = Constants.currentUser
                             
                             //Save this PenPal to core data
                             do
@@ -301,6 +318,7 @@ class MailController: NSObject
             let newPal = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
             newPal.email = "brandon@operatorFoundation.org"
             newPal.name = "Brandon Wiley"
+            newPal.owner = Constants.currentUser
             
             //Save this PenPal to core data
             do
@@ -316,7 +334,7 @@ class MailController: NSObject
             let newPal2 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
             newPal2.email = "corie@operatorFoundation.org"
             newPal2.name = "Corie Johnson"
-            newPal2.sentKey = true
+            newPal2.owner = Constants.currentUser
             
             //Save this PenPal to core data
             do
@@ -332,6 +350,7 @@ class MailController: NSObject
             let newPal3 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
             newPal3.email = "litaDev@gmail.com"
             newPal3.name = "Lita Schule"
+            newPal3.owner = Constants.currentUser
             
             //Save this PenPal to core data
             do
@@ -655,11 +674,11 @@ class MailController: NSObject
                     if let sodium = Sodium(), let secretKey = KeyController.sharedInstance.myPrivateKey
                     {
                         print("Encrypting a message to send.\n")
-                        print("Private Key: \(secretKey) \n")
-                        print("Public Key: \(KeyController.sharedInstance.mySharedKey)\n")
+                        print("Private Key: \(self.dataToString(secretKey)) \n")
+                        print("Public Key: \(self.dataToString(KeyController.sharedInstance.mySharedKey!))\n")
                         print("This Pal's Key: \(penPalKey)")
                         print("This message data:\n")
-                        print("\(messageBuilder.data())\n")
+                        print("\(self.dataToString(messageBuilder.data()))\n")
                         
                         if let encryptedMessageData: NSData = sodium.box.seal(messageBuilder.data(), recipientPublicKey:penPalKey, senderSecretKey: secretKey)
                         {
