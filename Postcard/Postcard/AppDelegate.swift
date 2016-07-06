@@ -15,16 +15,11 @@ class AppDelegate: NSObject, NSApplicationDelegate
 {
     @IBOutlet weak var postcardWindow: NSWindow!
     
-    
-    
     //MARK: Application Lifecycle
     
     func applicationDidFinishLaunching(aNotification: NSNotification)
     {
-//        for name in NSFontManager.sharedFontManager().availableFonts
-//        {
-//            print(name)
-//        }
+
     }
     
     //MARK: Helper Methods

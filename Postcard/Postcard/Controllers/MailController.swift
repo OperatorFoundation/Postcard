@@ -114,24 +114,25 @@ class MailController: NSObject
                                         //We already have this Penpal and their key
                                         if let thisPenPal = self.fetchPenPal(sender), let penPalKey = thisPenPal.key
                                         {
-                                            let attachmentData = attachment.data
+                                            let attachmentString = attachment.data
                                             //Decode - GTLBase64
-                                            if let postcardData = GTLDecodeWebSafeBase64(attachmentData)
+                                            //if let postcardData = GTLDecodeWebSafeBase64(attachmentString)
+                                            if let postcardData = self.stringDecodedToData(attachmentString)
                                             {
                                                 //Decrypt - Sodium
                                                 if let sodium = Sodium(), let secretKey = KeyController.sharedInstance.myPrivateKey
                                                 {
                                                     print("Attempting to decrypt a postcard:\n")
-                                                    print("Sender's Public Key: \(self.dataToString(penPalKey)))\n")
-                                                    print("Recipient's Secret Key: \(self.dataToString(secretKey))\n")
-                                                    print("Recipient's Public Key: \(KeyController.sharedInstance.mySharedKey)\n")
+                                                    print("Sender's Public Key: \(self.dataEncodedToString(penPalKey)))\n")
+                                                    print("Recipient's Secret Key: \(self.dataEncodedToString(secretKey))\n")
+                                                    print("Recipient's Public Key: \(self.dataEncodedToString(KeyController.sharedInstance.mySharedKey!))\n")
                                                     
                                                     print("Postcard Data:\n")
-                                                    print("\(self.dataToString(postcardData))\n")
+                                                    print("\(self.dataEncodedToString(postcardData))\n")
                                                     
                                                     if let decryptedPostcard = sodium.box.open(postcardData, senderPublicKey: penPalKey, recipientSecretKey: secretKey)
                                                     {
-                                                        print("Decrypted Postcard?\n\(decryptedPostcard)\n")
+                                                        print("UTF8 Decoded & Decrypted: \n \(String(data: decryptedPostcard, encoding: NSUTF8StringEncoding))")
                                                         //Save to CoreData so it will Display
                                                     }
                                                     else
@@ -140,6 +141,11 @@ class MailController: NSObject
                                                     }
                                                 }
                                             }
+                                        }
+                                        else
+                                        {
+                                            print("We could not convert the raw string to data. Failed to decode the message from \(sender).\n")
+                                            print("Attachment String: \(attachment.data)\n")
                                         }
                                     }
                                 })
@@ -151,25 +157,55 @@ class MailController: NSObject
         }
     }
     
-    func dataToString(data: NSData) -> String
+    func dataEncodedToString(data: NSData) -> String
     {
-        let newString: String = data.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
+        let newString = GTLEncodeWebSafeBase64(data)
         
         return newString
     }
     
-    func stringToData(string: String) -> NSData?
+    func stringDecodedToData(string: String) -> NSData?
     {
-        if let newData: NSData = NSData(base64EncodedString: string, options: NSDataBase64DecodingOptions(rawValue: 0))
+        if let newData = GTLDecodeWebSafeBase64(string)
         {
             return newData
         }
         else {return nil}
     }
     
+    func fetchPenPalForCurrentUser(emailAddress: String) -> PenPal?
+    {
+        //Make sure we have a current user
+        if let currentUser = Constants.currentUser
+        {
+            let fetchRequest = NSFetchRequest(entityName: "PenPal")
+            //Check for a penpal with this email address AND this current user as owner
+            fetchRequest.predicate = NSPredicate(format: "email == %@ AND owner == %@", emailAddress, currentUser)
+            do
+            {
+                let result = try self.managedObjectContext?.executeFetchRequest(fetchRequest)
+                if result?.count > 0, let thisPenpal = result?[0] as? PenPal
+                {
+                    return thisPenpal
+                }
+            }
+            catch
+            {
+                //Could not fetch this Penpal from core data
+                let fetchError = error as NSError
+                print(fetchError)
+                
+                return nil
+            }
+        }
+        
+        return nil
+    }
+    
     func fetchPenPal(emailAddress: String) -> PenPal?
     {
         let fetchRequest = NSFetchRequest(entityName: "PenPal")
+        //Check for a penpal with this email address AND this current user as owner
         fetchRequest.predicate = NSPredicate(format: "email == %@", emailAddress)
         do
         {
@@ -204,11 +240,12 @@ class MailController: NSObject
                 if header.name == "From"
                 {
                     let sender = header.value
-                    let attachmentData = attachment.data
-                    let decodedAttachment = GTLDecodeBase64(attachmentData)
+                    let attachmentDataString = attachment.data
+                    let decodedAttachment = stringDecodedToData(attachmentDataString)
+                    //let decodedAttachment = GTLDecodeBase64(attachmentDataString)
                     
                     //Check if we have this email address saved as a penpal
-                    if let thisPenPal = self.fetchPenPal(sender)
+                    if let thisPenPal = self.fetchPenPalForCurrentUser(sender)
                     {
                         if let thisPenPalKey = thisPenPal.key
                         {
@@ -218,6 +255,7 @@ class MailController: NSObject
                             }
                             else
                             {
+                                //TODO: Saving the new Key instead....?
                                 thisPenPal.key = decodedAttachment
                                 //Save this PenPal to core data
                                 do
@@ -237,7 +275,9 @@ class MailController: NSObject
                         }
                         else
                         {
+                            //This Penpal didn't have a key stored, save the receved key
                             thisPenPal.key = decodedAttachment
+                            
                             //Save this PenPal to core data
                             do
                             {
@@ -315,57 +355,58 @@ class MailController: NSObject
         
         if let managedObjectContext = self.managedObjectContext, let entity = NSEntityDescription.entityForName("PenPal", inManagedObjectContext: managedObjectContext)
         {
-            let newPal = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-            newPal.email = "brandon@operatorFoundation.org"
-            newPal.name = "Brandon Wiley"
-            newPal.owner = Constants.currentUser
-            
-            //Save this PenPal to core data
-            do
-            {
-                try newPal.managedObjectContext?.save()
-            }
-            catch
-            {
-                let saveError = error as NSError
-                print("\(saveError)")
-            }
-            
-            let newPal2 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-            newPal2.email = "corie@operatorFoundation.org"
-            newPal2.name = "Corie Johnson"
-            newPal2.owner = Constants.currentUser
-            
-            //Save this PenPal to core data
-            do
-            {
-                try newPal2.managedObjectContext?.save()
-            }
-            catch
-            {
-                let saveError = error as NSError
-                print("\(saveError)")
-            }
-            
-            let newPal3 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-            newPal3.email = "litaDev@gmail.com"
-            newPal3.name = "Lita Schule"
-            newPal3.owner = Constants.currentUser
-            
-            //Save this PenPal to core data
-            do
-            {
-                try newPal3.managedObjectContext?.save()
-            }
-            catch
-            {
-                let saveError = error as NSError
-                print("\(saveError)")
-            }
+//            let newPal = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
+//            newPal.email = "brandon@operatorFoundation.org"
+//            newPal.name = "Brandon Wiley"
+//            newPal.owner = Constants.currentUser
+//            
+//            //Save this PenPal to core data
+//            do
+//            {
+//                try newPal.managedObjectContext?.save()
+//            }
+//            catch
+//            {
+//                let saveError = error as NSError
+//                print("\(saveError)")
+//            }
+//            
+//            let newPal2 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
+//            newPal2.email = "corie@operatorFoundation.org"
+//            newPal2.name = "Corie Johnson"
+//            newPal2.owner = Constants.currentUser
+//            
+//            //Save this PenPal to core data
+//            do
+//            {
+//                try newPal2.managedObjectContext?.save()
+//            }
+//            catch
+//            {
+//                let saveError = error as NSError
+//                print("\(saveError)")
+//            }
+//            
+//            let newPal3 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
+//            newPal3.email = "litaDev@gmail.com"
+//            newPal3.name = "Lita Schule"
+//            newPal3.owner = Constants.currentUser
+//            
+//            //Save this PenPal to core data
+//            do
+//            {
+//                try newPal3.managedObjectContext?.save()
+//            }
+//            catch
+//            {
+//                let saveError = error as NSError
+//                print("\(saveError)")
+//            }
             
 //            let newPal4 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
 //            newPal4.email = "looklita@gmail.com"
 //            newPal4.name = "Lita Consuelo"
+//            newPal4.owner = Constants.currentUser
 //            
 //            //Save this PenPal to core data
 //            do
@@ -382,7 +423,7 @@ class MailController: NSObject
             let newPal4 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
             newPal4.email = "adelita.schule@gmail.com"
             newPal4.name = "Adelita Schule"
-            
+            newPal4.owner = Constants.currentUser
             
             //Save this PenPal to core data
             do
@@ -441,7 +482,8 @@ class MailController: NSObject
                     {
                         if thisPart.mimeType == "text/plain"
                         {
-                            if let bodyData = GTLDecodeBase64(thisPart.body.data), let bodyText = String(data: bodyData, encoding: NSUTF8StringEncoding)
+                            //if let bodyData = GTLDecodeBase64(thisPart.body.data), let bodyText = String(data: bodyData, encoding: NSUTF8StringEncoding)
+                            if let bodyData = stringDecodedToData(thisPart.body.data), let bodyText = String(data: bodyData, encoding: NSUTF8StringEncoding)
                             {
                                 newCard.body = bodyText
                             }
@@ -644,12 +686,9 @@ class MailController: NSObject
 //                messageBuilder.addAttachment(packageAttachment)
 //            }
 //        }
-        print("We have not encoded this message but it should be encrypted:\n")
-        print("\(messageData)\n")
-        print("Is the message attachment encoded now?\n")
-        print("\(messageBuilder.data())")
         
-        return GTLEncodeWebSafeBase64(messageBuilder.data())
+        return dataEncodedToString(messageBuilder.data())
+//        return GTLEncodeWebSafeBase64(messageBuilder.data())
     }
     
     func generateMessagePostcard(sendToEmail to: String, subject: String, body: String) -> NSData?
@@ -674,15 +713,18 @@ class MailController: NSObject
                     if let sodium = Sodium(), let secretKey = KeyController.sharedInstance.myPrivateKey
                     {
                         print("Encrypting a message to send.\n")
-                        print("Private Key: \(self.dataToString(secretKey)) \n")
-                        print("Public Key: \(self.dataToString(KeyController.sharedInstance.mySharedKey!))\n")
-                        print("This Pal's Key: \(penPalKey)")
+                        print("Private Key: \(self.dataEncodedToString(secretKey)) \n")
+                        print("Public Key: \(self.dataEncodedToString(KeyController.sharedInstance.mySharedKey!))\n")
+                        print("This Pal's Key: \(self.dataEncodedToString(penPalKey))")
                         print("This message data:\n")
-                        print("\(self.dataToString(messageBuilder.data()))\n")
+                        print("\(self.dataEncodedToString(messageBuilder.data()))\n")
                         
                         if let encryptedMessageData: NSData = sodium.box.seal(messageBuilder.data(), recipientPublicKey:penPalKey, senderSecretKey: secretKey)
                         {
+                            print("This encrypted message data:\n")
+                            print("\(self.dataEncodedToString(encryptedMessageData))")
                             return encryptedMessageData
+                            
                         }
                         else
                         {
@@ -739,7 +781,8 @@ class MailController: NSObject
             messageBuilder.addAttachment(postcardWrapperAttachment)
         }
         
-        return GTLEncodeWebSafeBase64(messageBuilder.data())
+        return dataEncodedToString(messageBuilder.data())
+//        return GTLEncodeWebSafeBase64(messageBuilder.data())
     }
     
     func generateKeyAttachment() -> NSData?
