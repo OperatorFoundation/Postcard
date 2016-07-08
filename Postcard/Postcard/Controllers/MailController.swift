@@ -119,28 +119,100 @@ class MailController: NSObject
                                             //if let postcardData = GTLDecodeWebSafeBase64(attachmentString)
                                             if let postcardData = self.stringDecodedToData(attachmentString)
                                             {
-                                                //Decrypt - Sodium
-                                                if let sodium = Sodium(), let secretKey = KeyController.sharedInstance.myPrivateKey
+                                                
+                                                //CoreData
+                                                if let entity = NSEntityDescription.entityForName("Postcard", inManagedObjectContext: self.managedObjectContext!)
                                                 {
-                                                    print("Attempting to decrypt a postcard:\n")
-                                                    print("Sender's Public Key: \(self.dataEncodedToString(penPalKey)))\n")
-                                                    print("Recipient's Secret Key: \(self.dataEncodedToString(secretKey))\n")
-                                                    print("Recipient's Public Key: \(self.dataEncodedToString(KeyController.sharedInstance.mySharedKey!))\n")
+                                                    //TODO: Save the encrypted and decrypted files
                                                     
-                                                    print("Postcard Data:\n")
-                                                    print("\(self.dataEncodedToString(postcardData))\n")
+                                                    //Create New Postcard Record
+                                                    let newCard = Postcard(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
                                                     
-                                                    if let decryptedPostcard = sodium.box.open(postcardData, senderPublicKey: penPalKey, recipientSecretKey: secretKey)
+                                                    //Postcard Sender/Penpal
+                                                    newCard.from = thisPenPal
+                                                    
+                                                    //Date
+                                                    for dateHeader in headers where dateHeader.name == "Date"
                                                     {
-                                                        print("UTF8 Decoded & Decrypted: \n \(String(data: decryptedPostcard, encoding: NSUTF8StringEncoding))")
-                                                        //Save to CoreData so it will Display
+                                                        let formatter = NSDateFormatter()
+                                                        formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
+                                                        if let receivedDate = formatter.dateFromString(dateHeader.value)
+                                                        {
+                                                            newCard.receivedDate = receivedDate.timeIntervalSinceReferenceDate
+                                                        }
                                                     }
-                                                    else
+                                                    
+                                                    //Unique Identifier
+                                                    for idHeader in headers where (idHeader.name == "Message-ID" || idHeader.name == "Message-Id")
                                                     {
-                                                        print("We could not decrypt this postcard!! We may not have the correct key for \(sender)\n")
+                                                        newCard.identifier = idHeader.value
+                                                    }
+                                                    
+                                                    //Decrypt - Sodium
+                                                    let keyController = KeyController.sharedInstance
+                                                    if let secretKey = keyController.myPrivateKey, let sodium = Sodium()
+                                                    {
+                                                        print("Attempting to decrypt a postcard:\n")
+                                                        print("Sender's Public Key: \(self.dataEncodedToString(penPalKey)))\n")
+                                                        print("Recipient's Secret Key: \(self.dataEncodedToString(secretKey))\n")
+                                                        print("Recipient's Public Key: \(self.dataEncodedToString(KeyController.sharedInstance.mySharedKey!))\n")
+                                                        
+                                                        print("Postcard Data:\n")
+                                                        print("\(self.dataEncodedToString(postcardData))\n")
+                                                        
+                                                        if let decryptedPostcard = sodium.box.open(postcardData, senderPublicKey: penPalKey, recipientSecretKey: secretKey)
+                                                        {
+                                                            print("UTF8 Decoded & Decrypted: \n \(String(data: decryptedPostcard, encoding: NSUTF8StringEncoding))\n")
+                                                            //Parse this message into usable parts
+                                                            
+                                                            let messageParser = MCOMessageParser(data: decryptedPostcard)
+                                                            let body = messageParser.plainTextBodyRendering()
+                                                            let attachments = messageParser.attachments()
+                                                            
+                                                            print("This is the message body:\n\(body)\n")
+                                                            print("Attachments:\n\(attachments.description)\n")
+                                                            
+                                                            //Subject
+                                                            
+                                                            //Snippet
+                                                            
+                                                            //Body
+                                                            newCard.body = body
+                                                            
+                                                            //Decrypted
+                                                            newCard.decrypted = true
+                                                            
+                                                            //Delivered To
+                                                            
+                                                            //Attachment?
+                                                            if attachments.isEmpty
+                                                            {
+                                                                newCard.hasPackage = false
+                                                            }
+                                                            else
+                                                            {
+                                                                newCard.hasPackage = true
+                                                            }
+                                                            
+                                                            //Save this Postcard to core data
+                                                            do
+                                                            {
+                                                                try newCard.managedObjectContext?.save()
+                                                            }
+                                                            catch
+                                                            {
+                                                                let saveError = error as NSError
+                                                                print("\(saveError)")
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            print("We could not decrypt this postcard!! We may not have the correct key for \(sender)\n")
+                                                        }
                                                     }
                                                 }
                                             }
+                                            
                                         }
                                         else
                                         {
