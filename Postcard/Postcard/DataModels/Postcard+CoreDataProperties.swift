@@ -2,7 +2,7 @@
 //  Postcard+CoreDataProperties.swift
 //  Postcard
 //
-//  Created by Adelita Schule on 6/30/16.
+//  Created by Adelita Schule on 7/8/16.
 //  Copyright © 2016 operatorfoundation.org. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -22,6 +22,7 @@ extension Postcard {
     @NSManaged var snippet: String?
     @NSManaged var subject: String?
     @NSManaged var to: String?
+    @NSManaged var cipherText: NSData?
     @NSManaged var from: PenPal?
     @NSManaged var owner: User?
 

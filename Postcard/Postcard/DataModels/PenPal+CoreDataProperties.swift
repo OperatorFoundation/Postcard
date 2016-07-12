@@ -2,7 +2,7 @@
 //  PenPal+CoreDataProperties.swift
 //  Postcard
 //
-//  Created by Adelita Schule on 6/30/16.
+//  Created by Adelita Schule on 7/8/16.
 //  Copyright © 2016 operatorfoundation.org. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu

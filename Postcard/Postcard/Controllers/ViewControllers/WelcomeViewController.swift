@@ -30,8 +30,10 @@ class WelcomeViewController: NSViewController
         if let auth = GTMOAuth2WindowController.authForGoogleFromKeychainForName(GmailProps.kKeychainItemName , clientID: GmailProps.kClientID, clientSecret: nil)
         {
             GmailProps.service.authorizer = auth
+            GmailProps.servicePeople.authorizer = auth
         }
         
+        //TODO: This goes inside the keychain check
         //Ensure Gmail API service is authorized and perform API calls (fetch postcards)
         if let authorizer = GmailProps.service.authorizer, canAuth = authorizer.canAuthorize where canAuth
         {
@@ -174,6 +176,7 @@ class WelcomeViewController: NSViewController
         }
         
         GmailProps.service.authorizer = authResult
+        GmailProps.servicePeople.authorizer = authResult
         //
         print("Authorization result from app delegate: \(authResult)\n")
         //

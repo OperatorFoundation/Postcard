@@ -17,6 +17,7 @@
     </entity>
     <entity name="Postcard" representedClassName=".Postcard" syncable="YES">
         <attribute name="body" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="cipherText" attributeType="Binary" syncable="YES"/>
         <attribute name="decrypted" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="hasPackage" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="identifier" attributeType="String" syncable="YES"/>
@@ -36,6 +37,7 @@
         <attribute name="emailAddress" attributeType="String" syncable="YES"/>
         <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="peopleSyncToken" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="publicKey" optional="YES" attributeType="Binary" syncable="YES"/>
         <relationship name="pal" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PenPal" inverseName="owner" inverseEntity="PenPal" syncable="YES"/>
         <relationship name="postcard" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Postcard" inverseName="owner" inverseEntity="Postcard" syncable="YES"/>
@@ -47,7 +49,7 @@
     </entity>
     <elements>
         <element name="PenPal" positionX="-63" positionY="-18" width="128" height="165"/>
-        <element name="Postcard" positionX="-54" positionY="18" width="128" height="195"/>
-        <element name="User" positionX="-63" positionY="72" width="128" height="135"/>
+        <element name="Postcard" positionX="-54" positionY="18" width="128" height="210"/>
+        <element name="User" positionX="-63" positionY="72" width="128" height="150"/>
     </elements>
 </model>

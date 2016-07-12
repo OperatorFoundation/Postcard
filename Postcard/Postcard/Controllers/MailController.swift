@@ -112,7 +112,7 @@ class MailController: NSObject
                                     if let attachment = maybeAttachment as? GTLGmailMessagePartBody
                                     {
                                         //We already have this Penpal and their key
-                                        if let thisPenPal = self.fetchPenPal(sender), let penPalKey = thisPenPal.key
+                                        if let thisPenPal = PenPalController.sharedInstance.fetchPenPal(sender), let penPalKey = thisPenPal.key
                                         {
                                             let attachmentString = attachment.data
                                             //Decode - GTLBase64
@@ -130,6 +130,9 @@ class MailController: NSObject
                                                     
                                                     //Postcard Sender/Penpal
                                                     newCard.from = thisPenPal
+                                                    
+                                                    //Cipher Text
+                                                    newCard.cipherText = postcardData
                                                     
                                                     //Date
                                                     for dateHeader in headers where dateHeader.name == "Date"
@@ -166,25 +169,36 @@ class MailController: NSObject
                                                             //Parse this message into usable parts
                                                             
                                                             let messageParser = MCOMessageParser(data: decryptedPostcard)
-                                                            let body = messageParser.plainTextBodyRendering()
-                                                            let attachments = messageParser.attachments()
-                                                            
-                                                            print("This is the message body:\n\(body)\n")
-                                                            print("Attachments:\n\(attachments.description)\n")
+                                                            if let mainPart = messageParser.mainPart() as? MCOAbstractMultipart
+                                                            {
+                                                                let firstPart = mainPart.parts[0]
+                                                                print("This is the main part:\n\(mainPart.description)\n")
+                                                                print("This is the first part:\n\(firstPart.description)\n")
+                                                                let body = firstPart.decodedString()
+                                                                //Body
+                                                                newCard.body = body
+                                                            }                                                            
                                                             
                                                             //Subject
+                                                            let subject = messageParser.header.subject
+                                                            newCard.subject = subject
                                                             
                                                             //Snippet
                                                             
-                                                            //Body
-                                                            newCard.body = body
+                                                            
                                                             
                                                             //Decrypted
                                                             newCard.decrypted = true
                                                             
                                                             //Delivered To
+                                                            let deliveredTo = messageParser.header.to
+                                                            //TODO: We need to handle the whole array of recipients
+                                                            newCard.to = deliveredTo.first?.email
                                                             
                                                             //Attachment?
+                                                            let attachments = messageParser.attachments()
+                                                            print("Attachments:\n\(attachments.description)\n")
+
                                                             if attachments.isEmpty
                                                             {
                                                                 newCard.hasPackage = false
@@ -274,30 +288,7 @@ class MailController: NSObject
         return nil
     }
     
-    func fetchPenPal(emailAddress: String) -> PenPal?
-    {
-        let fetchRequest = NSFetchRequest(entityName: "PenPal")
-        //Check for a penpal with this email address AND this current user as owner
-        fetchRequest.predicate = NSPredicate(format: "email == %@", emailAddress)
-        do
-        {
-            let result = try self.managedObjectContext?.executeFetchRequest(fetchRequest)
-            if result?.count > 0, let thisPenpal = result?[0] as? PenPal
-            {
-                return thisPenpal
-            }
-        }
-        catch
-        {
-            //Could not fetch this Penpal from core data
-            let fetchError = error as NSError
-            print(fetchError)
-            
-            return nil
-        }
-        
-        return nil
-    }
+    
     
     //MARK: Process Different Message Types
     
@@ -420,96 +411,6 @@ class MailController: NSObject
         }
     }
 
-    //DEV ONLY: create contacts
-    func makeMeSomeFriends()
-    {
-        //Create New PenPal record
-        
-        if let managedObjectContext = self.managedObjectContext, let entity = NSEntityDescription.entityForName("PenPal", inManagedObjectContext: managedObjectContext)
-        {
-//            let newPal = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-//            newPal.email = "brandon@operatorFoundation.org"
-//            newPal.name = "Brandon Wiley"
-//            newPal.owner = Constants.currentUser
-//            
-//            //Save this PenPal to core data
-//            do
-//            {
-//                try newPal.managedObjectContext?.save()
-//            }
-//            catch
-//            {
-//                let saveError = error as NSError
-//                print("\(saveError)")
-//            }
-//            
-//            let newPal2 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-//            newPal2.email = "corie@operatorFoundation.org"
-//            newPal2.name = "Corie Johnson"
-//            newPal2.owner = Constants.currentUser
-//            
-//            //Save this PenPal to core data
-//            do
-//            {
-//                try newPal2.managedObjectContext?.save()
-//            }
-//            catch
-//            {
-//                let saveError = error as NSError
-//                print("\(saveError)")
-//            }
-//            
-//            let newPal3 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-//            newPal3.email = "litaDev@gmail.com"
-//            newPal3.name = "Lita Schule"
-//            newPal3.owner = Constants.currentUser
-//            
-//            //Save this PenPal to core data
-//            do
-//            {
-//                try newPal3.managedObjectContext?.save()
-//            }
-//            catch
-//            {
-//                let saveError = error as NSError
-//                print("\(saveError)")
-//            }
-            
-//            let newPal4 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-//            newPal4.email = "looklita@gmail.com"
-//            newPal4.name = "Lita Consuelo"
-//            newPal4.owner = Constants.currentUser
-//            
-//            //Save this PenPal to core data
-//            do
-//            {
-//                try newPal4.managedObjectContext?.save()
-//                //print("NewCard From:" + (newCard.from?.email)! + "\n")
-//            }
-//            catch
-//            {
-//                let saveError = error as NSError
-//                print("\(saveError)")
-//            }
-            
-            let newPal4 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-            newPal4.email = "adelita.schule@gmail.com"
-            newPal4.name = "Adelita Schule"
-            newPal4.owner = Constants.currentUser
-            
-            //Save this PenPal to core data
-            do
-            {
-                try newPal4.managedObjectContext?.save()
-            }
-            catch
-            {
-                let saveError = error as NSError
-                print("\(saveError)")
-            }
-            
-        }
-    }
     
     //TODO: This message is exactly the same as above
     func processPostcard(message: GTLGmailMessage)
