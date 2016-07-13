@@ -32,23 +32,17 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
             postcardsArrayController.fetchPredicate = predicate
             print("postcard Array Controller filtered to \(currentUser.emailAddress)\n")
         }
-        
     }
     
     @IBAction func rowSelected(sender: NSTableView)
     {
         if let selectedPostcard = postcardsArrayController.selectedObjects[0] as? Postcard
         {
-            selectedPostcard.decrypted = true
-            //Save this Postcard to core data
-            do
+            //Decrypt the postcard on selection
+            //TODO: Should this be a callback function?
+            if selectedPostcard.decrypted == false
             {
-                try selectedPostcard.managedObjectContext?.save()
-            }
-            catch
-            {
-                let saveError = error as NSError
-                print("\(saveError)")
+                MailController.sharedInstance.decryptPostcard(selectedPostcard)
             }
             
             let splitVC = parentViewController as! NSSplitViewController
@@ -58,10 +52,12 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
             }
         }
     }
-
+    
+//
 }
 
 
+//MARK: Custom Table Cell Class
 class MessagesTableCell: NSTableCellView
 {
     @IBOutlet weak var nameLabel: NSTextField!
@@ -83,5 +79,5 @@ class MessagesTableCell: NSTableCellView
         }
     }
     
-    
+//
 }

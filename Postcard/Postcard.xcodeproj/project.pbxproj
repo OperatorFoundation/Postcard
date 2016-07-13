@@ -18,15 +18,10 @@
 		461891CC1CC17B9A009C577D /* PostcardUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891CB1CC17B9A009C577D /* PostcardUITests.swift */; };
 		461C0A531CE63F0B00C5B5A5 /* PenPalController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A521CE63F0B00C5B5A5 /* PenPalController.swift */; };
 		461C0A551CE6638C00C5B5A5 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A541CE6638C00C5B5A5 /* MenuViewController.swift */; };
-		461C0A561CE6638C00C5B5A5 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A541CE6638C00C5B5A5 /* MenuViewController.swift */; };
 		461C0A581CE663D500C5B5A5 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A571CE663D500C5B5A5 /* ContentViewController.swift */; };
-		461C0A591CE663D500C5B5A5 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A571CE663D500C5B5A5 /* ContentViewController.swift */; };
 		461C0A5B1CE6645300C5B5A5 /* PenPalsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A5A1CE6645300C5B5A5 /* PenPalsViewController.swift */; };
-		461C0A5C1CE6645300C5B5A5 /* PenPalsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A5A1CE6645300C5B5A5 /* PenPalsViewController.swift */; };
 		461C0A5E1CE664D900C5B5A5 /* MessageListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A5D1CE664D900C5B5A5 /* MessageListViewController.swift */; };
-		461C0A5F1CE664D900C5B5A5 /* MessageListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A5D1CE664D900C5B5A5 /* MessageListViewController.swift */; };
 		461C0A611CE6664200C5B5A5 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A601CE6664200C5B5A5 /* MessageViewController.swift */; };
-		461C0A621CE6664200C5B5A5 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A601CE6664200C5B5A5 /* MessageViewController.swift */; };
 		461C0A641CE682AF00C5B5A5 /* DesignableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A631CE682AF00C5B5A5 /* DesignableView.swift */; };
 		461C0A671CE696E300C5B5A5 /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A661CE696E300C5B5A5 /* MainSplitViewController.swift */; };
 		463E68531D0B43E600F70845 /* SignPainter.otf in Resources */ = {isa = PBXBuildFile; fileRef = 463E68521D0B434300F70845 /* SignPainter.otf */; };
@@ -612,13 +607,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				461C0A5C1CE6645300C5B5A5 /* PenPalsViewController.swift in Sources */,
-				461C0A5F1CE664D900C5B5A5 /* MessageListViewController.swift in Sources */,
 				461891CC1CC17B9A009C577D /* PostcardUITests.swift in Sources */,
-				461C0A591CE663D500C5B5A5 /* ContentViewController.swift in Sources */,
 				B430FC8E1CF8A23200205015 /* AppDelegate.swift in Sources */,
-				461C0A621CE6664200C5B5A5 /* MessageViewController.swift in Sources */,
-				461C0A561CE6638C00C5B5A5 /* MenuViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

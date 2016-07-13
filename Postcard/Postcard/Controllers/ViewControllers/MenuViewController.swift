@@ -62,6 +62,11 @@ class MenuViewController: NSViewController
     
     @IBAction func lockdownClick(sender: NSButton)
     {
+        //'Lock' Postcards
+        if let currentUser = Constants.currentUser
+        {
+            MailController.sharedInstance.removeAllDecryptionForUser(currentUser)
+        }
         
         //Present Welcome View
         let storyboard: NSStoryboard = NSStoryboard(name: "Main", bundle: nil)
@@ -69,7 +74,7 @@ class MenuViewController: NSViewController
         welcomeWindowController.contentViewController = newContentController
         welcomeWindowController.showWindow(sender)
         
-        
+        //And Close Main Postcard Window
         self.view.window?.close()
     }
     

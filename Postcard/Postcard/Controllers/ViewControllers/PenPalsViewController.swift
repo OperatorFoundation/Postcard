@@ -97,7 +97,6 @@ class PenPalTableCell: NSTableCellView
                     actionButton.target = self
                     actionButton.action = #selector(inviteAction)
                     backgroundView.viewColor = PostcardUI.gray
-                    
                 }
                 else if penPal.key != nil && penPal.sentKey == false
                 {
@@ -105,7 +104,6 @@ class PenPalTableCell: NSTableCellView
                     actionButton.image = NSImage(named: "greenButton")
                     actionButton.target = self
                     actionButton.action = #selector(addAction)
-                    
                     backgroundView.viewColor = NSColor.whiteColor()
                 }
                 else

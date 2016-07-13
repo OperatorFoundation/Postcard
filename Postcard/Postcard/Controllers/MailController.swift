@@ -26,7 +26,7 @@ class MailController: NSObject
         managedObjectContext = appDelegate.managedObjectContext
     }
     
-    //TODO: Make sure that deleting emails via bindings to the array congtroller also removes them from  gmail
+    //TODO: Make sure that deleting emails via bindings to the array congtroller also removes them from gmail?
     
     func updateMail()
     {
@@ -70,7 +70,6 @@ class MailController: NSObject
             query.identifier = messageMeta.identifier
             query.fields = "payload"
             GmailProps.service.executeQuery(query, completionHandler: {(ticket, maybeMessage, error) in
-                //Save each message
                 if let message = maybeMessage as? GTLGmailMessage, parts = message.payload.parts as? [GTLGmailMessagePart]
                 {
                     //This is a key/penpal invitation
@@ -87,7 +86,6 @@ class MailController: NSObject
                                 self.processPenPalKeyAttachment(attachment, forMessage: message)
                             }
                         })
-
                     }
 
                     if let headers = message.payload.headers as? [GTLGmailMessagePartHeader]
@@ -111,19 +109,16 @@ class MailController: NSObject
                                     if let attachment = maybeAttachment as? GTLGmailMessagePartBody
                                     {
                                         //We already have this Penpal and their key
-                                        if let thisPenPal = PenPalController.sharedInstance.fetchPenPal(sender), let penPalKey = thisPenPal.key
+                                        if let thisPenPal = PenPalController.sharedInstance.fetchPenPal(sender)
                                         {
                                             let attachmentString = attachment.data
+                                            
                                             //Decode - GTLBase64
-                                            //if let postcardData = GTLDecodeWebSafeBase64(attachmentString)
                                             if let postcardData = self.stringDecodedToData(attachmentString)
                                             {
-                                                
                                                 //CoreData
                                                 if let entity = NSEntityDescription.entityForName("Postcard", inManagedObjectContext: self.managedObjectContext!)
                                                 {
-                                                    //TODO: Save the encrypted and decrypted files
-                                                    
                                                     //Create New Postcard Record
                                                     let newCard = Postcard(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
                                                     
@@ -133,7 +128,7 @@ class MailController: NSObject
                                                     //Postcard Sender/Penpal
                                                     newCard.from = thisPenPal
                                                     
-                                                    //Cipher Text
+                                                    //Cipher Text - Save the encrypted file
                                                     newCard.cipherText = postcardData
                                                     
                                                     //Date
@@ -150,87 +145,27 @@ class MailController: NSObject
                                                     //Unique Identifier
                                                     newCard.identifier = messageMeta.identifier
                                                     
-                                                    //Decrypt - Sodium
-                                                    let keyController = KeyController.sharedInstance
-                                                    if let secretKey = keyController.myPrivateKey, let sodium = Sodium()
+                                                    //Save this Postcard to core data
+                                                    do
                                                     {
-                                                        print("Attempting to decrypt a postcard:\n")
-                                                        print("Sender's Public Key: \(self.dataEncodedToString(penPalKey)))\n")
-                                                        print("Recipient's Secret Key: \(self.dataEncodedToString(secretKey))\n")
-                                                        print("Recipient's Public Key: \(self.dataEncodedToString(KeyController.sharedInstance.mySharedKey!))\n")
-                                                        
-                                                        print("Postcard Data:\n")
-                                                        print("\(self.dataEncodedToString(postcardData))\n")
-                                                        
-                                                        if let decryptedPostcard = sodium.box.open(postcardData, senderPublicKey: penPalKey, recipientSecretKey: secretKey)
-                                                        {
-                                                            print("UTF8 Decoded & Decrypted: \n \(String(data: decryptedPostcard, encoding: NSUTF8StringEncoding))\n")
-                                                            //Parse this message into usable parts
-                                                            
-                                                            let messageParser = MCOMessageParser(data: decryptedPostcard)
-                                                            if let mainPart = messageParser.mainPart() as? MCOAbstractMultipart
-                                                            {
-                                                                let firstPart = mainPart.parts[0]
-                                                                print("This is the main part:\n\(mainPart.description)\n")
-                                                                print("This is the first part:\n\(firstPart.description)\n")
-                                                                let body = firstPart.decodedString()
-                                                                //Body
-                                                                newCard.body = body
-                                                            }                                                            
-                                                            
-                                                            //Subject
-                                                            let subject = messageParser.header.subject
-                                                            newCard.subject = subject
-                                                            
-                                                            //Snippet
-
-                                                            
-                                                            //Decrypted
-                                                            newCard.decrypted = true
-                                                            
-                                                            //Delivered To
-                                                            let deliveredTo = messageParser.header.to
-                                                            //TODO: We need to handle the whole array of recipients
-                                                            newCard.to = deliveredTo.first?.email
-                                                            
-                                                            //Attachment?
-                                                            let attachments = messageParser.attachments()
-                                                            print("Attachments:\n\(attachments.description)\n")
-
-                                                            if attachments.isEmpty
-                                                            {
-                                                                newCard.hasPackage = false
-                                                            }
-                                                            else
-                                                            {
-                                                                //TODO: ignore key attachments
-                                                                newCard.hasPackage = true
-                                                            }
-                                                            
-                                                            //Save this Postcard to core data
-                                                            do
-                                                            {
-                                                                try newCard.managedObjectContext?.save()
-                                                            }
-                                                            catch
-                                                            {
-                                                                let saveError = error as NSError
-                                                                print("\(saveError)")
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            print("We could not decrypt this postcard!! We may not have the correct key for \(sender)\n")
-                                                        }
+                                                        try newCard.managedObjectContext?.save()
                                                     }
+                                                    catch
+                                                    {
+                                                        let saveError = error as NSError
+                                                        print("\(saveError)")
+                                                    }
+                                                    //self.decryptPostcard(newCard)
                                                 }
                                             }
-                                            
+                                            else
+                                            {
+                                                print("Failed to decode the message from \(sender).\n")
+                                            }
                                         }
                                         else
                                         {
-                                            print("We could not convert the raw string to data. Failed to decode the message from \(sender).\n")
-                                            print("Attachment String: \(attachment.data)\n")
+                                            self.showAlert("We did not decrypt a message sent from \(sender) because this person is not saved as a contact.")
                                         }
                                     }
                                 })
@@ -240,6 +175,142 @@ class MailController: NSObject
                 }
             })
         }
+    }
+    
+    func decryptPostcard(postcard: Postcard)
+    {
+        //Decrypt - Sodium
+        let keyController = KeyController.sharedInstance
+        if let sodium = Sodium()
+        {
+            if let secretKey = keyController.myPrivateKey
+            {
+                if let penPal = postcard.from, let penPalKey = penPal.key
+                {
+                    if let cipherText = postcard.cipherText, let decryptedPostcard = sodium.box.open(cipherText, senderPublicKey: penPalKey, recipientSecretKey: secretKey)
+                    {
+                        //Parse this message
+                        self.parseDecryptedMessageAndSave(decryptedPostcard, saveToPostcard: postcard)
+                    }
+                    else
+                    {
+                        showAlert("We could not decrypt this postcard!! We may not have the correct key for \(penPal.email)\n")
+                    }
+                }
+                else
+                {
+                    showAlert("We were unable to decrypt a message: We don't have the key. :(")
+                }
+            }
+            else
+            {
+                showAlert("We were unable to decrypt your emails: we don't have your key. :(")
+            }
+        }
+        else
+        {
+            print("\nUnable to decrypt message: could not initialize Sodium. That's weird.\n")
+        }
+    }
+    
+    private func parseDecryptedMessageAndSave(data: NSData, saveToPostcard postcard: Postcard)
+    {
+        //Parse this message into usable parts
+        let messageParser = MCOMessageParser(data: data)
+        
+        //Body
+        if let mainPart = messageParser.mainPart() as? MCOAbstractMultipart
+        {
+            let firstPart = mainPart.parts[0]
+            let body = firstPart.decodedString()
+            
+            postcard.body = body
+        }
+        
+        //Subject
+        let subject = messageParser.header.subject
+        postcard.subject = subject
+        
+        //Snippet?
+        
+        //Decrypted
+        postcard.decrypted = true
+        
+        //Delivered To
+        let deliveredTo = messageParser.header.to
+        //TODO: We need to handle the whole array of recipients
+        postcard.to = deliveredTo.first?.email
+        
+        //Attachment?
+        let attachments = messageParser.attachments()
+        print("Attachments:\n\(attachments.description)\n")
+        
+        if attachments.isEmpty
+        {
+            postcard.hasPackage = false
+        }
+        else
+        {
+            //TODO: ignore key attachments
+            postcard.hasPackage = true
+        }
+        
+        //Save these changes to core data
+        do
+        {
+            try postcard.managedObjectContext?.save()
+        }
+        catch
+        {
+            let saveError = error as NSError
+            print("\(saveError)")
+        }
+    }
+    
+    func removeDecryptedPostcardData(postcard: Postcard)
+    {
+        //Remove all sensitive data
+        postcard.body = nil
+        postcard.subject = nil
+        postcard.snippet = nil
+        postcard.to = nil
+        postcard.hasPackage = false
+        postcard.decrypted = false
+        
+        //Save these changes to core data
+        do
+        {
+            try postcard.managedObjectContext?.save()
+        }
+        catch
+        {
+            let saveError = error as NSError
+            print("\(saveError)")
+        }
+    }
+    
+    func removeAllDecryptionForUser(lockdownUser: User)
+    {
+        if let postcards = lockdownUser.postcard
+        {
+            for maybeCard in postcards
+            {
+                if let card = maybeCard as? Postcard
+                {
+                    removeDecryptedPostcardData(card)
+                }
+                else
+                {
+                    print("User's postcard set does not contain Postcards. We cannot re-encrypt these objects.")
+                }
+                
+            }
+        }
+        else
+        {
+            print("Could not find postcards to re-encrypt for this user.")
+        }
+        
     }
     
     func dataEncodedToString(data: NSData) -> String
@@ -321,7 +392,6 @@ class MailController: NSObject
                                 do
                                 {
                                     try thisPenPal.managedObjectContext?.save()
-                                    print("New PenPal Key Saved.\n")
                                 }
                                 catch
                                 {
@@ -330,19 +400,17 @@ class MailController: NSObject
                                     self.showAlert("Warning: We could not save this contacts key.\n")
                                 }
                                 showAlert("We received a new key from \(sender) and it does not match the key we have stored. This is a problem. For now we have decided to save the new key.\n")
-                                
                             }
                         }
                         else
                         {
-                            //This Penpal didn't have a key stored, save the receved key
+                            //This Penpal didn't have a key stored, save the received key
                             thisPenPal.key = decodedAttachment
                             
                             //Save this PenPal to core data
                             do
                             {
                                 try thisPenPal.managedObjectContext?.save()
-                                print("New PenPal Key Saved.\n")
                             }
                             catch
                             {
@@ -352,9 +420,7 @@ class MailController: NSObject
                             }
                         }
                     }
-                    
                     //If not check for a key and create a new PenPal
-                    
                     else if sender != ""
                     {
                         //Create New PenPal Record
