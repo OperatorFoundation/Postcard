@@ -43,6 +43,16 @@ class PenPalController: NSObject
     {
         let query = GTLRPeopleQuery_PeopleConnectionsList.queryWithResourceName("people/me")
         
+        //You've got to be kidding me
+        //Your documentation says otherwise buttheads
+        query.requestMaskIncludeField = "person.emailAddresses,person.names,person.photos"
+        
+        //Sort Order for results
+        query.sortOrder = "FIRST_NAME_ASCENDING"
+        
+        //Sync Token
+        query.syncToken = Constants.currentUser?.peopleSyncToken
+        
         var nextPageToken: String?
         repeat
         {
@@ -52,7 +62,7 @@ class PenPalController: NSObject
                 if let response:GTLRPeople_ListConnectionsResponse = maybeResponse as? GTLRPeople_ListConnectionsResponse
                 {
                     count += 1
-                    print("Response " + count.description)
+                    print("\nResponse " + count.description)
                     print(response.description + "\n")
                     nextPageToken = response.nextPageToken
                     
@@ -60,15 +70,21 @@ class PenPalController: NSObject
                     
                     //User Attribute
                     let syncToken = response.nextSyncToken
+                    Constants.currentUser?.peopleSyncToken = syncToken
+                    do
+                    {
+                        try Constants.currentUser?.managedObjectContext?.save()
+                    }
+                    catch
+                    {
+                        print("Unable to save user.peopleSyncToken")
+                    }
             
 
                     if let connections = response.connections
                     {
                         for thisConnection in connections
                         {
-                            //print("\(thisConnection)\n")
-                            
-                            //TODO: This isn't working, no email addresses are here :(
                             if let emailAddresses = thisConnection.emailAddresses //where emailAddresses.isEmpty == false
                             {
                                 for thisEAddress in emailAddresses
@@ -110,27 +126,36 @@ class PenPalController: NSObject
     
     func saveConnection(connection:GTLRPeople_Person, asPenPal penPal: PenPal, withEmailAddress email: String)
     {
+        //Relationship Owner
         penPal.owner = Constants.currentUser
+        
+        //PenPal email
         penPal.email = email
         print("Penpal email address: \(email)\n")
         
+        //Name
         if let names = connection.names where names.isEmpty == false
         {
             penPal.name = names[0].displayName
             print("PenPal Display Name: \(penPal.name)\n")
         }
         
-        if let coverPhotos = connection.coverPhotos where coverPhotos.isEmpty == false
+        //PenPal Image
+        if let coverPhotos = connection.photos where coverPhotos.isEmpty == false
         {
             let coverPhoto = coverPhotos[0]
-            if coverPhoto.defaultProperty == false
+            if let photoURLString = coverPhoto.url, let photoURL = NSURL(string: photoURLString)
             {
-                let photoUrl = coverPhoto.url
-                print("This PenPal photo url: \(photoUrl)\n")
-                //TODO: Download photo and save as thisPenPal.photo
+                imageDataFromURL(photoURL) { (maybeData, maybeResponse, maybeError) in
+                    guard let data = maybeData where maybeError == nil else {return}
+                    dispatch_async(dispatch_get_main_queue(), {
+                        penPal.photo = NSImage(data: data)
+                    })
+                }
             }
         }
         
+        //Save PenPal
         do
         {
             try penPal.managedObjectContext?.save()
@@ -166,6 +191,14 @@ class PenPalController: NSObject
         }
         
         return nil
+    }
+    
+    //MARK: Get Image Data from URL
+    func imageDataFromURL(url: NSURL, completionHandler:((data: NSData?, response: NSURLResponse?, error: NSError?) -> Void))
+    {
+        NSURLSession.sharedSession().dataTaskWithURL(url){(data, response, error) in
+            completionHandler(data: data, response: response, error: error)
+        }.resume()
     }
     
     //DEV ONLY: create contacts

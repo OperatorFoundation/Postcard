@@ -41,7 +41,6 @@ class MailController: NSObject
     {
         //TESTING ONLY
         //makeMeSomeFriends()
-        //sendKey("looklita@gmail.com")
         
         let query = GTLQueryGmail.queryForUsersMessagesList()
         //query.q = "Subject:Postcard has:attachment"
@@ -65,7 +64,8 @@ class MailController: NSObject
         let query = GTLQueryGmail.queryForUsersMessagesGet()
         
         //Get the payload for each metaMessage returned from the list request
-        for messageMeta in messages 
+        //Only Download messages that have new ids
+        for messageMeta in messages where messageAlreadySaved(messageMeta.identifier) == false
         {
             query.identifier = messageMeta.identifier
             query.fields = "payload"
@@ -87,10 +87,9 @@ class MailController: NSObject
                                 self.processPenPalKeyAttachment(attachment, forMessage: message)
                             }
                         })
+
                     }
-                    
-                    //Debug: Print info about this message
-                    //print("PAYLOAD: " + message.payload.description + "\n")
+
                     if let headers = message.payload.headers as? [GTLGmailMessagePartHeader]
                     {
                         var sender = ""
@@ -128,6 +127,9 @@ class MailController: NSObject
                                                     //Create New Postcard Record
                                                     let newCard = Postcard(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
                                                     
+                                                    //Owner relationship
+                                                    newCard.owner = Constants.currentUser
+                                                    
                                                     //Postcard Sender/Penpal
                                                     newCard.from = thisPenPal
                                                     
@@ -146,10 +148,7 @@ class MailController: NSObject
                                                     }
                                                     
                                                     //Unique Identifier
-                                                    for idHeader in headers where (idHeader.name == "Message-ID" || idHeader.name == "Message-Id")
-                                                    {
-                                                        newCard.identifier = idHeader.value
-                                                    }
+                                                    newCard.identifier = messageMeta.identifier
                                                     
                                                     //Decrypt - Sodium
                                                     let keyController = KeyController.sharedInstance
@@ -184,8 +183,7 @@ class MailController: NSObject
                                                             newCard.subject = subject
                                                             
                                                             //Snippet
-                                                            
-                                                            
+
                                                             
                                                             //Decrypted
                                                             newCard.decrypted = true
@@ -205,6 +203,7 @@ class MailController: NSObject
                                                             }
                                                             else
                                                             {
+                                                                //TODO: ignore key attachments
                                                                 newCard.hasPackage = true
                                                             }
                                                             
@@ -288,8 +287,6 @@ class MailController: NSObject
         return nil
     }
     
-    
-    
     //MARK: Process Different Message Types
     
     //Check if the downloaded attachment is valid and save the information as a new penpal to core data
@@ -354,30 +351,6 @@ class MailController: NSObject
                                 self.showAlert("Warning: We could not save this contacts key.\n")
                             }
                         }
-                        
-//                        if thisPenPal.key != nil
-//                        {
-//                            //We have a key for this PenPal
-//                            return
-//                        }
-//                        else
-//                        {
-//                            //We have this pal but not a key
-//                            //Update the record
-//                            thisPenPal.key = decodedAttachment
-//                            //Save this PenPal to core data
-//                            do
-//                            {
-//                                try thisPenPal.managedObjectContext?.save()
-//                                print("NewPal Saved.\n")
-//                            }
-//                            catch
-//                            {
-//                                let saveError = error as NSError
-//                                print("\(saveError), \(saveError.userInfo)")
-//                                self.showAlert("Warning: We could not save this contact.")
-//                            }
-//                        }
                     }
                     
                     //If not check for a key and create a new PenPal
@@ -410,132 +383,158 @@ class MailController: NSObject
             }
         }
     }
-
     
-    //TODO: This message is exactly the same as above
-    func processPostcard(message: GTLGmailMessage)
+    func messageAlreadySaved(identifier: String) -> Bool
     {
-        //Check the headers for the message sender
-        if let headers = message.payload.headers as? [GTLGmailMessagePartHeader]
+        let fetchRequest = NSFetchRequest(entityName: "Postcard")
+        fetchRequest.predicate = NSPredicate(format: "identifier == %@", identifier)
+        
+        do
         {
-            //Get the Penpal record to create the sender relationship for this Postcard
-            if let entity = NSEntityDescription.entityForName("Postcard", inManagedObjectContext: self.managedObjectContext!)
+            let result = try self.managedObjectContext?.executeFetchRequest(fetchRequest)
+            if result?.count > 0
             {
-                //Create New Postcard Record
-                let newCard = Postcard(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-                
-                //Postcard Sender/Penpal
-                var sender = ""
-                for header in headers where header.name == "From"
-                {
-                    sender = header.value
-                }
-                
-                let fetchRequest = NSFetchRequest(entityName: "PenPal")
-                fetchRequest.predicate = NSPredicate(format: "email == %@", sender)
-                do
-                {
-                    let result = try self.managedObjectContext?.executeFetchRequest(fetchRequest)
-                    if result?.count > 0, let thisPenpal = result?[0] as? PenPal
-                    {
-                        newCard.from = thisPenpal
-                    }
-                }
-                catch
-                {
-                    //Could not fetch this Penpal from core data
-                    let fetchError = error as NSError
-                    print(fetchError)
-                }
-                
-                //Message Body
-                for thisPart in message.payload.parts
-                {
-                    if let thisPart = thisPart as? GTLGmailMessagePart
-                    {
-                        if thisPart.mimeType == "text/plain"
-                        {
-                            //if let bodyData = GTLDecodeBase64(thisPart.body.data), let bodyText = String(data: bodyData, encoding: NSUTF8StringEncoding)
-                            if let bodyData = stringDecodedToData(thisPart.body.data), let bodyText = String(data: bodyData, encoding: NSUTF8StringEncoding)
-                            {
-                                newCard.body = bodyText
-                            }
-                        }
-                    }
-                }
-                
-                //Message Snippet
-                newCard.snippet = message.snippet
-                
-                //Date
-                for dateHeader in headers where dateHeader.name == "Date"
-                {
-                    let formatter = NSDateFormatter()
-                    formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
-                    if let receivedDate = formatter.dateFromString(dateHeader.value)
-                    {
-                        newCard.receivedDate = receivedDate.timeIntervalSinceReferenceDate
-                    }
-                }
-                
-                //Subject
-                for subjectHeader in headers where subjectHeader.name == "Subject"
-                {
-                    newCard.subject = subjectHeader.value
-                }
-                
-                //Unique Identifier
-                for idHeader in headers where (idHeader.name == "Message-ID" || idHeader.name == "Message-Id")
-                {
-                    newCard.identifier = idHeader.value
-                }
-                
-                //Delivered To
-                for toHeader in headers where toHeader.name == "Delivered-To"
-                {
-                    newCard.to = toHeader.value
-                }
-                
-                //Decrypted
-                newCard.decrypted = false
-                
-                //Attachment?
-                for contentHeader in headers where contentHeader.name == "Content-Type"
-                {
-                    if contentHeader.value.containsString("multipart/mixed")
-                    {
-                        for maybeAttachmentPart in message.payload.parts
-                        {
-                            if let attachmentPart = maybeAttachmentPart as? GTLGmailMessagePart
-                            {
-                                if !attachmentPart.filename.isEmpty
-                                {
-                                    //print("This attachment has a filename: \(attachmentPart.filename)\n")
-                                }
-                                //There's an attachment
-                                newCard.hasPackage = true
-                            }
-                        }
-                    }
-                        
-                    else
-                    {
-                        newCard.hasPackage = false
-                    }
-                }
-                //Save this Postcard to core data
-                do
-                {
-                    try newCard.managedObjectContext?.save()
-                }
-                catch
-                {
-                    let saveError = error as NSError
-                    print("\(saveError)")
-                }
+                return true
             }
         }
+        catch
+        {
+            let fetchError = error as NSError
+            print("Failed to fetch postcard by identifier: \(fetchError)\n")
+        }
+        return false
     }
+    
+//    //TODO: This message is exactly the same as above
+//    func processPostcard(message: GTLGmailMessage)
+//    {
+//        
+//        //Check the headers for the message sender
+//        if let headers = message.payload.headers as? [GTLGmailMessagePartHeader]
+//        {
+//            //Unique Identifier
+//            for idHeader in headers where (idHeader.name == "Message-ID" || idHeader.name == "Message-Id")
+//            {
+//                //Only proceed if this message has not already been saved
+//                if messageAlreadySaved(idHeader.value) == false
+//                {
+//                    //Get the Penpal record to create the sender relationship for this Postcard
+//                    if let entity = NSEntityDescription.entityForName("Postcard", inManagedObjectContext: self.managedObjectContext!)
+//                    {
+//                        //Create New Postcard Record
+//                        let newCard = Postcard(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
+//                        
+//                        //Save the unique identifier
+//                        newCard.identifier = idHeader.value
+//                        
+//                        //Postcard Sender/Penpal
+//                        var sender = ""
+//                        for header in headers where header.name == "From"
+//                        {
+//                            sender = header.value
+//                        }
+//                        
+//                        let fetchRequest = NSFetchRequest(entityName: "PenPal")
+//                        fetchRequest.predicate = NSPredicate(format: "email == %@", sender)
+//                        do
+//                        {
+//                            let result = try self.managedObjectContext?.executeFetchRequest(fetchRequest)
+//                            if result?.count > 0, let thisPenpal = result?[0] as? PenPal
+//                            {
+//                                newCard.from = thisPenpal
+//                            }
+//                        }
+//                        catch
+//                        {
+//                            //Could not fetch this Penpal from core data
+//                            let fetchError = error as NSError
+//                            print(fetchError)
+//                        }
+//                        
+//                        //Message Body
+//                        for thisPart in message.payload.parts
+//                        {
+//                            if let thisPart = thisPart as? GTLGmailMessagePart
+//                            {
+//                                if thisPart.mimeType == "text/plain"
+//                                {
+//                                    //if let bodyData = GTLDecodeBase64(thisPart.body.data), let bodyText = String(data: bodyData, encoding: NSUTF8StringEncoding)
+//                                    if let bodyData = stringDecodedToData(thisPart.body.data), let bodyText = String(data: bodyData, encoding: NSUTF8StringEncoding)
+//                                    {
+//                                        newCard.body = bodyText
+//                                    }
+//                                }
+//                            }
+//                        }
+//                        
+//                        //Message Snippet
+//                        newCard.snippet = message.snippet
+//                        
+//                        //Date
+//                        for dateHeader in headers where dateHeader.name == "Date"
+//                        {
+//                            let formatter = NSDateFormatter()
+//                            formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
+//                            if let receivedDate = formatter.dateFromString(dateHeader.value)
+//                            {
+//                                newCard.receivedDate = receivedDate.timeIntervalSinceReferenceDate
+//                            }
+//                        }
+//                        
+//                        //Subject
+//                        for subjectHeader in headers where subjectHeader.name == "Subject"
+//                        {
+//                            newCard.subject = subjectHeader.value
+//                        }
+//                        
+//                        //Delivered To
+//                        for toHeader in headers where toHeader.name == "Delivered-To"
+//                        {
+//                            newCard.to = toHeader.value
+//                        }
+//                        
+//                        //Decrypted
+//                        newCard.decrypted = false
+//                        
+//                        //Attachment?
+//                        for contentHeader in headers where contentHeader.name == "Content-Type"
+//                        {
+//                            if contentHeader.value.containsString("multipart/mixed")
+//                            {
+//                                for maybeAttachmentPart in message.payload.parts
+//                                {
+//                                    if let attachmentPart = maybeAttachmentPart as? GTLGmailMessagePart
+//                                    {
+//                                        if !attachmentPart.filename.isEmpty
+//                                        {
+//                                            //print("This attachment has a filename: \(attachmentPart.filename)\n")
+//                                        }
+//                                        //There's an attachment
+//                                        newCard.hasPackage = true
+//                                    }
+//                                }
+//                            }
+//                                
+//                            else
+//                            {
+//                                newCard.hasPackage = false
+//                            }
+//                        }
+//                        //Save this Postcard to core data
+//                        do
+//                        {
+//                            try newCard.managedObjectContext?.save()
+//                        }
+//                        catch
+//                        {
+//                            let saveError = error as NSError
+//                            print("\(saveError)")
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     //MARK: DEV ONLY (move this to a window controller)
     func sendEmail(to: String, subject: String, body: String, maybeAttachments:[NSURL]?)

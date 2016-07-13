@@ -11,12 +11,28 @@ import Cocoa
 class MessageListViewController: NSViewController, NSTableViewDelegate
 {
     @IBOutlet var postcardsArrayController: NSArrayController!
+    
     var managedContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         // Do view setup here.
+    }
+    
+    override func viewWillAppear()
+    {
+        super.viewWillAppear()
+        
+        //Make sure that the array controller for bindings is only looking at messages for the correct user
+        //TODO: This is not available quickly enough, should we store it in UD?
+        if let currentUser = Constants.currentUser
+        {
+            let predicate = NSPredicate(format: "owner == %@", currentUser)
+            postcardsArrayController.fetchPredicate = predicate
+            print("postcard Array Controller filtered to \(currentUser.emailAddress)\n")
+        }
+        
     }
     
     @IBAction func rowSelected(sender: NSTableView)

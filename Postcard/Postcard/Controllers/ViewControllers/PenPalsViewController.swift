@@ -21,7 +21,6 @@ class PenPalsViewController: NSViewController, NSTableViewDelegate
         // Do view setup here.
         
         //Setup Array Controller Contents
-        
         if let currentUser = Constants.currentUser
         {
             let predicate = NSPredicate(format: "owner == %@", currentUser)

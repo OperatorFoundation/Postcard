@@ -64,7 +64,7 @@ class WelcomeViewController: NSViewController
                             if result.count > 0, let thisUser = result[0] as? User
                             {
                                 Constants.currentUser = thisUser
-                                print("Found this user in core data. Current user is now set to: \(thisUser.emailAddress)\n")
+                                self.fetchGoodies()
                             }
                             else
                             {
@@ -79,7 +79,7 @@ class WelcomeViewController: NSViewController
                                     {
                                         try newUser.managedObjectContext?.save()
                                         Constants.currentUser = newUser
-                                        print("Logged in and created a new user:\(newUser.emailAddress)\n")
+                                        self.fetchGoodies()
                                     }
                                     catch
                                     {
@@ -102,8 +102,6 @@ class WelcomeViewController: NSViewController
                             let fetchError = error as NSError
                             print(fetchError)
                         }
-                                                
-                        self.fetchGoodies()
                     }
                 })
             }
