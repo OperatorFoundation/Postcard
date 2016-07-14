@@ -18,6 +18,8 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
     {
         super.viewDidLoad()
         // Do view setup here.
+        
+        
     }
     
     override func viewWillAppear()
@@ -45,10 +47,19 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
                 MailController.sharedInstance.decryptPostcard(selectedPostcard)
             }
             
+            //Tell the message VC what message to display
             let splitVC = parentViewController as! NSSplitViewController
             if let messageVC: MessageViewController = splitVC.childViewControllers[1] as? MessageViewController
             {
                 messageVC.postcardObjectController.content = selectedPostcard
+            }
+        }
+        else
+        {
+            let splitVC = parentViewController as! NSSplitViewController
+            if let messageVC: MessageViewController = splitVC.childViewControllers[1] as? MessageViewController
+            {
+                messageVC.postcardObjectController.content = nil
             }
         }
     }

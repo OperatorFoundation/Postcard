@@ -15,6 +15,9 @@ class WelcomeViewController: NSViewController
     @IBOutlet weak var descriptionLabel: NSTextField!
     @IBOutlet weak var descriptionView: NSView!
     @IBOutlet weak var googleLoginButton: NSButton!
+    
+    var userGoogleName: String?
+    var googleAuthWindowController: GTMOAuth2WindowController?
 
     override func viewDidLoad()
     {
@@ -45,65 +48,33 @@ class WelcomeViewController: NSViewController
             }
             else
             {
-                //Get user profile information
-                //If we do not already have the user's email saved fetch it
-                let query = GTLQueryGmail.queryForUsersGetProfile()
-                GmailProps.service.executeQuery(query, completionHandler: { (ticket, maybeProfile, error) in
-                    if let profile = maybeProfile as? GTLGmailProfile
+                let currentEmailAddress: String = authorizer.userEmail
+                
+                //Check if a user entity already exists
+                if let existingUser = fetchUserFromCoreData(currentEmailAddress)
+                {
+                    Constants.currentUser = existingUser
+                    self.fetchGoodies()
+                }
+                else
+                {
+                    //Create a new user
+                    if let authWindowController = googleAuthWindowController, let name = authWindowController.signIn.userProfile["name"] as? String
                     {
-                        print("\(profile)\n")
-                        //Check if a user entity already exists
-                        //Get this User Entity
-                        let fetchRequest = NSFetchRequest(entityName: "User")
-                        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
-                        let managedObjectContext = appDelegate.managedObjectContext
-                        fetchRequest.predicate = NSPredicate(format: "emailAddress == %@", profile.emailAddress)
-                        do
+                        if createUser(currentEmailAddress, firstName: name) != nil
                         {
-                            let result = try managedObjectContext.executeFetchRequest(fetchRequest)
-                            if result.count > 0, let thisUser = result[0] as? User
-                            {
-                                Constants.currentUser = thisUser
-                                self.fetchGoodies()
-                            }
-                            else
-                            {
-                                //If not, create one
-                                if let userEntity = NSEntityDescription.entityForName("User", inManagedObjectContext: managedObjectContext)
-                                {
-                                    let newUser = User(entity: userEntity, insertIntoManagedObjectContext: managedObjectContext)
-                                    newUser.emailAddress = profile.emailAddress
-                                    
-                                    //Save this user to core Data
-                                    do
-                                    {
-                                        try newUser.managedObjectContext?.save()
-                                        Constants.currentUser = newUser
-                                        self.fetchGoodies()
-                                    }
-                                    catch
-                                    {
-                                        
-                                        let saveError = error as NSError
-                                        print("Unable to save new user to core data. \n\(saveError)\n")
-                                        return
-                                    }
-                                }
-                                else
-                                {
-                                    print("Unable to fetch user from core data, or create a new one. That's weird.")
-                                    return
-                                }
-                            }
+                            self.fetchGoodies()
                         }
-                        catch
+                        
+                    }
+                    else
+                    {
+                        if createUser(currentEmailAddress) != nil
                         {
-                            //Could not fetch this Penpal from core data
-                            let fetchError = error as NSError
-                            print(fetchError)
+                            self.fetchGoodies()
                         }
                     }
-                })
+                }
             }
             
             return true
@@ -111,6 +82,71 @@ class WelcomeViewController: NSViewController
         else
         {
             return false
+        }
+    }
+    
+    func fetchUserFromCoreData(userEmail: String) -> User?
+    {
+        //Check if a user entity already exists
+        //Get this User Entity
+        let fetchRequest = NSFetchRequest(entityName: "User")
+        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        let managedObjectContext = appDelegate.managedObjectContext
+        fetchRequest.predicate = NSPredicate(format: "emailAddress == %@", userEmail)
+        do
+        {
+            let result = try managedObjectContext.executeFetchRequest(fetchRequest)
+            if result.count > 0, let thisUser = result[0] as? User
+            {
+                return thisUser
+            }
+            else
+            {
+                return nil
+            }
+        }
+        catch
+        {
+            //Could not fetch this Penpal from core data
+            let fetchError = error as NSError
+            print(fetchError)
+            return nil
+        }
+    }
+    
+    func createUser(userEmail: String) -> User?
+    {
+        return createUser(userEmail, firstName: nil)
+    }
+    
+    func createUser(userEmail: String, firstName: String?) -> User?
+    {
+        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        let managedObjectContext = appDelegate.managedObjectContext
+        
+        if let userEntity = NSEntityDescription.entityForName("User", inManagedObjectContext: managedObjectContext)
+        {
+            let newUser = User(entity: userEntity, insertIntoManagedObjectContext: managedObjectContext)
+            newUser.emailAddress = userEmail
+            
+            //Save this user to core Data
+            do
+            {
+                try newUser.managedObjectContext?.save()
+                Constants.currentUser = newUser
+                return newUser
+            }
+            catch
+            {
+                let saveError = error as NSError
+                print("Unable to save new user to core data. \n\(saveError)\n")
+                return nil
+            }
+        }
+        else
+        {
+            print("Unable to fetch user from core data, or create a new one. That's weird.")
+            return nil
         }
     }
     
@@ -156,6 +192,7 @@ class WelcomeViewController: NSViewController
     {
         let scopeString = GmailProps.scopes.joinWithSeparator(" ")
         let controller = GTMOAuth2WindowController(scope: scopeString, clientID: GmailProps.kClientID, clientSecret: nil, keychainItemName: GmailProps.kKeychainItemName, resourceBundle: nil)
+        controller.signIn.shouldFetchGoogleUserProfile = true
         controller.signInSheetModalForWindow(NSApplication.sharedApplication().mainWindow, completionHandler: {(auth, error) in
             //Handle response
             self.finishedWithAuth(controller, authResult: auth, error: error)
@@ -166,6 +203,8 @@ class WelcomeViewController: NSViewController
     //Handle completion of authorization process and update the Gmail API with the new credentials
     func finishedWithAuth(authWindowController: GTMOAuth2WindowController, authResult: GTMOAuth2Authentication, error: NSError?)
     {
+        googleAuthWindowController = authWindowController
+        
         if let error: NSError = error
         {
             GmailProps.service.authorizer = nil

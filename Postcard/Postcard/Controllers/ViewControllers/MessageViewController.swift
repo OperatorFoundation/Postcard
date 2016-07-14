@@ -27,7 +27,7 @@ class MessageViewController: NSViewController
         
         styleButtons()
         
-        //Do we have an attacchment?
+        //Do we have an attachment?
         if let thisPostcard = postcardObjectController.content as? Postcard
         {
             attachmentButton.hidden = !(thisPostcard.hasPackage)

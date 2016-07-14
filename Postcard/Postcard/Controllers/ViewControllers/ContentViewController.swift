@@ -16,8 +16,6 @@ class ContentViewController: NSViewController
         super.viewDidLoad()
         // Do view setup here.
         
-//        view.layer?.backgroundColor = PostcardUI.blue.CGColor
-//        view.superview?.window?.titlebarAppearsTransparent = true
     }
     
 }
