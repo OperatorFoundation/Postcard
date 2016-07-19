@@ -155,7 +155,6 @@ class MailController: NSObject
                                                         let saveError = error as NSError
                                                         print("\(saveError)")
                                                     }
-                                                    //self.decryptPostcard(newCard)
                                                 }
                                             }
                                             else
@@ -187,14 +186,22 @@ class MailController: NSObject
             {
                 if let penPal = postcard.from, let penPalKey = penPal.key
                 {
-                    if let cipherText = postcard.cipherText, let decryptedPostcard = sodium.box.open(cipherText, senderPublicKey: penPalKey, recipientSecretKey: secretKey)
+                    if let cipherText = postcard.cipherText
                     {
-                        //Parse this message
-                        self.parseDecryptedMessageAndSave(decryptedPostcard, saveToPostcard: postcard)
+                        if let decryptedPostcard = sodium.box.open(cipherText, senderPublicKey: penPalKey, recipientSecretKey: secretKey)
+                        {
+                            //Parse this message
+                            self.parseDecryptedMessageAndSave(decryptedPostcard, saveToPostcard: postcard)
+                        }
+                        else
+                        {
+                            showAlert("Final step for decryption failed for message from \(penPal.email).\n")
+                        }
+                        
                     }
                     else
                     {
-                        showAlert("We could not decrypt this postcard!! We may not have the correct key for \(penPal.email)\n")
+                        showAlert("We could not decrypt this postcard!! We cannot find the cipher text from \(penPal.email).\n")
                     }
                 }
                 else
@@ -731,12 +738,7 @@ class MailController: NSObject
     
     func generateMessagePostcard(sendToEmail to: String, subject: String, body: String) -> NSData?
     {
-        let fetchRequest = NSFetchRequest(entityName: "PenPal")
-        fetchRequest.predicate = NSPredicate(format: "email == %@", to)
-        do
-        {
-            let result = try self.managedObjectContext?.executeFetchRequest(fetchRequest)
-            if result?.count > 0, let thisPenpal = result?[0] as? PenPal
+            if let thisPenpal = fetchPenPalForCurrentUser(to)
             {
                 if let penPalKey = thisPenpal.key
                 {
@@ -776,8 +778,7 @@ class MailController: NSObject
                 }
                 else
                 {
-                    showAlert("You cannot send a Postcard to \(to) becuase you do not have their key! :(")
-                    print("You cannot send a message to \(to) becuase you do not have their key! :(\n")
+                    showAlert("You cannot send a Postcard to \(to) because you do not have their key! :(")
                 }
             }
             else
@@ -785,14 +786,6 @@ class MailController: NSObject
                 showAlert("You cannot send a postcard to this person, they are not in your contacts yet.")
                 print("This email is not in the PenPals group, could not generate a message to: \(to)")
             }
-        }
-        catch
-        {
-            //Could not fetch this Penpal from core data
-            let fetchError = error as NSError
-            showAlert("Sorry we could not send your Postcard, something blew up!")
-            print(fetchError)
-        }
         
         return nil
     }

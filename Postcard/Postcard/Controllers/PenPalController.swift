@@ -41,6 +41,11 @@ class PenPalController: NSObject
     
     func getGoogleContacts()
     {
+        getGoogleContacts(nil)
+    }
+    
+    func getGoogleContacts(nextPageToken: String?)
+    {
         let query = GTLRPeopleQuery_PeopleConnectionsList.queryWithResourceName("people/me")
         
         //You've got to be kidding me
@@ -53,75 +58,77 @@ class PenPalController: NSObject
         //Sync Token
         query.syncToken = Constants.currentUser?.peopleSyncToken
         
-        var nextPageToken: String?
-        repeat
+        //Next Page Token
+        query.pageToken = nextPageToken
+        
+        GmailProps.servicePeople.executeQuery(query, completionHandler: processPeopleResponse)
+    }
+    
+    func processPeopleResponse(ticket: GTLRServiceTicket, maybeResponse: AnyObject?, maybeError: NSError?)
+    {
+        //Do we have friends??
+        var count = 0
+        if let response:GTLRPeople_ListConnectionsResponse = maybeResponse as? GTLRPeople_ListConnectionsResponse
         {
-            GmailProps.servicePeople.executeQuery(query, completionHandler: { (ticket, maybeResponse, maybeError) in
-                //Do we have friends??
-                var count = 0
-                if let response:GTLRPeople_ListConnectionsResponse = maybeResponse as? GTLRPeople_ListConnectionsResponse
-                {
-                    count += 1
-                    print("\nResponse " + count.description)
-                    print(response.description + "\n")
-                    nextPageToken = response.nextPageToken
-                    
-                    //TODO: Save to core data
-                    
-                    //User Attribute
-                    let syncToken = response.nextSyncToken
-                    Constants.currentUser?.peopleSyncToken = syncToken
-                    do
-                    {
-                        try Constants.currentUser?.managedObjectContext?.save()
-                    }
-                    catch
-                    {
-                        print("Unable to save user.peopleSyncToken")
-                    }
+            count += 1
+            print("\nResponse " + count.description)
+            print(response.description + "\n")
+            var nextPageToken: String? = response.nextPageToken
             
-
-                    if let connections = response.connections
+            //TODO: Save to core data
+            
+            //User Attribute
+            let syncToken = response.nextSyncToken
+            Constants.currentUser?.peopleSyncToken = syncToken
+            do
+            {
+                try Constants.currentUser?.managedObjectContext?.save()
+            }
+            catch
+            {
+                print("Unable to save user.peopleSyncToken")
+            }
+            
+            if let connections = response.connections
+            {
+                for thisConnection in connections
+                {
+                    if let emailAddresses = thisConnection.emailAddresses
                     {
-                        for thisConnection in connections
+                        for thisEAddress in emailAddresses
                         {
-                            if let emailAddresses = thisConnection.emailAddresses //where emailAddresses.isEmpty == false
+                            if let emailAddress = thisEAddress.value
                             {
-                                for thisEAddress in emailAddresses
+                                //If this PenPal is already in Core Data, update that Pal
+                                //TODO: We are only saving the first email address in the list
+                                if let thisPenPal = self.fetchPenPal(emailAddress)
                                 {
-                                    if let emailAddress = thisEAddress.value
+                                    self.saveConnection(thisConnection, asPenPal: thisPenPal, withEmailAddress: emailAddress)
+                                }
+                                else
+                                {
+                                    //Otherwise, create a new PenPal
+                                    if let managedObjectContext = self.managedObjectContext, let entity = NSEntityDescription.entityForName("PenPal", inManagedObjectContext: managedObjectContext)
                                     {
-                                        //If this PenPal is already in Core Data, update that Pal
-                                        //TODO: We are only saving the first email address in the list
-                                        if let thisPenPal = self.fetchPenPal(emailAddress)
-                                        {
-                                            self.saveConnection(thisConnection, asPenPal: thisPenPal, withEmailAddress: emailAddress)
-                                            
-                                        }
-                                        else
-                                        {
-                                            //Otherwise, create a new PenPal
-                                            if let managedObjectContext = self.managedObjectContext, let entity = NSEntityDescription.entityForName("PenPal", inManagedObjectContext: managedObjectContext)
-                                            {
-                                                let newPal = PenPal(entity: entity, insertIntoManagedObjectContext: managedObjectContext)
-                                                self.saveConnection(thisConnection, asPenPal: newPal, withEmailAddress: emailAddress)
-                                            }
-                                            
-                                        }
+                                        let newPal = PenPal(entity: entity, insertIntoManagedObjectContext: managedObjectContext)
+                                        self.saveConnection(thisConnection, asPenPal: newPal, withEmailAddress: emailAddress)
                                     }
                                 }
                             }
                         }
                     }
-                    
                 }
-                else if let error = maybeError
+                
+                if nextPageToken != nil
                 {
-                    print(error)
+                    getGoogleContacts(nextPageToken)
                 }
-            })
-            
-        } while nextPageToken != nil
+            }
+        }
+        else if let error = maybeError
+        {
+            print(error)
+        }
     }
     
     func saveConnection(connection:GTLRPeople_Person, asPenPal penPal: PenPal, withEmailAddress email: String)

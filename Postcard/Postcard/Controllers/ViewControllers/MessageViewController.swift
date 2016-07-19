@@ -16,6 +16,8 @@ class MessageViewController: NSViewController
     @IBOutlet var bodyTextView: NSTextView!
     @IBOutlet weak var attachmentView: DesignableView!
     @IBOutlet weak var attachmentButton: NSButton!
+    @IBOutlet weak var messageContentView: NSView!
+    
     
     var managedContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
@@ -24,6 +26,8 @@ class MessageViewController: NSViewController
         super.viewDidLoad()
         
         // Do view setup here.
+        view.wantsLayer = true
+        view.layer?.backgroundColor = NSColor.whiteColor().CGColor
         
         styleButtons()
         
@@ -37,6 +41,12 @@ class MessageViewController: NSViewController
     override func viewWillAppear()
     {
         super.viewWillAppear()
+        
+        if let currentUser = Constants.currentUser
+        {
+            let predicate = NSPredicate(format: "owner == %@", currentUser)
+            postcardObjectController.fetchPredicate = predicate
+        }
         
         //TODO: Font setting doesn't work currently
         //Set Default Font
