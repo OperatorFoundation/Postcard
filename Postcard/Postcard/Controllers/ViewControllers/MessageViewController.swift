@@ -18,7 +18,6 @@ class MessageViewController: NSViewController
     @IBOutlet weak var attachmentButton: NSButton!
     @IBOutlet weak var messageContentView: NSView!
     
-    
     var managedContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
     override func viewDidLoad()
@@ -82,6 +81,24 @@ class MessageViewController: NSViewController
         }
     }
     
+    @IBAction func deleteClick(sender: NSButton)
+    {
+        if let thisPostcard = postcardObjectController.content as? Postcard, let messageID = thisPostcard.identifier
+        {
+            MailController.sharedInstance.trashGmailMessage(thisPostcard, completion:
+            { (successful) in
+                if successful
+                {
+                    //self.postcardObjectController.removeObject(thisPostcard)
+                }
+                else
+                {
+                    self.showAlert("We couldn't delete this message from Gmail. Try again later or try deleting this email from Gmail directly.")
+                }
+            })
+        }
+    }
+    
     func styleButtons()
     {
         let paragraphStyle = NSMutableParagraphStyle()
@@ -101,4 +118,14 @@ class MessageViewController: NSViewController
         deleteButton.attributedTitle = NSAttributedString(string: "DELETE", attributes: attributes)
         deleteButton.attributedAlternateTitle = NSAttributedString(string: "DELETE", attributes: altAttributes)
     }
+    
+    //MARK: Helper Methods
+    func showAlert(message: String)
+    {
+        let alert = NSAlert()
+        alert.messageText = message
+        alert.addButtonWithTitle("OK")
+        alert.runModal()
+    }
+    
 }

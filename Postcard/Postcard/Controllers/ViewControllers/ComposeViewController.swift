@@ -25,7 +25,6 @@ class ComposeViewController: NSViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        // Do view setup here.
         
         styleButtons()
         
@@ -42,7 +41,8 @@ class ComposeViewController: NSViewController
         if !bodyText.isEmpty {bodyTextView.string = bodyText}
     }
     
-    override func viewDidAppear() {
+    override func viewDidAppear()
+    {
         //This is to make the title bar transparent so that the BG image is uninterrupted
         if let window = self.view.window
         {
@@ -83,16 +83,19 @@ class ComposeViewController: NSViewController
     {
         if let recipient:String = toTextField.stringValue where !recipient.isEmpty, let subject:String = subjectTextField.stringValue, let body: String = bodyTextView.string
         {
-            MailController.sharedInstance.sendEmail(recipient, subject: subject, body: body, maybeAttachments: attachments)
+            MailController.sharedInstance.sendEmail(recipient, subject: subject, body: body, maybeAttachments: attachments, completion:
+            { (successful) in
+                if successful
+                {
+                    //Close Window
+                    self.view.window?.close()
+                }
+            })
         }
-        
-        //Close Window
-        self.view.window?.close()
     }
     
     @IBAction func attachClick(sender: NSButton)
     {
-        
         //Create and configure the choose file panel
         let choosePanel = NSOpenPanel()
         choosePanel.allowsMultipleSelection = true
@@ -197,7 +200,6 @@ class ComposeViewController: NSViewController
         {
             print(sender.description)
         }
-        
     }
     
 }

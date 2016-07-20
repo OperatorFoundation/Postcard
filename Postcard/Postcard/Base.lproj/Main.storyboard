@@ -1579,7 +1579,7 @@
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
                                                 <connections>
-                                                    <action selector="remove:" target="pmd-tL-J5K" id="It4-qe-17t"/>
+                                                    <action selector="deleteClick:" target="R8t-QV-JrK" id="fA2-mE-QEX"/>
                                                 </connections>
                                             </button>
                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ngJ-FX-ha4">
