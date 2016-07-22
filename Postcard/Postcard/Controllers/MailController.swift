@@ -147,7 +147,7 @@ class MailController: NSObject
                                                     //Create New Postcard Record
                                                     let newCard = Postcard(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
                                                     
-                                                    newCard.owner = Constants.currentUser
+                                                    newCard.owner = GlobalVars.currentUser
                                                     newCard.from = thisPenPal
                                                     newCard.cipherText = postcardData
                                                     newCard.identifier = messageMeta.identifier
@@ -209,10 +209,17 @@ class MailController: NSObject
                         {
                             //Parse this message
                             self.parseDecryptedMessageAndSave(decryptedPostcard, saveToPostcard: postcard)
+                            
+                            print("\nDecrypted message:\n")
+                            print("Sender Key: \(penPalKey)\n")
+                            print("Secret Key: \(secretKey)\n")
                         }
                         else
                         {
-                            showAlert("Final step for decryption failed for message from \(penPal.email).\n")
+                            showAlert("Final step for decryption failed for message from \(penPal.email).")
+                            print("\nFailed to decrypt message:\n")
+                            print("Sender Key: \(penPalKey)\n")
+                            print("Secret Key: \(secretKey)\n")
                         }
                     }
                     else
@@ -258,7 +265,6 @@ class MailController: NSObject
         //Snippet?
         //Attachment?
         let attachments = messageParser.attachments()
-        print("Attachments:\n\(attachments.description)\n")
         
         if attachments.isEmpty
         {
@@ -346,7 +352,7 @@ class MailController: NSObject
     func fetchPenPalForCurrentUser(emailAddress: String) -> PenPal?
     {
         //Make sure we have a current user
-        if let currentUser = Constants.currentUser
+        if let currentUser = GlobalVars.currentUser
         {
             let fetchRequest = NSFetchRequest(entityName: "PenPal")
             //Check for a penpal with this email address AND this current user as owner
@@ -396,24 +402,25 @@ class MailController: NSObject
                         {
                             if thisPenPalKey == decodedAttachment
                             {
-                                print("We have the key for \(sender) and it matches the new one we received. Hooray \n")
+                                //print("We have the key for \(sender) and it matches the new one we received. Hooray \n")
                             }
                             else
                             {
-                                //TODO: Saving the new Key instead....?
-                                thisPenPal.key = decodedAttachment
-                                //Save this PenPal to core data
-                                do
-                                {
-                                    try thisPenPal.managedObjectContext?.save()
-                                }
-                                catch
-                                {
-                                    let saveError = error as NSError
-                                    print("\(saveError), \(saveError.userInfo)")
-                                    self.showAlert("Warning: We could not save this contacts key.\n")
-                                }
-                                showAlert("We received a new key from \(sender) and it does not match the key we have stored. This is a problem. For now we have decided to save the new key.\n")
+                                showAlert("We received a new key: \(decodedAttachment?.description) and it does not match the key we have stored: \(thisPenPal.key?.description). This is a problem.\n")
+//                                
+//                                //TODO: Saving the new Key instead....?
+//                                thisPenPal.key = decodedAttachment
+//                                //Save this PenPal to core data
+//                                do
+//                                {
+//                                    try thisPenPal.managedObjectContext?.save()
+//                                }
+//                                catch
+//                                {
+//                                    let saveError = error as NSError
+//                                    print("\(saveError), \(saveError.userInfo)")
+//                                    self.showAlert("Warning: We could not save this contacts key.\n")
+//                                }
                             }
                         }
                         else
@@ -444,7 +451,7 @@ class MailController: NSObject
                             newPal.email = sender
                             newPal.key = decodedAttachment
                             newPal.addedDate = NSDate().timeIntervalSinceReferenceDate
-                            newPal.owner = Constants.currentUser
+                            newPal.owner = GlobalVars.currentUser
                             
                             //Save this PenPal to core data
                             do
@@ -497,9 +504,10 @@ class MailController: NSObject
             query.message = gmailMessage
             
             GmailProps.service.executeQuery(query, completionHandler: {(ticket, response, error) in
-                print("send email ticket: \(ticket)\n")
-                print("send email response: \(response)\n")
-                print("send email error: \(error)\n")
+                print("\nSent an email to : \(to)")
+                print("send email response: \(response)")
+                print("send email error: \(error)")
+                print("Public Key sent With Message: \(GlobalVars.currentUser?.publicKey?.description)\n")
                 if error == nil
                 {
                     completion(successful: true)
@@ -666,8 +674,6 @@ class MailController: NSObject
     func generatePostcardAttachment() -> NSData
     {
         let textBody = "If you can read this, you have my key."
-        
-        //TO DO: encrypt encoded data with sodium
         return textBody.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
     }
     
@@ -686,14 +692,11 @@ class MailController: NSObject
         }
         
         return dataEncodedToString(messageBuilder.data())
-//        return GTLEncodeWebSafeBase64(messageBuilder.data())
     }
     
     func generateKeyAttachment() -> NSData?
     {
         let keyData = KeyController.sharedInstance.mySharedKey
-        print("Attaching my shared key to a message: \(keyData)\n")
-        
         return keyData
     }
     

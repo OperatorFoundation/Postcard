@@ -63,7 +63,7 @@ class MenuViewController: NSViewController
     @IBAction func lockdownClick(sender: NSButton)
     {
         //'Lock' Postcards
-        if let currentUser = Constants.currentUser
+        if let currentUser = GlobalVars.currentUser
         {
             MailController.sharedInstance.removeAllDecryptionForUser(currentUser)
         }
@@ -81,7 +81,7 @@ class MenuViewController: NSViewController
     @IBAction func logoutClick(sender: NSButton)
     {
         //Remove current User from Constants
-        Constants.currentUser = nil
+        GlobalVars.currentUser = nil
         
         //Remove google Auth Token
         GTMOAuth2WindowController.removeAuthFromKeychainForName(GmailProps.kKeychainItemName)

@@ -38,6 +38,7 @@
 		B430D5EB1CF7C31D0025365E /* WelcomeWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B430D5EA1CF7C31D0025365E /* WelcomeWindowController.swift */; };
 		B430FC8D1CF8A22900205015 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AB1CC17B9A009C577D /* AppDelegate.swift */; };
 		B430FC8E1CF8A23200205015 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AB1CC17B9A009C577D /* AppDelegate.swift */; };
+		B460CCE91D41805D00507EFD /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = B460CCE81D41805D00507EFD /* Globals.swift */; };
 		B48A273E1D08B4B8007BBB27 /* LockedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */; };
 		B4EAA8F91D1361D000E9169F /* Postcard+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAA8F51D1361D000E9169F /* Postcard+CoreDataProperties.swift */; };
 		B4EAA8FA1D1361D000E9169F /* Postcard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAA8F61D1361D000E9169F /* Postcard.swift */; };
@@ -105,6 +106,7 @@
 		B4238F601CD2DF630054E7EF /* Postcard-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Postcard-Bridging-Header.h"; sourceTree = "<group>"; };
 		B430D5EA1CF7C31D0025365E /* WelcomeWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeWindowController.swift; path = Controllers/ViewControllers/WelcomeWindowController.swift; sourceTree = "<group>"; };
 		B455798C1D10C99B00E56D6D /* FuturaT_Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaT_Bold.ttf; sourceTree = "<group>"; };
+		B460CCE81D41805D00507EFD /* Globals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Globals.swift; path = SupportingFiles/Globals.swift; sourceTree = "<group>"; };
 		B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LockedViewController.swift; path = Controllers/ViewControllers/LockedViewController.swift; sourceTree = "<group>"; };
 		B4EAA8F51D1361D000E9169F /* Postcard+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Postcard+CoreDataProperties.swift"; path = "DataModels/Postcard+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B4EAA8F61D1361D000E9169F /* Postcard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Postcard.swift; path = DataModels/Postcard.swift; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 				461891B71CC17B9A009C577D /* Info.plist */,
 				B4238F601CD2DF630054E7EF /* Postcard-Bridging-Header.h */,
 				B4238F5B1CD2C11C0054E7EF /* Constants.swift */,
+				B460CCE81D41805D00507EFD /* Globals.swift */,
 			);
 			name = SupportingFiles;
 			sourceTree = "<group>";
@@ -572,6 +575,7 @@
 				4695FD681D21AE1F00160CB2 /* User.swift in Sources */,
 				B4EAA8FA1D1361D000E9169F /* Postcard.swift in Sources */,
 				461891B11CC17B9A009C577D /* Postcard.xcdatamodeld in Sources */,
+				B460CCE91D41805D00507EFD /* Globals.swift in Sources */,
 				B4238F5F1CD2DF050054E7EF /* KeyController.swift in Sources */,
 				461C0A641CE682AF00C5B5A5 /* DesignableView.swift in Sources */,
 				B4EDBB501CEF74D80094853F /* WelcomeViewController.swift in Sources */,

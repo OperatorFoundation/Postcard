@@ -28,7 +28,7 @@ class KeyController: NSObject
         var missingKey = false
         
         //If there is a userID available (i.e. email address)
-        if let emailAddress: String = Constants.currentUser?.emailAddress where !emailAddress.isEmpty
+        if let emailAddress: String = GlobalVars.currentUser?.emailAddress where !emailAddress.isEmpty
         {
             //Check the keychain for the private key
             if let privateKey = SSKeychain.passwordDataForService(service, account: emailAddress)
@@ -41,7 +41,7 @@ class KeyController: NSObject
             }
             
             //Check the user for a public key
-            if let sharedKey = Constants.currentUser?.publicKey
+            if let sharedKey = GlobalVars.currentUser?.publicKey
             {
                 mySharedKey = sharedKey
             }

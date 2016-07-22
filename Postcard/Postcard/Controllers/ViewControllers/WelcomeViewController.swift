@@ -41,7 +41,7 @@ class WelcomeViewController: NSViewController
         if let authorizer = GmailProps.service.authorizer, canAuth = authorizer.canAuthorize where canAuth
         {
             
-            if let currentEmailAddress = Constants.currentUser?.emailAddress
+            if let currentEmailAddress = GlobalVars.currentUser?.emailAddress
             {
                 print("Already logged in as: \(currentEmailAddress)\n")
                 fetchGoodies()
@@ -53,7 +53,7 @@ class WelcomeViewController: NSViewController
                 //Check if a user entity already exists
                 if let existingUser = fetchUserFromCoreData(currentEmailAddress)
                 {
-                    Constants.currentUser = existingUser
+                    GlobalVars.currentUser = existingUser
                     self.fetchGoodies()
                 }
                 else
@@ -133,7 +133,7 @@ class WelcomeViewController: NSViewController
             do
             {
                 try newUser.managedObjectContext?.save()
-                Constants.currentUser = newUser
+                GlobalVars.currentUser = newUser
                 return newUser
             }
             catch

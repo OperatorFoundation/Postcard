@@ -41,7 +41,7 @@ class MessageViewController: NSViewController
     {
         super.viewWillAppear()
         
-        if let currentUser = Constants.currentUser
+        if let currentUser = GlobalVars.currentUser
         {
             let predicate = NSPredicate(format: "owner == %@", currentUser)
             postcardObjectController.fetchPredicate = predicate

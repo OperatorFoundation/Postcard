@@ -21,11 +21,10 @@ class PenPalsViewController: NSViewController, NSTableViewDelegate
         // Do view setup here.
         
         //Setup Array Controller Contents
-        if let currentUser = Constants.currentUser
+        if let currentUser = GlobalVars.currentUser
         {
             let predicate = NSPredicate(format: "owner == %@", currentUser)
             penPalsArrayController.fetchPredicate = predicate
-            print("PenPals Array Controller filtered to \(currentUser.emailAddress)\n")
         }
         
         penPalsTableView.target = self

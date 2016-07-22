@@ -56,7 +56,7 @@ class PenPalController: NSObject
         query.sortOrder = "FIRST_NAME_ASCENDING"
         
         //Sync Token
-        query.syncToken = Constants.currentUser?.peopleSyncToken
+        query.syncToken = GlobalVars.currentUser?.peopleSyncToken
         
         //Next Page Token
         query.pageToken = nextPageToken
@@ -73,16 +73,16 @@ class PenPalController: NSObject
             count += 1
             print("\nResponse " + count.description)
             print(response.description + "\n")
-            var nextPageToken: String? = response.nextPageToken
+            let nextPageToken: String? = response.nextPageToken
             
             //TODO: Save to core data
             
             //User Attribute
             let syncToken = response.nextSyncToken
-            Constants.currentUser?.peopleSyncToken = syncToken
+            GlobalVars.currentUser?.peopleSyncToken = syncToken
             do
             {
-                try Constants.currentUser?.managedObjectContext?.save()
+                try GlobalVars.currentUser?.managedObjectContext?.save()
             }
             catch
             {
@@ -134,7 +134,7 @@ class PenPalController: NSObject
     func saveConnection(connection:GTLRPeople_Person, asPenPal penPal: PenPal, withEmailAddress email: String)
     {
         //Relationship Owner
-        penPal.owner = Constants.currentUser
+        penPal.owner = GlobalVars.currentUser
         
         //PenPal email
         penPal.email = email
@@ -237,7 +237,7 @@ class PenPalController: NSObject
             let newPal4 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
             newPal4.email = "adelita.schule@gmail.com"
             newPal4.name = "Adelita Schule"
-            newPal4.owner = Constants.currentUser
+            newPal4.owner = GlobalVars.currentUser
             
             //Save this PenPal to core data
             do

@@ -1252,7 +1252,7 @@
                     </connections>
                 </viewController>
                 <customObject id="xn8-bO-oXB" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <arrayController mode="entity" entityName="PenPal" automaticallyPreparesContent="YES" id="w8w-hP-Jr6" userLabel="Penpals">
+                <arrayController mode="entity" entityName="PenPal" automaticallyPreparesContent="YES" avoidsEmptySelection="NO" automaticallyRearrangesObjects="YES" id="w8w-hP-Jr6" userLabel="Penpals">
                     <connections>
                         <binding destination="Ko7-wL-7ZM" name="managedObjectContext" keyPath="managedContext" id="e8V-Up-DHs"/>
                     </connections>
@@ -1935,6 +1935,6 @@
         <image name="welcomeBG" width="535" height="320"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="pkb-71-Y9W"/>
+        <segue reference="Ouy-3e-cTq"/>
     </inferredMetricsTieBreakers>
 </document>

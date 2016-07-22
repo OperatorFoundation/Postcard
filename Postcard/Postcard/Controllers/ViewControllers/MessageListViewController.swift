@@ -32,7 +32,7 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
 
         //Make sure that the array controller for bindings is only looking at messages for the correct user
         //TODO: This is not available quickly enough, should we store it in UD?
-        if let currentUser = Constants.currentUser
+        if let currentUser = GlobalVars.currentUser
         {
             let predicate = NSPredicate(format: "owner == %@", currentUser)
             postcardsArrayController.fetchPredicate = predicate
@@ -49,14 +49,12 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
             {
                 MailController.sharedInstance.decryptPostcard(selectedPostcard)
             }
-
             
             //Tell the message VC what message to display
             let splitVC = parentViewController as! NSSplitViewController
             if let messageVC: MessageViewController = splitVC.childViewControllers[1] as? MessageViewController
             {
                 messageVC.postcardObjectController.content = selectedPostcard
-                print("\nSELECTED POSTCARD DECRYPTED? - \(selectedPostcard.decrypted.description)\n")
             }
         }
         else
