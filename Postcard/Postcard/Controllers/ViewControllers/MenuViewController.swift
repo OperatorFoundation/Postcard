@@ -82,6 +82,7 @@ class MenuViewController: NSViewController
     {
         //Remove current User from Constants
         GlobalVars.currentUser = nil
+        KeyController.sharedInstance.resetKeys()
         
         //Remove google Auth Token
         GTMOAuth2WindowController.removeAuthFromKeychainForName(GmailProps.kKeychainItemName)

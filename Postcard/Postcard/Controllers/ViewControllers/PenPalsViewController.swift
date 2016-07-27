@@ -25,6 +25,12 @@ class PenPalsViewController: NSViewController, NSTableViewDelegate
         {
             let predicate = NSPredicate(format: "owner == %@", currentUser)
             penPalsArrayController.fetchPredicate = predicate
+            
+            let hasKeySortDescriptor = NSSortDescriptor(key: "key", ascending: false)
+            let invitedSortDescriptor = NSSortDescriptor(key: "sentKey", ascending: false)
+            let nameSortDescriptor = NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedStandardCompare(_:)))
+            let emailSortDescriptor = NSSortDescriptor(key: "email", ascending: true, selector: #selector(NSString.localizedStandardCompare(_:)))
+            penPalsArrayController.sortDescriptors = [hasKeySortDescriptor, invitedSortDescriptor, nameSortDescriptor, emailSortDescriptor]
         }
         
         penPalsTableView.target = self
@@ -96,6 +102,7 @@ class PenPalTableCell: NSTableCellView
                     actionButton.target = self
                     actionButton.action = #selector(inviteAction)
                     backgroundView.viewColor = PostcardUI.gray
+                    actionButton.hidden = false
                 }
                 else if penPal.key != nil && penPal.sentKey == false
                 {
@@ -104,12 +111,14 @@ class PenPalTableCell: NSTableCellView
                     actionButton.target = self
                     actionButton.action = #selector(addAction)
                     backgroundView.viewColor = NSColor.whiteColor()
+                    actionButton.hidden = false
                 }
-                else
+                else //if penPal.key != nil && penPal.sentKey == true
                 {
                     actionButton.hidden = true
                     backgroundView.viewColor = PostcardUI.gray
                 }
+                
                 actionButton.attributedTitle = NSAttributedString(string: actionTitle, attributes: attributes)
                 actionButton.attributedAlternateTitle = NSAttributedString(string: actionTitle, attributes: altAttributes)
             }

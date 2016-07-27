@@ -11,15 +11,22 @@ import SSKeychain
 import Sodium
 import GoogleAPIClient
 
+private var _singletonSharedInstance: KeyController! = KeyController()
 class KeyController: NSObject
 {
-    static let sharedInstance = KeyController()
+    class var sharedInstance: KeyController
+    {
+        if _singletonSharedInstance == nil
+        {
+            _singletonSharedInstance = KeyController()
+        }
+        return _singletonSharedInstance
+    }
     
     let service = "org.operatorfoundation.Postcard"
     
     var mySharedKey: NSData?
-    var myPrivateKey:NSData?
-    
+    var myPrivateKey: NSData?
     
     private override init()
     {
@@ -49,25 +56,6 @@ class KeyController: NSObject
             {
                 missingKey = true
             }
-            
-//            //Check the keychain for the serialized KeyPair
-//            if let keyPairData = SSKeychain.passwordDataForService(service, account: emailAddress)
-//            {
-//                //Deserialize the KeyPair
-//                if let keyPair = NSKeyedUnarchiver.unarchiveObjectWithData(keyPairData) as? Box.KeyPair
-//                {
-//                    myPrivateKey = keyPair.secretKey
-//                    mySharedKey = keyPair.publicKey
-//                }
-//                else
-//                {
-//                    missingKey = true
-//                }
-//            }
-//            else
-//            {
-//                missingKey = true
-//            }
             
             //If we do not already have a key pair make one.
             if missingKey
@@ -112,13 +100,6 @@ class KeyController: NSObject
                         print(fetchError)
                     }
                 }
-                
-                
-//                //Serialize the keypair so that they can be stored together in the keychain
-//                if let keyPairData: NSData = NSKeyedArchiver.archivedDataWithRootObject(newKeyPair as! AnyObject)
-//                {
-//                    //Save it to the Keychain
-//                }
             }
         }
         else
@@ -127,10 +108,12 @@ class KeyController: NSObject
         }
     }
     
-//    func makeLookupKey(userID: String) -> String
-//    {
-//        return userID + UDKey.publicKeyKey
-//    }
+    func resetKeys()
+    {
+        _singletonSharedInstance = nil
+        mySharedKey = nil
+        myPrivateKey = nil
+    }
     
     func sendKey(toPenPal penPal: PenPal)
     {

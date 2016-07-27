@@ -214,9 +214,6 @@ class WelcomeViewController: NSViewController
         
         GmailProps.service.authorizer = authResult
         GmailProps.servicePeople.authorizer = authResult
-        //
-        print("Authorization result from app delegate: \(authResult)\n")
-        //
         authWindowController.dismissController(self)
         
         if isAuthorized()

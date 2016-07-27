@@ -219,6 +219,7 @@ class MailController: NSObject
                             showAlert("Final step for decryption failed for message from \(penPal.email).")
                             print("\nFailed to decrypt message:\n")
                             print("Sender Key: \(penPalKey)\n")
+                            print("My public key: \(keyController.mySharedKey)")
                             print("Secret Key: \(secretKey)\n")
                         }
                     }
@@ -406,7 +407,7 @@ class MailController: NSObject
                             }
                             else
                             {
-                                showAlert("We received a new key: \(decodedAttachment?.description) and it does not match the key we have stored: \(thisPenPal.key?.description). This is a problem.\n")
+                                showAlert("We received a new key:\n \(decodedAttachment?.description)\n and it does not match the key we have stored:\n \(thisPenPal.key?.description). This is a problem.\n")
 //                                
 //                                //TODO: Saving the new Key instead....?
 //                                thisPenPal.key = decodedAttachment
@@ -507,7 +508,8 @@ class MailController: NSObject
                 print("\nSent an email to : \(to)")
                 print("send email response: \(response)")
                 print("send email error: \(error)")
-                print("Public Key sent With Message: \(GlobalVars.currentUser?.publicKey?.description)\n")
+                
+                print("\nPublic Key sent With Message: \(GlobalVars.currentUser?.publicKey?.description)\n")
                 if error == nil
                 {
                     completion(successful: true)
@@ -633,6 +635,8 @@ class MailController: NSObject
             {
                 if let penPalKey = thisPenpal.key
                 {
+                    print("\nSending an email to: \(to)\nRecipient's Public Key: \(penPalKey)\n")
+                    
                     let messageBuilder = MCOMessageBuilder()
                     messageBuilder.header.to = [MCOAddress(mailbox: to)]
                     messageBuilder.header.subject = subject
