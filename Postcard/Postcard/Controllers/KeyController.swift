@@ -128,8 +128,8 @@ class KeyController: NSObject
             query.message = gmailMessage
             
             GmailProps.service.executeQuery(query, completionHandler: {(ticket, response, error) in
-                print("send key email ticket: \(ticket)\n")
-                print("send key email response: \(response)\n")
+                print("\nsend key email ticket: \(ticket)")
+                print("send key email response: \(response)")
                 print("send key email error: \(error)\n")
                 
                 //Update sentKey to "true"

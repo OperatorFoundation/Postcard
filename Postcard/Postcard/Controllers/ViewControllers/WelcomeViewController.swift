@@ -41,9 +41,8 @@ class WelcomeViewController: NSViewController
         if let authorizer = GmailProps.service.authorizer, canAuth = authorizer.canAuthorize where canAuth
         {
             
-            if let currentEmailAddress = GlobalVars.currentUser?.emailAddress
+            if (GlobalVars.currentUser?.emailAddress) != nil
             {
-                print("Already logged in as: \(currentEmailAddress)\n")
                 fetchGoodies()
             }
             else
@@ -145,7 +144,6 @@ class WelcomeViewController: NSViewController
         }
         else
         {
-            print("Unable to fetch user from core data, or create a new one. That's weird.")
             return nil
         }
     }

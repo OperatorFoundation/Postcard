@@ -45,7 +45,6 @@ class PenPalsViewController: NSViewController, NSTableViewDelegate
             {
                 performSegueWithIdentifier("Email PenPal", sender: self)
             }
-            print(thisPenPal.email)
         }
     }
     
@@ -65,6 +64,7 @@ class PenPalsViewController: NSViewController, NSTableViewDelegate
     
     
 }
+
 
 //MARK: TableCellView
 class PenPalTableCell: NSTableCellView

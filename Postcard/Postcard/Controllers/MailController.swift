@@ -38,7 +38,6 @@ class MailController: NSObject
             if let error = maybeError
             {
                 completion(successful: false)
-                print("\nUnable to trash gmail message: \(error)\n")
             }
             if let _ = maybeResponse, let managedContext = self.managedObjectContext
             {
@@ -209,10 +208,6 @@ class MailController: NSObject
                         {
                             //Parse this message
                             self.parseDecryptedMessageAndSave(decryptedPostcard, saveToPostcard: postcard)
-                            
-                            print("\nDecrypted message:\n")
-                            print("Sender Key: \(penPalKey)\n")
-                            print("Secret Key: \(secretKey)\n")
                         }
                         else
                         {
@@ -407,7 +402,7 @@ class MailController: NSObject
                             }
                             else
                             {
-                                showAlert("We received a new key:\n \(decodedAttachment?.description)\n and it does not match the key we have stored:\n \(thisPenPal.key?.description). This is a problem.\n")
+                                showAlert("We received a new key:\n \(decodedAttachment?.description)\n and it does not match the key we have stored:\n \(thisPenPal.key?.description).")
 //                                
 //                                //TODO: Saving the new Key instead....?
 //                                thisPenPal.key = decodedAttachment
@@ -488,12 +483,12 @@ class MailController: NSObject
         catch
         {
             let fetchError = error as NSError
-            print("Failed to fetch postcard by identifier: \(fetchError)\n")
+            print(fetchError)
         }
+        
         return false
     }
     
-    //MARK: DEV ONLY (move this to a window controller)
     func sendEmail(to: String, subject: String, body: String, maybeAttachments:[NSURL]?, completion: (successful: Bool) -> Void)
     {
         if let rawMessage = generateMessage(sendToEmail: to, subject: subject, body: body, maybeAttachments: maybeAttachments)
@@ -508,8 +503,10 @@ class MailController: NSObject
                 print("\nSent an email to : \(to)")
                 print("send email response: \(response)")
                 print("send email error: \(error)")
-                
-                print("\nPublic Key sent With Message: \(GlobalVars.currentUser?.publicKey?.description)\n")
+                if let response = response as? GTLGmailMessage
+                {
+                    print(response.labelIds.description)
+                }
                 if error == nil
                 {
                     completion(successful: true)
@@ -635,7 +632,7 @@ class MailController: NSObject
             {
                 if let penPalKey = thisPenpal.key
                 {
-                    print("\nSending an email to: \(to)\nRecipient's Public Key: \(penPalKey)\n")
+                    print("\nSending an email to: \(to)\nRecipient's Public Key: \(penPalKey)")
                     
                     let messageBuilder = MCOMessageBuilder()
                     messageBuilder.header.to = [MCOAddress(mailbox: to)]
@@ -669,7 +666,6 @@ class MailController: NSObject
             else
             {
                 showAlert("You cannot send a postcard to this person, they are not in your contacts yet.")
-                print("This email is not in the PenPals group, could not generate a message to: \(to)")
             }
         
         return nil

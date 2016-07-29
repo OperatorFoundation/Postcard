@@ -71,11 +71,7 @@ class PenPalController: NSObject
         if let response:GTLRPeople_ListConnectionsResponse = maybeResponse as? GTLRPeople_ListConnectionsResponse
         {
             count += 1
-            print("\nResponse " + count.description)
-            print(response.description + "\n")
             let nextPageToken: String? = response.nextPageToken
-            
-            //TODO: Save to core data
             
             //User Attribute
             let syncToken = response.nextSyncToken
@@ -133,18 +129,13 @@ class PenPalController: NSObject
     
     func saveConnection(connection:GTLRPeople_Person, asPenPal penPal: PenPal, withEmailAddress email: String)
     {
-        //Relationship Owner
         penPal.owner = GlobalVars.currentUser
-        
-        //PenPal email
         penPal.email = email
-        print("Penpal email address: \(email)\n")
         
         //Name
         if let names = connection.names where names.isEmpty == false
         {
             penPal.name = names[0].displayName
-            print("PenPal Display Name: \(penPal.name)\n")
         }
         
         //PenPal Image
@@ -178,6 +169,7 @@ class PenPalController: NSObject
     func fetchPenPal(emailAddress: String) -> PenPal?
     {
         let fetchRequest = NSFetchRequest(entityName: "PenPal")
+        
         //Check for a penpal with this email address AND this current user as owner
         fetchRequest.predicate = NSPredicate(format: "email == %@", emailAddress)
         do
@@ -207,52 +199,6 @@ class PenPalController: NSObject
             completionHandler(data: data, response: response, error: error)
         }.resume()
     }
-    
-    //DEV ONLY: create contacts
-    func makeMeSomeFriends()
-    {
-        //Create New PenPal record
-        
-        if let managedObjectContext = self.managedObjectContext, let entity = NSEntityDescription.entityForName("PenPal", inManagedObjectContext: managedObjectContext)
-        {
-
-            
-            //            let newPal4 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-            //            newPal4.email = "looklita@gmail.com"
-            //            newPal4.name = "Lita Consuelo"
-            //            newPal4.owner = Constants.currentUser
-            //
-            //            //Save this PenPal to core data
-            //            do
-            //            {
-            //                try newPal4.managedObjectContext?.save()
-            //                //print("NewCard From:" + (newCard.from?.email)! + "\n")
-            //            }
-            //            catch
-            //            {
-            //                let saveError = error as NSError
-            //                print("\(saveError)")
-            //            }
-            
-            let newPal4 = PenPal(entity: entity, insertIntoManagedObjectContext: self.managedObjectContext)
-            newPal4.email = "adelita.schule@gmail.com"
-            newPal4.name = "Adelita Schule"
-            newPal4.owner = GlobalVars.currentUser
-            
-            //Save this PenPal to core data
-            do
-            {
-                try newPal4.managedObjectContext?.save()
-            }
-            catch
-            {
-                let saveError = error as NSError
-                print("\(saveError)")
-            }
-            
-        }
-    }
-
     
     
 }

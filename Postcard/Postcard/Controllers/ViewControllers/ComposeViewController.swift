@@ -44,10 +44,6 @@ class ComposeViewController: NSViewController
     override func viewDidAppear()
     {
         //This is to make the title bar transparent so that the BG image is uninterrupted
-        if let window = self.view.window
-        {
-            print(window.description)
-        }
         view.window?.titlebarAppearsTransparent = true
         view.window?.movableByWindowBackground = true
         view.window?.titleVisibility = NSWindowTitleVisibility.Hidden
@@ -198,7 +194,7 @@ class ComposeViewController: NSViewController
         }
         else
         {
-            print(sender.description)
+            //print(sender.description)
         }
     }
     
