@@ -145,7 +145,8 @@ class KeyController: NSObject
                 {
                     let saveError = error as NSError
                     print("\(saveError), \(saveError.userInfo)")
-                    self.showAlert("Warning: We could not save the sent key status of \(penPal.email).")
+                    
+                    self.showAlert(String(format: localizationKeys.localizedPenPalStatusError, emailAddress))
                 }
             })
         }
@@ -165,7 +166,7 @@ class KeyController: NSObject
     {
         let alert = NSAlert()
         alert.messageText = message
-        alert.addButtonWithTitle(localizationKeys.localizedOKButtonTitle)
+        alert.addButtonWithTitle(localizedOKButtonTitle)
         alert.runModal()
     }
     

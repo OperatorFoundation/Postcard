@@ -95,7 +95,7 @@ class ComposeViewController: NSViewController
         //Create and configure the choose file panel
         let choosePanel = NSOpenPanel()
         choosePanel.allowsMultipleSelection = true
-        choosePanel.message = localizationKeys.localizedAttachmentPrompt
+        choosePanel.message = localizedAttachmentPrompt
         
         //Display the panel attached to the compose window
         if let composeWindow = self.view.window

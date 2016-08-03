@@ -124,7 +124,7 @@ class MessageViewController: NSViewController
     {
         let alert = NSAlert()
         alert.messageText = message
-        alert.addButtonWithTitle(localizationKeys.localizedOKButtonTitle)
+        alert.addButtonWithTitle(localizedOKButtonTitle)
         alert.runModal()
     }
     

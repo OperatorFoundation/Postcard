@@ -19,26 +19,6 @@ class PenPalController: NSObject
         managedObjectContext = appDelegate.managedObjectContext
     }
     
-    //TODO: This is not currently used
-    func getPenPalEmails(completionHandler:() -> Void)
-    {
-        if let managedObjectContext = managedObjectContext
-        {
-            let request = NSFetchRequest(entityName: "PenPal")
-            var results: [AnyObject]? = nil
-            do
-            {
-                results = try managedObjectContext.executeFetchRequest(request)
-            }
-            catch
-            {
-                fatalError("Failed to fetch penpals: \(error)\n")
-            }
-        }
-        
-        completionHandler()
-    }
-    
     func getGoogleContacts()
     {
         getGoogleContacts(nil)

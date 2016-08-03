@@ -105,6 +105,7 @@
 		B4238F5E1CD2DF050054E7EF /* KeyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KeyController.swift; path = Controllers/KeyController.swift; sourceTree = "<group>"; };
 		B4238F601CD2DF630054E7EF /* Postcard-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Postcard-Bridging-Header.h"; sourceTree = "<group>"; };
 		B430D5EA1CF7C31D0025365E /* WelcomeWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeWindowController.swift; path = Controllers/ViewControllers/WelcomeWindowController.swift; sourceTree = "<group>"; };
+		B4316C9B1D527F83000138D0 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
 		B455798C1D10C99B00E56D6D /* FuturaT_Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaT_Bold.ttf; sourceTree = "<group>"; };
 		B460CCE81D41805D00507EFD /* Globals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Globals.swift; path = SupportingFiles/Globals.swift; sourceTree = "<group>"; };
 		B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LockedViewController.swift; path = Controllers/ViewControllers/LockedViewController.swift; sourceTree = "<group>"; };
@@ -115,7 +116,6 @@
 		B4EDBB4D1CEF6BC50094853F /* ComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComposeViewController.swift; path = Controllers/ViewControllers/ComposeViewController.swift; sourceTree = "<group>"; };
 		B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeViewController.swift; path = Controllers/ViewControllers/WelcomeViewController.swift; sourceTree = "<group>"; };
 		B4EDBB511CEF7C040094853F /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainWindowController.swift; path = Controllers/ViewControllers/MainWindowController.swift; sourceTree = "<group>"; };
-		B4F2BB871D514E0400867153 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/Main.strings"; sourceTree = "<group>"; };
 		DE6AE8B4A763778B6E995AD4 /* Pods-PostcardUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostcardUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PostcardUITests/Pods-PostcardUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		E06FF6A9674F8BD384D14B5C /* Pods-PostcardTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostcardTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PostcardTests/Pods-PostcardTests.release.xcconfig"; sourceTree = "<group>"; };
 		F993DEEA770B3AC03674690B /* Pods-Postcard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Postcard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Postcard/Pods-Postcard.debug.xcconfig"; sourceTree = "<group>"; };
@@ -637,7 +637,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				461891B51CC17B9A009C577D /* Base */,
-				B4F2BB871D514E0400867153 /* es-MX */,
+				B4316C9B1D527F83000138D0 /* es */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";

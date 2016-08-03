@@ -1933,18 +1933,6 @@
             </objects>
             <point key="canvasLocation" x="-599.5" y="844"/>
         </scene>
-        <!--Collection View Item-->
-        <scene sceneID="qPr-N3-DRO">
-            <objects>
-                <collectionViewItem id="TBy-qC-ZSC" sceneMemberID="viewController">
-                    <view key="view" id="Xrv-T3-E8P">
-                        <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </view>
-                </collectionViewItem>
-                <customObject id="HBg-kY-x7G" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-        </scene>
     </scenes>
     <resources>
         <image name="attachicon" width="130" height="130"/>

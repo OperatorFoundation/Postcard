@@ -181,7 +181,7 @@ class MailController: NSObject
                                         }
                                         else
                                         {
-                                            self.showAlert(String(format: localizationKeys.localizedUnknownContactError, sender))
+                                            self.showAlert(String(format: localizedUnknownContactError, sender))
                                         }
                                     }
                                 })
@@ -212,7 +212,7 @@ class MailController: NSObject
                         }
                         else
                         {
-                            showAlert(String(format: localizationKeys.localizedWrongKeyError, penPalEMail))
+                            showAlert(String(format: localizedWrongKeyError, penPalEMail))
                             print("\nFailed to decrypt message:\n")
                             print("Sender Key: \(penPalKey)\n")
                             print("My public key: \(keyController.mySharedKey)")
@@ -221,17 +221,17 @@ class MailController: NSObject
                     }
                     else
                     {
-                        showAlert(String(format: localizationKeys.localizedMissingCipherError, penPalEMail))
+                        showAlert(String(format: localizedMissingCipherError, penPalEMail))
                     }
                 }
                 else
                 {
-                    showAlert(localizationKeys.localizedMissingPalKeyError)
+                    showAlert(localizedMissingPalKeyError)
                 }
             }
             else
             {
-                showAlert(localizationKeys.localizedMissingKeyError)
+                showAlert(localizedMissingKeyError)
             }
         }
         else
@@ -405,7 +405,7 @@ class MailController: NSObject
                             {
                                 
                                 //TODO: Allow user to reset a contact that is having key issues
-                                showAlert(String(format: localizationKeys.localizedDifferentKeyError, sender))
+                                showAlert(String(format: localizedDifferentKeyError, sender))
                                 
                                 print("We received a new key:\n \(decodedAttachment?.description)\n and it does not match the key we have stored:\n \(thisPenPal.key?.description).")
 //                                
@@ -438,7 +438,7 @@ class MailController: NSObject
                             {
                                 let saveError = error as NSError
                                 print("\(saveError), \(saveError.userInfo)")
-                                self.showAlert(String(format: localizationKeys.localizedSavePenPalKeyError, sender))
+                                self.showAlert(String(format: localizedSavePenPalKeyError, sender))
                             }
                         }
                     }
@@ -463,7 +463,7 @@ class MailController: NSObject
                             {
                                 let saveError = error as NSError
                                 print("\(saveError), \(saveError.userInfo)")
-                                self.showAlert(String(format: localizationKeys.localizedSavePenPalError, sender))
+                                self.showAlert(String(format: localizedSavePenPalError, sender))
                             }
                         }
                     }
@@ -665,12 +665,12 @@ class MailController: NSObject
                 }
                 else
                 {
-                    showAlert(String(format: localizationKeys.localizedSendErrorNoKey, to))
+                    showAlert(String(format: localizedSendErrorNoKey, to))
                 }
             }
             else
             {
-                showAlert(String(format: localizationKeys.localizedSendErrorNotAContact, to))
+                showAlert(String(format: localizedSendErrorNotAContact, to))
             }
         
         return nil
@@ -678,7 +678,7 @@ class MailController: NSObject
     
     func generatePostcardAttachment() -> NSData
     {
-        let textBody = localizationKeys.localizedInviteFiller
+        let textBody = localizedInviteFiller
         return textBody.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
     }
     
@@ -710,7 +710,7 @@ class MailController: NSObject
     {
         let alert = NSAlert()
         alert.messageText = message
-        alert.addButtonWithTitle(localizationKeys.localizedOKButtonTitle)
+        alert.addButtonWithTitle(localizedOKButtonTitle)
         alert.runModal()
     }
     

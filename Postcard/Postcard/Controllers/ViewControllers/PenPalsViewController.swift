@@ -97,7 +97,7 @@ class PenPalTableCell: NSTableCellView
                 
                 if penPal.key == nil && penPal.sentKey == false
                 {
-                    actionTitle = NSLocalizedString(localizationKeys.inviteButtonTitle, comment: "Button for inviting a friend to use the app and be one of your secure contacts.")
+                    actionTitle = localizationKeys.localizedInviteButtonTitle
                     actionButton.image = NSImage(named: "redButton")
                     actionButton.target = self
                     actionButton.action = #selector(inviteAction)
@@ -106,7 +106,7 @@ class PenPalTableCell: NSTableCellView
                 }
                 else if penPal.key != nil && penPal.sentKey == false
                 {
-                    actionTitle = NSLocalizedString(localizationKeys.addButtonTitle, comment: "Accept another user's invitation to be a secure contact.")
+                    actionTitle = localizationKeys.localizedAddButtonTitle
                     actionButton.image = NSImage(named: "greenButton")
                     actionButton.target = self
                     actionButton.action = #selector(addAction)
