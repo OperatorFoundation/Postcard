@@ -66,11 +66,11 @@ class ComposeViewController: NSViewController
         let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
         let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
         
-        sendButton.attributedTitle = NSAttributedString(string: "SEND", attributes: attributes)
-        sendButton.attributedAlternateTitle = NSAttributedString(string: "SEND", attributes: altAttributes)
+        sendButton.attributedTitle = NSAttributedString(string: localizationKeys.localizedSendTitle, attributes: attributes)
+        sendButton.attributedAlternateTitle = NSAttributedString(string: localizationKeys.localizedSendTitle, attributes: altAttributes)
         
-        attachmentButton.attributedTitle = NSAttributedString(string: "ATTACHMENT", attributes: attributes)
-        attachmentButton.attributedAlternateTitle = NSAttributedString(string: "ATTACHMENT", attributes: altAttributes)
+        attachmentButton.attributedTitle = NSAttributedString(string: localizationKeys.localizedAttachmentTitle, attributes: attributes)
+        attachmentButton.attributedAlternateTitle = NSAttributedString(string: localizationKeys.localizedAttachmentTitle, attributes: altAttributes)
     }
     
     //MARK: Actions
@@ -95,7 +95,7 @@ class ComposeViewController: NSViewController
         //Create and configure the choose file panel
         let choosePanel = NSOpenPanel()
         choosePanel.allowsMultipleSelection = true
-        choosePanel.message = "Select the file(s) you would like to attach."
+        choosePanel.message = localizationKeys.localizedAttachmentPrompt
         
         //Display the panel attached to the compose window
         if let composeWindow = self.view.window
@@ -168,7 +168,6 @@ class ComposeViewController: NSViewController
         }
     }
     
-    
     //TODO: Open the attachment file when attachment button is clicked
     func attachmentClicked(sender: NSButton, filePath: NSURL)
     {
@@ -197,8 +196,10 @@ class ComposeViewController: NSViewController
             //print(sender.description)
         }
     }
-    
+ 
+//
 }
+
 
 class AttachmentButton: NSButton
 {
@@ -216,5 +217,5 @@ class AttachmentButton: NSButton
         fatalError("init(coder:) has not been implemented")
     }
     
-    
+//
 }

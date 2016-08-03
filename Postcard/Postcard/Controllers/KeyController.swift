@@ -151,17 +151,6 @@ class KeyController: NSObject
         }
     }
     
-//    private func saveUserKeys(privateKey: NSData, publicKey: NSData, userID: String)
-//    {
-//        let defaults = NSUserDefaults.standardUserDefaults()
-//        
-//        //Save secret key in the keychain with the user's email address
-//        SSKeychain.setPasswordData(privateKey, forService: service, account: userID)
-//        
-//        //Save public key to NSUser Defaults
-//        defaults.setValue(publicKey, forKey: makeLookupKey(userID))
-//    }
-    
     private func createNewKeyPair() -> Box.KeyPair
     {
         //Generate a key pair for the user.
@@ -176,7 +165,7 @@ class KeyController: NSObject
     {
         let alert = NSAlert()
         alert.messageText = message
-        alert.addButtonWithTitle("OK")
+        alert.addButtonWithTitle(localizationKeys.localizedOKButtonTitle)
         alert.runModal()
     }
     

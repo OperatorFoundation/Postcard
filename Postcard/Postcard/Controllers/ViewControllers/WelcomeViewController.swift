@@ -64,7 +64,6 @@ class WelcomeViewController: NSViewController
                         {
                             self.fetchGoodies()
                         }
-                        
                     }
                     else
                     {
@@ -206,7 +205,7 @@ class WelcomeViewController: NSViewController
         if let error: NSError = error
         {
             GmailProps.service.authorizer = nil
-            showAlert("Authentication Error: \(error.localizedDescription)")
+            showAlert(localizationKeys.localizedAuthErrorPrompt + error.localizedDescription)
             return
         }
         
@@ -230,8 +229,9 @@ class WelcomeViewController: NSViewController
     {
         let alert = NSAlert()
         alert.messageText = message
-        alert.addButtonWithTitle("OK")
+        alert.addButtonWithTitle(localizationKeys.localizedOKButtonTitle)
         alert.runModal()
     }
-    
+   
+//
 }

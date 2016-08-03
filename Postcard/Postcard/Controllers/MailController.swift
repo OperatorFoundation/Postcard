@@ -38,6 +38,7 @@ class MailController: NSObject
             if let error = maybeError
             {
                 completion(successful: false)
+                print(error)
             }
             if let _ = maybeResponse, let managedContext = self.managedObjectContext
             {
@@ -180,7 +181,7 @@ class MailController: NSObject
                                         }
                                         else
                                         {
-                                            self.showAlert("We did not decrypt a message sent from \(sender) because this person is not saved as a contact.")
+                                            self.showAlert(String(format: localizationKeys.localizedUnknownContactError, sender))
                                         }
                                     }
                                 })
@@ -200,7 +201,7 @@ class MailController: NSObject
         {
             if let secretKey = keyController.myPrivateKey
             {
-                if let penPal = postcard.from, let penPalKey = penPal.key
+                if let penPal = postcard.from, let penPalKey = penPal.key, let penPalEMail = penPal.email
                 {
                     if let cipherText = postcard.cipherText
                     {
@@ -211,7 +212,7 @@ class MailController: NSObject
                         }
                         else
                         {
-                            showAlert("Final step for decryption failed for message from \(penPal.email).")
+                            showAlert(String(format: localizationKeys.localizedWrongKeyError, penPalEMail))
                             print("\nFailed to decrypt message:\n")
                             print("Sender Key: \(penPalKey)\n")
                             print("My public key: \(keyController.mySharedKey)")
@@ -220,17 +221,17 @@ class MailController: NSObject
                     }
                     else
                     {
-                        showAlert("We could not decrypt this postcard!! We cannot find the cipher text from \(penPal.email).\n")
+                        showAlert(String(format: localizationKeys.localizedMissingCipherError, penPalEMail))
                     }
                 }
                 else
                 {
-                    showAlert("We were unable to decrypt a message: We don't have the key. :(")
+                    showAlert(localizationKeys.localizedMissingPalKeyError)
                 }
             }
             else
             {
-                showAlert("We were unable to decrypt your emails: we don't have your key. :(")
+                showAlert(localizationKeys.localizedMissingKeyError)
             }
         }
         else
@@ -402,7 +403,11 @@ class MailController: NSObject
                             }
                             else
                             {
-                                showAlert("We received a new key:\n \(decodedAttachment?.description)\n and it does not match the key we have stored:\n \(thisPenPal.key?.description).")
+                                
+                                //TODO: Allow user to reset a contact that is having key issues
+                                showAlert(String(format: localizationKeys.localizedDifferentKeyError, sender))
+                                
+                                print("We received a new key:\n \(decodedAttachment?.description)\n and it does not match the key we have stored:\n \(thisPenPal.key?.description).")
 //                                
 //                                //TODO: Saving the new Key instead....?
 //                                thisPenPal.key = decodedAttachment
@@ -433,7 +438,7 @@ class MailController: NSObject
                             {
                                 let saveError = error as NSError
                                 print("\(saveError), \(saveError.userInfo)")
-                                self.showAlert("Warning: We could not save this contacts key.\n")
+                                self.showAlert(String(format: localizationKeys.localizedSavePenPalKeyError, sender))
                             }
                         }
                     }
@@ -458,7 +463,7 @@ class MailController: NSObject
                             {
                                 let saveError = error as NSError
                                 print("\(saveError), \(saveError.userInfo)")
-                                self.showAlert("Warning: We could not save this contact.")
+                                self.showAlert(String(format: localizationKeys.localizedSavePenPalError, sender))
                             }
                         }
                     }
@@ -582,7 +587,7 @@ class MailController: NSObject
             let packageData:NSData? = nil
 
             //This is the postcard wrapper email
-            let mimeMessageString = generateMessageMime(sendToEmail: to, subject: PostCardProps.subject, body: PostCardProps.body, messageData: messageData, maybePackage: packageData)
+            let mimeMessageString = generateMessageMime(sendToEmail: to, subject: localizationKeys.localizedGenericSubject, body: localizationKeys.localizedGenericBody, messageData: messageData, maybePackage: packageData)
             
             return mimeMessageString
         }
@@ -660,12 +665,12 @@ class MailController: NSObject
                 }
                 else
                 {
-                    showAlert("You cannot send a Postcard to \(to) because you do not have their key! :(")
+                    showAlert(String(format: localizationKeys.localizedSendErrorNoKey, to))
                 }
             }
             else
             {
-                showAlert("You cannot send a postcard to this person, they are not in your contacts yet.")
+                showAlert(String(format: localizationKeys.localizedSendErrorNotAContact, to))
             }
         
         return nil
@@ -673,7 +678,7 @@ class MailController: NSObject
     
     func generatePostcardAttachment() -> NSData
     {
-        let textBody = "If you can read this, you have my key."
+        let textBody = localizationKeys.localizedInviteFiller
         return textBody.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
     }
     
@@ -681,8 +686,8 @@ class MailController: NSObject
     {
         let messageBuilder = MCOMessageBuilder()
         messageBuilder.header.to = [MCOAddress(mailbox: emailAddress)]
-        messageBuilder.header.subject = PostCardProps.subject
-        messageBuilder.textBody = PostCardProps.body
+        messageBuilder.header.subject = localizationKeys.localizedGenericSubject
+        messageBuilder.textBody = localizationKeys.localizedGenericBody
         
         //Generate the main Postcard Attachment.
         if let postcardWrapperAttachment = MCOAttachment(data: generateKeyAttachment(), filename: "Postcard")
@@ -705,8 +710,9 @@ class MailController: NSObject
     {
         let alert = NSAlert()
         alert.messageText = message
-        alert.addButtonWithTitle("OK")
+        alert.addButtonWithTitle(localizationKeys.localizedOKButtonTitle)
         alert.runModal()
     }
+    
     
 }

@@ -74,7 +74,7 @@ class MessageViewController: NSViewController
                     if let from = rePostcard.from, let sendTo = from.email, let subject = rePostcard.subject
                     {
                         composeVC.sendTo = sendTo
-                        composeVC.reSubject = "re: \(subject)"
+                        composeVC.reSubject = localizationKeys.localizedReplyStarter + subject
                     }
                 }
             }
@@ -83,7 +83,7 @@ class MessageViewController: NSViewController
     
     @IBAction func deleteClick(sender: NSButton)
     {
-        if let thisPostcard = postcardObjectController.content as? Postcard, let messageID = thisPostcard.identifier
+        if let thisPostcard = postcardObjectController.content as? Postcard
         {
             MailController.sharedInstance.trashGmailMessage(thisPostcard, completion:
             { (successful) in
@@ -93,7 +93,7 @@ class MessageViewController: NSViewController
                 }
                 else
                 {
-                    self.showAlert("We couldn't delete this message from Gmail. Try again later or try deleting this email from Gmail directly.")
+                    self.showAlert(localizationKeys.localizedDeleteGmailError)
                 }
             })
         }
@@ -112,11 +112,11 @@ class MessageViewController: NSViewController
         let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
         let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
         
-        replyButton.attributedTitle = NSAttributedString(string: "REPLY", attributes: attributes)
-        replyButton.attributedAlternateTitle = NSAttributedString(string: "REPLY", attributes: altAttributes)
+        replyButton.attributedTitle = NSAttributedString(string: localizationKeys.localizedReplyTitle, attributes: attributes)
+        replyButton.attributedAlternateTitle = NSAttributedString(string: localizationKeys.localizedReplyTitle, attributes: altAttributes)
         
-        deleteButton.attributedTitle = NSAttributedString(string: "DELETE", attributes: attributes)
-        deleteButton.attributedAlternateTitle = NSAttributedString(string: "DELETE", attributes: altAttributes)
+        deleteButton.attributedTitle = NSAttributedString(string: localizationKeys.localizedDeleteTitle, attributes: attributes)
+        deleteButton.attributedAlternateTitle = NSAttributedString(string: localizationKeys.localizedDeleteTitle, attributes: altAttributes)
     }
     
     //MARK: Helper Methods
@@ -124,7 +124,7 @@ class MessageViewController: NSViewController
     {
         let alert = NSAlert()
         alert.messageText = message
-        alert.addButtonWithTitle("OK")
+        alert.addButtonWithTitle(localizationKeys.localizedOKButtonTitle)
         alert.runModal()
     }
     
