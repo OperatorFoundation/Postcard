@@ -74,7 +74,7 @@ class MessageViewController: NSViewController
                     if let from = rePostcard.from, let sendTo = from.email, let subject = rePostcard.subject
                     {
                         composeVC.sendTo = sendTo
-                        composeVC.reSubject = localizationKeys.localizedReplyStarter + subject
+                        composeVC.reSubject = localizedReplyStarter + subject
                     }
                 }
             }
@@ -93,7 +93,7 @@ class MessageViewController: NSViewController
                 }
                 else
                 {
-                    self.showAlert(localizationKeys.localizedDeleteGmailError)
+                    self.showAlert(localizedDeleteGmailError)
                 }
             })
         }
@@ -112,11 +112,11 @@ class MessageViewController: NSViewController
         let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
         let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
         
-        replyButton.attributedTitle = NSAttributedString(string: localizationKeys.localizedReplyTitle, attributes: attributes)
-        replyButton.attributedAlternateTitle = NSAttributedString(string: localizationKeys.localizedReplyTitle, attributes: altAttributes)
+        replyButton.attributedTitle = NSAttributedString(string: localizedReplyTitle, attributes: attributes)
+        replyButton.attributedAlternateTitle = NSAttributedString(string: localizedReplyTitle, attributes: altAttributes)
         
-        deleteButton.attributedTitle = NSAttributedString(string: localizationKeys.localizedDeleteTitle, attributes: attributes)
-        deleteButton.attributedAlternateTitle = NSAttributedString(string: localizationKeys.localizedDeleteTitle, attributes: altAttributes)
+        deleteButton.attributedTitle = NSAttributedString(string: localizedDeleteTitle, attributes: attributes)
+        deleteButton.attributedAlternateTitle = NSAttributedString(string: localizedDeleteTitle, attributes: altAttributes)
     }
     
     //MARK: Helper Methods

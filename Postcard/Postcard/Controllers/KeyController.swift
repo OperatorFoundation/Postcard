@@ -146,7 +146,7 @@ class KeyController: NSObject
                     let saveError = error as NSError
                     print("\(saveError), \(saveError.userInfo)")
                     
-                    self.showAlert(String(format: localizationKeys.localizedPenPalStatusError, emailAddress))
+                    self.showAlert(String(format: localizedPenPalStatusError, emailAddress))
                 }
             })
         }

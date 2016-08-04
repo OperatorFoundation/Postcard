@@ -587,7 +587,7 @@ class MailController: NSObject
             let packageData:NSData? = nil
 
             //This is the postcard wrapper email
-            let mimeMessageString = generateMessageMime(sendToEmail: to, subject: localizationKeys.localizedGenericSubject, body: localizationKeys.localizedGenericBody, messageData: messageData, maybePackage: packageData)
+            let mimeMessageString = generateMessageMime(sendToEmail: to, subject: localizedGenericSubject, body: localizedGenericBody, messageData: messageData, maybePackage: packageData)
             
             return mimeMessageString
         }
@@ -686,8 +686,8 @@ class MailController: NSObject
     {
         let messageBuilder = MCOMessageBuilder()
         messageBuilder.header.to = [MCOAddress(mailbox: emailAddress)]
-        messageBuilder.header.subject = localizationKeys.localizedGenericSubject
-        messageBuilder.textBody = localizationKeys.localizedGenericBody
+        messageBuilder.header.subject = localizedGenericSubject
+        messageBuilder.textBody = localizedGenericBody
         
         //Generate the main Postcard Attachment.
         if let postcardWrapperAttachment = MCOAttachment(data: generateKeyAttachment(), filename: "Postcard")

@@ -51,11 +51,53 @@ let localizedSendErrorNoKey = NSLocalizedString("ERROR-Sending-Email-No-Pal-Key"
 
 let localizedSendErrorNotAContact = NSLocalizedString("ERROR-Sending-Email-Not-A-Pal", tableName: "PopUpMessages", bundle: bundle, value: "You cannot send a postcard to %d, they are not in your contacts yet.", comment: "Unable to send an email to this address because the person is not a known contact. *recipient's email*")
 
+let localizedPenPalStatusError = NSLocalizedString("ERROR-Saving-PenPal-Status", tableName: "PopUpMessages", bundle: bundle, value: "Warning: We could not save the sent your connection status for %d", comment: "Unable to save the new status of a connection (e.g. added or invited)")
+
+let localizedDeleteGmailError = NSLocalizedString("ERROR-Deleting-Message-From-Gmail", tableName: "PopUpMessages", bundle: bundle, value: "We couldn't delete this message from Gmail. Try again later or try deleting this email from Gmail directly.", comment: "Unable to delete the selected email from the user's gmail account.")
+
+let localizedAuthErrorPrompt = NSLocalizedString("ERROR-Authenticating-User", tableName: "PopUpMessages", bundle: bundle, value: "Authentication Error: ", comment: "This is the title for a pop-up. the error itself will be provided by Google.")
+
+
 //MailController Strings
 let localizedInviteFiller = NSLocalizedString("Dummy-Postcard-Key-Attachment-Body", tableName: "MailController", bundle: bundle, value: "If you can read this, you have my key.", comment: "We expect this never to be read, but just in case...")
 
+let localizedGenericSubject = NSLocalizedString("Wrapper-Subject-Line", tableName: "MailController", bundle: bundle, value: "You've Received a Postcard", comment: "This is the subject line for the 'wrapper' email. The email that the user will see in their Gmail account that does not have to be decrypted. The postcard/encrypted message itself will be an attachment to this wrapper message.")
+
+let localizedGenericBody = NSLocalizedString("Wrapper-Body-Text", tableName: "MailController", bundle: bundle, value: "If you don't know how to read your Postcards yet, you can get more information at http://operatorfoundation.org.", comment: "This is the body of the 'wrapper' email.")
+
+
 //ComposeView Strings
-let localizedAttachmentPrompt = NSLocalizedString("Attachment-Prompt", tableName: "ComposeTable", bundle: bundle, value: "Select the file you would like to attach.", comment: "A prompt for the user to pick a file from a presented list to attach to their email.")
+let localizedAttachmentPrompt = NSLocalizedString("Attachment-Prompt", tableName: "ComposeView", bundle: bundle, value: "Select the file you would like to attach.", comment: "A prompt for the user to pick a file from a presented list to attach to their email.")
+
+let localizedReplyStarter = NSLocalizedString("Reply-Subject-Line-Prefix", tableName: "ComposeView", bundle: bundle, value: "re: ", comment: "The re: that is added to the subject line when replying to someone's email.")
+
+let localizedSendTitle = NSLocalizedString("BUTTON-TITLE-Send", tableName: "ComposeView", bundle: bundle, value: "SEND", comment: "For sending an email.")
+
+let localizedAttachmentTitle = NSLocalizedString("BUTTON-TITLE-Attachment", tableName: "ComposeView", bundle: bundle, value: "ATTACHMENT", comment: "For attaching a file to an email you are writing.")
+
+
+//MessageView
+let localizedReplyTitle = NSLocalizedString("BUTTON-TITLE-Reply", tableName: "MessageView", bundle: bundle, value: "REPLY", comment: "For replying to the email you are reading.")
+
+let localizedDeleteTitle = NSLocalizedString("BUTTON-TITLE-Delete", tableName: "MessageView", bundle: bundle, value: "DELETE", comment: "For deleting the email you are reading")
+
+
+//PenPalsView
+let localizedInviteButtonTitle = NSLocalizedString("BUTTON-TITLE-Invite", tableName: "PenPalsView", bundle: bundle, value: "INVITE", comment: "For sending your key to a contact who has not already sent you theirs, inviting them to be your penpal. (they may or may not already be using this software)")
+
+let localizedAddButtonTitle = NSLocalizedString("BUTTON-TITLE-Add", tableName: "PenPalsView", bundle: bundle, value: "ADD", comment: "For accepting an invite from another user and sending them your key. This will add the sender as a secure contact with whom you can exchange encrypted 'Postcards'.")
+
+
+//MenuView
+let localizedInboxButtonTitle = NSLocalizedString("BUTTON-TITLE-Inbox", tableName: "MenuView", bundle: bundle, value: "  Inbox", comment: "For viewing the emails in your inbox. *The two spaces before the word are necessary for formatting.")
+
+let localizedComposeButtonTitle = NSLocalizedString("BUTTON-TITLE-Compose", tableName: "MenuView", bundle: bundle, value: "COMPOSE", comment: "For opening the compose view and starting a new email.")
+
+let localizedPenPalsButtonTitle = NSLocalizedString("BUTTON-TITLE-PenPals", tableName: "MenuView", bundle: bundle, value: "  PenPals", comment: "For viewing your list of contacts. *The two spaces before the word are necessary for formatting.")
+
+let localizedLockdownButtonTitle = NSLocalizedString("BUTTON-TITLE-Lockdowm", tableName: "MenuView", bundle: bundle, value: "  Lockdown", comment: "For re-encrypting your inbox messages. *The two spaces before the word are necessary for formatting.")
+
+let localizedLogoutButtonTitle = NSLocalizedString("BUTTON-TITLE", tableName: "MenuView", bundle: bundle, value: "  Logout", comment: "For logging out of the program/gmail. *The two spaces before the word are necessary for formatting.")
 
 struct GmailProps
 {
@@ -96,65 +138,4 @@ struct PostcardUI
     static let boldAExtraCondensed = "ProximaNovaAExCn-Bold"
     static let lightAExtraCondensed = "ProximaNovaAExCn-Light"
     static let boldFutura = "FuturaT-Bold"
-}
-
-struct localizationKeys
-{
-    //Menu
-    static let inboxButtonTitle = "  Inbox"
-    static let localizedInboxButtonTitle = NSLocalizedString(localizationKeys.inboxButtonTitle, comment: "")
-    
-    static let composeButtonTitle = "COMPOSE"
-    static let localizedComposeButtonTitle = NSLocalizedString(localizationKeys.composeButtonTitle, comment: "")
-    
-    static let penPalsButtonTitle = "  PenPals"
-    static let localizedPenPalsButtonTitle = NSLocalizedString(localizationKeys.penPalsButtonTitle, comment: "")
-    
-    static let lockdownButtonTitle = "  Lockdown"
-    static let localizedLockdownButtonTitle = NSLocalizedString(localizationKeys.lockdownButtonTitle, comment: "")
-    
-    static let logoutButtonTitle = "  Logout"
-    static let localizedLogoutButtonTitle = NSLocalizedString(localizationKeys.logoutButtonTitle, comment: "")
-    
-    //PenPals List
-    static let inviteButtonTitle = "INVITE"
-    static let localizedInviteButtonTitle = NSLocalizedString(localizationKeys.inviteButtonTitle, comment: "Button for inviting a friend to use the app and be one of your secure contacts.")
-    
-    static let addButtonTitle = "ADD"
-    static let localizedAddButtonTitle = NSLocalizedString(localizationKeys.addButtonTitle, comment: "Accept another user's invitation to be a secure contact.")
-    
-    //Message Detail
-    static let replyButtonTitle = "REPLY"
-    static let localizedReplyTitle = NSLocalizedString(localizationKeys.replyButtonTitle, comment: "REPLY")
-    
-    static let deleteButtonTitle = "DELETE"
-    static let localizedDeleteTitle = NSLocalizedString(localizationKeys.deleteButtonTitle, comment: "DELETE")
-    
-    static let deleteGmailMessageError = "We couldn't delete this message from Gmail. Try again later or try deleting this email from Gmail directly."
-    static let localizedDeleteGmailError = NSLocalizedString(localizationKeys.deleteGmailMessageError, comment: "We couldn't delete this message from Gmail. Try again later or try deleting this email from Gmail directly.")
-    
-    //Compose
-    static let replySubjectLineStarter = "re: "
-    static let localizedReplyStarter = NSLocalizedString(localizationKeys.replySubjectLineStarter, comment: "re: ")
-    
-    static let sendEmailButtonTitle = "SEND"
-    static let localizedSendTitle = NSLocalizedString(localizationKeys.sendEmailButtonTitle, comment: "SEND")
-    
-    static let addAttachmentButtonTitle = "ATTACHMENT"
-    static let localizedAttachmentTitle = NSLocalizedString(localizationKeys.addAttachmentButtonTitle, comment: "ATTACHMENT")
-    
-    //Login
-    static let authenticationErrorAlert = "Authentication Error: "
-    static let localizedAuthErrorPrompt = NSLocalizedString(localizationKeys.authenticationErrorAlert, comment: "Authentication Error: ")
-    
-    //Postcard Wrapper Message
-    static let genericSubjectLine = "You've Received a Postcard"
-    static let localizedGenericSubject = NSLocalizedString(localizationKeys.genericSubjectLine, comment: "")
-    
-    static let genericBody = "If you don't know how to read your Postcards yet, you can get more information at http://operatorfoundation.org."
-    static let localizedGenericBody = NSLocalizedString(localizationKeys.genericBody, comment: "")
-    
-    static let savePenPalStatusError = "Warning: We could not save the sent your connection status for %d"
-    static let localizedPenPalStatusError = NSLocalizedString(localizationKeys.savePenPalStatusError, comment: "Warning: We could not save the sent your connection status for (penpal email)")
-    
 }

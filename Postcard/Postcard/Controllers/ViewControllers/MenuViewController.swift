@@ -161,19 +161,19 @@ class MenuViewController: NSViewController
         let altPenpalAttributes = [NSForegroundColorAttributeName: PostcardUI.green, NSParagraphStyleAttributeName: paragraphStyleLeft, NSFontAttributeName: buttonFont2]
         let altAttributes = [NSForegroundColorAttributeName: PostcardUI.orange, NSParagraphStyleAttributeName: paragraphStyleLeft, NSFontAttributeName: buttonFont2]
         
-        inboxButton.attributedTitle = NSAttributedString(string: localizationKeys.localizedInboxButtonTitle, attributes: attributes)
-        inboxButton.attributedAlternateTitle = NSAttributedString(string: localizationKeys.localizedInboxButtonTitle, attributes: altInboxAttributes)
+        inboxButton.attributedTitle = NSAttributedString(string: localizedInboxButtonTitle, attributes: attributes)
+        inboxButton.attributedAlternateTitle = NSAttributedString(string: localizedInboxButtonTitle, attributes: altInboxAttributes)
         
-        composeButton.attributedTitle = NSAttributedString(string: localizationKeys.localizedComposeButtonTitle, attributes: composeAttributes)
+        composeButton.attributedTitle = NSAttributedString(string: localizedComposeButtonTitle, attributes: composeAttributes)
         
-        penPalsButton.attributedTitle = NSAttributedString(string: localizationKeys.localizedPenPalsButtonTitle, attributes: attributes)
-        penPalsButton.attributedAlternateTitle = NSAttributedString(string: localizationKeys.localizedPenPalsButtonTitle, attributes: altPenpalAttributes)
+        penPalsButton.attributedTitle = NSAttributedString(string: localizedPenPalsButtonTitle, attributes: attributes)
+        penPalsButton.attributedAlternateTitle = NSAttributedString(string: localizedPenPalsButtonTitle, attributes: altPenpalAttributes)
         
-        lockdownButton.attributedTitle = NSAttributedString(string: localizationKeys.localizedLockdownButtonTitle, attributes: attributes)
-        lockdownButton.attributedAlternateTitle = NSAttributedString(string: localizationKeys.localizedLockdownButtonTitle, attributes: altAttributes)
+        lockdownButton.attributedTitle = NSAttributedString(string: localizedLockdownButtonTitle, attributes: attributes)
+        lockdownButton.attributedAlternateTitle = NSAttributedString(string: localizedLockdownButtonTitle, attributes: altAttributes)
         
-        logoutButton.attributedTitle = NSAttributedString(string: localizationKeys.localizedLogoutButtonTitle, attributes: attributes)
-        logoutButton.attributedAlternateTitle = NSAttributedString(string: localizationKeys.localizedLogoutButtonTitle, attributes: altAttributes)
+        logoutButton.attributedTitle = NSAttributedString(string: localizedLogoutButtonTitle, attributes: attributes)
+        logoutButton.attributedAlternateTitle = NSAttributedString(string: localizedLogoutButtonTitle, attributes: altAttributes)
     }
     
 }

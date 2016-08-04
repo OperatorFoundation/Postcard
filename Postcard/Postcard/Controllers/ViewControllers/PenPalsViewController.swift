@@ -97,7 +97,7 @@ class PenPalTableCell: NSTableCellView
                 
                 if penPal.key == nil && penPal.sentKey == false
                 {
-                    actionTitle = localizationKeys.localizedInviteButtonTitle
+                    actionTitle = localizedInviteButtonTitle
                     actionButton.image = NSImage(named: "redButton")
                     actionButton.target = self
                     actionButton.action = #selector(inviteAction)
@@ -106,7 +106,7 @@ class PenPalTableCell: NSTableCellView
                 }
                 else if penPal.key != nil && penPal.sentKey == false
                 {
-                    actionTitle = localizationKeys.localizedAddButtonTitle
+                    actionTitle = localizedAddButtonTitle
                     actionButton.image = NSImage(named: "greenButton")
                     actionButton.target = self
                     actionButton.action = #selector(addAction)

@@ -66,11 +66,11 @@ class ComposeViewController: NSViewController
         let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
         let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
         
-        sendButton.attributedTitle = NSAttributedString(string: localizationKeys.localizedSendTitle, attributes: attributes)
-        sendButton.attributedAlternateTitle = NSAttributedString(string: localizationKeys.localizedSendTitle, attributes: altAttributes)
+        sendButton.attributedTitle = NSAttributedString(string: localizedSendTitle, attributes: attributes)
+        sendButton.attributedAlternateTitle = NSAttributedString(string: localizedSendTitle, attributes: altAttributes)
         
-        attachmentButton.attributedTitle = NSAttributedString(string: localizationKeys.localizedAttachmentTitle, attributes: attributes)
-        attachmentButton.attributedAlternateTitle = NSAttributedString(string: localizationKeys.localizedAttachmentTitle, attributes: altAttributes)
+        attachmentButton.attributedTitle = NSAttributedString(string: localizedAttachmentTitle, attributes: attributes)
+        attachmentButton.attributedAlternateTitle = NSAttributedString(string: localizedAttachmentTitle, attributes: altAttributes)
     }
     
     //MARK: Actions

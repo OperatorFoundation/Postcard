@@ -205,7 +205,7 @@ class WelcomeViewController: NSViewController
         if let error: NSError = error
         {
             GmailProps.service.authorizer = nil
-            showAlert(localizationKeys.localizedAuthErrorPrompt + error.localizedDescription)
+            showAlert(localizedAuthErrorPrompt + error.localizedDescription)
             return
         }
         
