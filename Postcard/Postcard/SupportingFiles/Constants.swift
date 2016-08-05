@@ -31,27 +31,29 @@ let bundle = NSBundle.mainBundle()
 
 let localizedOKButtonTitle = NSLocalizedString("OK-Button-Title", tableName: "PopUpMessages", bundle: bundle, value: "OK", comment: "Button to dismiss pop-up windows.")
 
-//let localizedUnknownContactError = NSLocalizedString("ERROR-Postcard-Decryption-Unknown-Sender", tableName: "PopUpMessages", bundle: bundle, value: "We did not decrypt a message sent from %d because this person is not one of your PenPals.", comment: "A message could not be decrypted because it is not from a known contact *email*")
+//let localizedUnknownContactError = NSLocalizedString("ERROR-Postcard-Decryption-Unknown-Sender", tableName: "PopUpMessages", bundle: bundle, value: "We did not decrypt a message sent from %@ because this person is not one of your PenPals.", comment: "A message could not be decrypted because it is not from a known contact *email*")
 
-let localizedWrongKeyError = NSLocalizedString("ERROR-Decryption-Wrong-Key", tableName: "PopUpMessages", bundle: bundle, value: "We were unable to decrypt a message: %d may have a new key.", comment: "A message could not be decrypted, possibly because we have the wrong key for the sender.")
+//BRANDON START HERE
 
-let localizedMissingCipherError = NSLocalizedString("ERROR-Decryption-No-Cipher-Text", tableName: "PopUpMessages", bundle: bundle, value: "We could not decrypt this postcard!! We cannot find the cipher text from %d.", comment: "A message from *email* could not be decrypted because the cipher text was not found.")
+let localizedWrongKeyError = NSLocalizedString("ERROR-Decryption-Wrong-Key", tableName: "PopUpMessages", bundle: bundle, value: "We were unable to decrypt a message: %@ may have a new key.", comment: "A message could not be decrypted, possibly because we have the wrong key for the sender.")
+
+let localizedMissingCipherError = NSLocalizedString("ERROR-Decryption-No-Cipher-Text", tableName: "PopUpMessages", bundle: bundle, value: "We could not decrypt this postcard!! We cannot find the cipher text from %@.", comment: "A message from *email* could not be decrypted because the cipher text was not found.")
 
 let localizedMissingPalKeyError = NSLocalizedString("ERROR-Decryption-No-Key-For-Pal", tableName: "PopUpMessages", bundle: bundle, value: "We were unable to decrypt a message: We don't have the sender's key. :(", comment: "A message could not be decrypted because we do not have the sender's key")
 
 let localizedMissingKeyError = NSLocalizedString("ERROR-Decryption-Missing-No-Key-For-User", tableName: "PopUpMessages", bundle: bundle, value: "We were unable to decrypt your emails: we don't have your key. :(", comment: "No emails were decrypted because the user's key is missing.")
 
-let localizedDifferentKeyError = NSLocalizedString("ERROR-Different-Key-For-Pal", tableName: "PopUpMessages", bundle: bundle, value: "We received a key from:\n %d\n and it does not match the key we have stored. You may not be able to read new messages from this sender.", comment: "The key we have stored for a contact does not match the key we just received. *sender's email*")
+let localizedDifferentKeyError = NSLocalizedString("ERROR-Different-Key-For-Pal", tableName: "PopUpMessages", bundle: bundle, value: "We received a key from:\n %@\n and it does not match the key we have stored. You may not be able to read new messages from this sender.", comment: "The key we have stored for a contact does not match the key we just received. *sender's email*")
 
-//let localizedSavePenPalKeyError = NSLocalizedString("ERROR-Saving-Pal-Key", tableName: "PopUpMessages", bundle: bundle, value: "Warning: We could not save %d's key.", comment: "Unable to save this contact's key. *sender's email*")
+//let localizedSavePenPalKeyError = NSLocalizedString("ERROR-Saving-Pal-Key", tableName: "PopUpMessages", bundle: bundle, value: "Warning: We could not save %@'s key.", comment: "Unable to save this contact's key. *sender's email*")
 
-//let localizedSavePenPalError = NSLocalizedString("ERROR-Saving-PenPal", tableName: "PopUpMessages", bundle: bundle, value: "Warning: We could not save %d as a PenPal.", comment: "Unable to save this contact. *sender's email*")
+//let localizedSavePenPalError = NSLocalizedString("ERROR-Saving-PenPal", tableName: "PopUpMessages", bundle: bundle, value: "Warning: We could not save %@ as a PenPal.", comment: "Unable to save this contact. *sender's email*")
 
-let localizedSendErrorNoKey = NSLocalizedString("ERROR-Sending-Email-No-Pal-Key", tableName: "PopUpMessages", bundle: bundle, value: "You cannot send a Postcard to %d because you do not have their key! :(", comment: "Unable to send the email because we do not have a key for the recipient. *recipient's email*")
+let localizedSendErrorNoKey = NSLocalizedString("ERROR-Sending-Email-No-Pal-Key", tableName: "PopUpMessages", bundle: bundle, value: "You cannot send a Postcard to %@ because you do not have their key! :(", comment: "Unable to send the email because we do not have a key for the recipient. *recipient's email*")
 
-let localizedSendErrorNotAContact = NSLocalizedString("ERROR-Sending-Email-Not-A-Pal", tableName: "PopUpMessages", bundle: bundle, value: "You cannot send a postcard to %d, they are not in your contacts yet.", comment: "Unable to send an email to this address because the person is not a known contact. *recipient's email*")
+let localizedSendErrorNotAContact = NSLocalizedString("ERROR-Sending-Email-Not-A-Pal", tableName: "PopUpMessages", bundle: bundle, value: "You cannot send a postcard to %@, they are not in your contacts yet.", comment: "Unable to send an email to this address because the person is not a known contact. *recipient's email*")
 
-let localizedPenPalStatusError = NSLocalizedString("ERROR-Saving-PenPal-Status", tableName: "PopUpMessages", bundle: bundle, value: "Warning: We could not save the sent your connection status for %d", comment: "Unable to save the new status of a connection (e.g. added or invited)")
+let localizedPenPalStatusError = NSLocalizedString("ERROR-Saving-PenPal-Status", tableName: "PopUpMessages", bundle: bundle, value: "Warning: We could not save the sent your connection status for %@", comment: "Unable to save the new status of a connection (e.g. added or invited)")
 
 let localizedDeleteGmailError = NSLocalizedString("ERROR-Deleting-Message-From-Gmail", tableName: "PopUpMessages", bundle: bundle, value: "We couldn't delete this message from Gmail. Try again later or try deleting this email from Gmail directly.", comment: "Unable to delete the selected email from the user's gmail account.")
 
@@ -68,6 +70,8 @@ let localizedGenericBody = NSLocalizedString("Wrapper-Body-Text", tableName: "Ma
 
 //ComposeView Strings
 let localizedAttachmentPrompt = NSLocalizedString("Attachment-Prompt", tableName: "ComposeView", bundle: bundle, value: "Select the file you would like to attach.", comment: "A prompt for the user to pick a file from a presented list to attach to their email.")
+
+//BRANDON STOP HERE
 
 let localizedReplyStarter = NSLocalizedString("Reply-Subject-Line-Prefix", tableName: "ComposeView", bundle: bundle, value: "re: ", comment: "The re: that is added to the subject line when replying to someone's email.")
 
