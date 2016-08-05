@@ -108,6 +108,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
             }
             let error = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict)
             NSApplication.sharedApplication().presentError(error)
+            
+            //TODO: More user friendly way of handling non-migrated coreData changes
             abort()
         }
         else

@@ -181,7 +181,7 @@ class MailController: NSObject
                                         }
                                         else
                                         {
-                                            self.showAlert(String(format: localizedUnknownContactError, sender))
+                                            print("A message could not be decrypted because it is not from a known contact \(sender)")
                                         }
                                     }
                                 })
@@ -405,7 +405,7 @@ class MailController: NSObject
                             {
                                 
                                 //TODO: Allow user to reset a contact that is having key issues
-                                showAlert(String(format: localizedDifferentKeyError, sender))
+                                //showAlert(String(format: localizedDifferentKeyError, sender))
                                 
                                 print("We received a new key:\n \(decodedAttachment?.description)\n and it does not match the key we have stored:\n \(thisPenPal.key?.description).")
 //                                
@@ -438,7 +438,7 @@ class MailController: NSObject
                             {
                                 let saveError = error as NSError
                                 print("\(saveError), \(saveError.userInfo)")
-                                self.showAlert(String(format: localizedSavePenPalKeyError, sender))
+                                //self.showAlert(String(format: localizedSavePenPalKeyError, sender))
                             }
                         }
                     }
@@ -463,7 +463,7 @@ class MailController: NSObject
                             {
                                 let saveError = error as NSError
                                 print("\(saveError), \(saveError.userInfo)")
-                                self.showAlert(String(format: localizedSavePenPalError, sender))
+                                //self.showAlert(String(format: localizedSavePenPalError, sender))
                             }
                         }
                     }
