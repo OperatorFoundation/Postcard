@@ -20,7 +20,7 @@ class ComposeViewController: NSViewController
     var sendTo = ""
     var reSubject = ""
     var bodyText = ""
-    var attachments = [NSURL]()
+    var attachments = [URL]()
     
     override func viewDidLoad()
     {
@@ -45,8 +45,8 @@ class ComposeViewController: NSViewController
     {
         //This is to make the title bar transparent so that the BG image is uninterrupted
         view.window?.titlebarAppearsTransparent = true
-        view.window?.movableByWindowBackground = true
-        view.window?.titleVisibility = NSWindowTitleVisibility.Hidden
+        view.window?.isMovableByWindowBackground = true
+        view.window?.titleVisibility = NSWindowTitleVisibility.hidden
         self.view.window?.viewsNeedDisplay = true
     }
     
@@ -54,16 +54,16 @@ class ComposeViewController: NSViewController
     {
         //Alignment
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .Center
+        paragraphStyle.alignment = .center
         
         //Font
-        var buttonFont = NSFont.boldSystemFontOfSize(13)
+        var buttonFont = NSFont.boldSystemFont(ofSize: 13)
         if let maybeFont = NSFont(name: PostcardUI.boldFutura, size: 13)
         {
             buttonFont = maybeFont
         }
         
-        let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
+        let attributes = [NSForegroundColorAttributeName: NSColor.white,NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
         let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
         
         sendButton.attributedTitle = NSAttributedString(string: localizedSendTitle, attributes: attributes)
@@ -75,22 +75,45 @@ class ComposeViewController: NSViewController
     
     //MARK: Actions
     
-    @IBAction func sendClick(sender: NSButton)
+    @IBAction func sendClick(_ sender: NSButton)
     {
-        if let recipient:String = toTextField.stringValue where !recipient.isEmpty, let subject:String = subjectTextField.stringValue, let body: String = bodyTextView.string
+        let recipient:String = toTextField.stringValue
+        let subject:String = subjectTextField.stringValue
+        
+        if recipient.isEmpty
         {
-            MailController.sharedInstance.sendEmail(recipient, subject: subject, body: body, maybeAttachments: attachments, completion:
-            { (successful) in
-                if successful
+            print("There is no recipient for this message.")
+        }
+        else if subject.isEmpty
+        {
+            print("There is no subject for this message.")
+        }
+        else
+        {
+            if let body: String = bodyTextView.string
+            {
+                if body.isEmpty
                 {
-                    //Close Window
-                    self.view.window?.close()
+                    print("This message has no body.")
                 }
-            })
+                else
+                {
+                    MailController.sharedInstance.sendEmail(recipient, subject: subject, body: body, maybeAttachments: attachments, completion:
+                    {
+                        (successful) in
+                        
+                        if successful
+                        {
+                            //Close Window
+                            self.view.window?.close()
+                        }
+                    })
+                }
+            }
         }
     }
     
-    @IBAction func attachClick(sender: NSButton)
+    @IBAction func attachClick(_ sender: NSButton)
     {
         //Create and configure the choose file panel
         let choosePanel = NSOpenPanel()
@@ -100,19 +123,24 @@ class ComposeViewController: NSViewController
         //Display the panel attached to the compose window
         if let composeWindow = self.view.window
         {
-            choosePanel.beginSheetModalForWindow(composeWindow, completionHandler:
+            choosePanel.beginSheetModal(for: composeWindow, completionHandler:
             { (result) in
                 if result == NSFileHandlingPanelOKButton
                 {
-                    let urls = choosePanel.URLs
+                    let urls = choosePanel.urls
                     for thisURL in urls
                     {
                         self.attachments.append(thisURL)
                         
-                        if let pathString = thisURL.path
+                        let pathString: String = thisURL.path
+                        if pathString == ""
                         {
-                            let urlParts = pathString.componentsSeparatedByString(".")
-                            let pathParts = urlParts.first?.componentsSeparatedByString("/")
+                            print("Empty attachment path.")
+                        }
+                        else
+                        {
+                            let urlParts = pathString.components(separatedBy: ".")
+                            let pathParts = urlParts.first?.components(separatedBy: "/")
                             let fileName = pathParts?.last ?? ""
                             
                             //Create a button to represent the attachment
@@ -122,17 +150,17 @@ class ComposeViewController: NSViewController
                             let containerView = NSView(frame: NSRect(x: 0, y: 8, width: 109, height: 21))
                             containerView.wantsLayer = true
                             containerView.layer?.cornerRadius = 5
-                            containerView.layer?.backgroundColor = NSColor.whiteColor().CGColor
+                            containerView.layer?.backgroundColor = NSColor.white.cgColor
                             
                             //Attachment Button
                             let attachmentButton = AttachmentButton(frame: NSRect(x: 0, y: 0, width: 79, height: 21), attachmentURL: thisURL)
                             
                             //Alignment
                             let paragraphStyle = NSMutableParagraphStyle()
-                            paragraphStyle.alignment = .Center
+                            paragraphStyle.alignment = .center
                             
                             //Font
-                            var buttonFont = NSFont.systemFontOfSize(13)
+                            var buttonFont = NSFont.systemFont(ofSize: 13)
                             if let maybeFont = NSFont(name: PostcardUI.regularAFont, size: 13)
                             {
                                 buttonFont = maybeFont
@@ -140,19 +168,19 @@ class ComposeViewController: NSViewController
                             
                             let attributes = [NSForegroundColorAttributeName: PostcardUI.black, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
                             attachmentButton.attributedTitle = NSAttributedString(string: fileName, attributes: attributes)
-                            attachmentButton.bordered = false
+                            attachmentButton.isBordered = false
                             
                             //Remove Attachment Button
                             let removeButton = AttachmentButton(frame: NSRect(x: 79, y: 2, width: 30, height: 21), attachmentURL: thisURL)
-                            removeButton.bordered = false
+                            removeButton.isBordered = false
                             
                             //Font
-                            var removeButtonFont = NSFont.boldSystemFontOfSize(14)
+                            var removeButtonFont = NSFont.boldSystemFont(ofSize: 14)
                             if let maybeFont = NSFont(name: PostcardUI.boldFutura, size: 14)
                             {
                                 removeButtonFont = maybeFont
                             }
-
+                            
                             let removeAttributes = [NSForegroundColorAttributeName: PostcardUI.red, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: removeButtonFont]
                             removeButton.attributedTitle = NSAttributedString(string: "x", attributes: removeAttributes)
                             removeButton.target = self
@@ -169,12 +197,12 @@ class ComposeViewController: NSViewController
     }
     
     //TODO: Open the attachment file when attachment button is clicked
-    func attachmentClicked(sender: NSButton, filePath: NSURL)
+    func attachmentClicked(_ sender: NSButton, filePath: URL)
     {
         
     }
     
-    func removeAttachment(sender: AnyObject)
+    func removeAttachment(_ sender: AnyObject)
     {
         if let attachmentSender = sender as? AttachmentButton
         {
@@ -186,9 +214,9 @@ class ComposeViewController: NSViewController
             
             //Remove the attachment URL from the list of items to attach to the message
             
-            if let index = attachments.indexOf(sender.attachmentURL)
+            if let index = attachments.index(of: sender.attachmentURL)
             {
-                attachments.removeAtIndex(index)
+                attachments.remove(at: index)
             }
         }
         else
@@ -203,9 +231,9 @@ class ComposeViewController: NSViewController
 
 class AttachmentButton: NSButton
 {
-    var attachmentURL: NSURL
+    var attachmentURL: URL
     
-    init(frame frameRect: NSRect, attachmentURL: NSURL)
+    init(frame frameRect: NSRect, attachmentURL: URL)
     {
         self.attachmentURL = attachmentURL
         
@@ -217,5 +245,5 @@ class AttachmentButton: NSButton
         fatalError("init(coder:) has not been implemented")
     }
     
-//
+//✏️//
 }

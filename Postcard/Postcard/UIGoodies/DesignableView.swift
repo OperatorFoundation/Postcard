@@ -20,11 +20,11 @@ import Cocoa
         }
     }
     
-    @IBInspectable var viewColor: NSColor = NSColor.grayColor()
+    @IBInspectable var viewColor: NSColor = NSColor.gray
     {
         didSet
         {
-            layer?.backgroundColor = viewColor.CGColor
+            layer?.backgroundColor = viewColor.cgColor
         }
     }
     
@@ -36,11 +36,11 @@ import Cocoa
         }
     }
     
-    @IBInspectable var borderColor: NSColor = NSColor.grayColor()
+    @IBInspectable var borderColor: NSColor = NSColor.gray
     {
         didSet
         {
-            layer?.borderColor = borderColor.CGColor
+            layer?.borderColor = borderColor.cgColor
         }
     }
 
@@ -53,8 +53,8 @@ import Cocoa
     override func prepareForInterfaceBuilder()
     {
         layer?.cornerRadius = cornerRounding
-        layer?.backgroundColor = viewColor.CGColor
-        layer?.borderColor = borderColor.CGColor
+        layer?.backgroundColor = viewColor.cgColor
+        layer?.borderColor = borderColor.cgColor
         layer?.borderWidth = borderWidth
     }
     

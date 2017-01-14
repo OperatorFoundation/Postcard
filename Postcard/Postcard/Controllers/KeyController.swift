@@ -9,7 +9,8 @@
 import Cocoa
 import SSKeychain
 import Sodium
-import GoogleAPIClient
+import GoogleAPIClientForREST
+//import GoogleAPIClient
 
 private var _singletonSharedInstance: KeyController! = KeyController()
 class KeyController: NSObject
@@ -25,20 +26,20 @@ class KeyController: NSObject
     
     let service = "org.operatorfoundation.Postcard"
     
-    var mySharedKey: NSData?
-    var myPrivateKey: NSData?
+    var mySharedKey: Data?
+    var myPrivateKey: Data?
     
-    private override init()
+    fileprivate override init()
     {
         super.init()
         
         var missingKey = false
         
         //If there is a userID available (i.e. email address)
-        if let emailAddress: String = GlobalVars.currentUser?.emailAddress where !emailAddress.isEmpty
+        if let emailAddress: String = GlobalVars.currentUser?.emailAddress, !emailAddress.isEmpty
         {
             //Check the keychain for the private key
-            if let privateKey = SSKeychain.passwordDataForService(service, account: emailAddress)
+            if let privateKey = SSKeychain.passwordData(forService: service, account: emailAddress)
             {
                 myPrivateKey = privateKey
             }
@@ -50,7 +51,7 @@ class KeyController: NSObject
             //Check the user for a public key
             if let sharedKey = GlobalVars.currentUser?.publicKey
             {
-                mySharedKey = sharedKey
+                mySharedKey = sharedKey as Data
             }
             else
             {
@@ -68,15 +69,15 @@ class KeyController: NSObject
                 SSKeychain.setPasswordData(myPrivateKey, forService: service, account: emailAddress)
                 
                 //Save Public Key to Core Data
-                if let appDelegate = NSApplication.sharedApplication().delegate as? AppDelegate
+                if let appDelegate = NSApplication.shared().delegate as? AppDelegate
                 {
                     //Fetch the correct user
                     let managedObjectContext = appDelegate.managedObjectContext
-                    let fetchRequest = NSFetchRequest(entityName: "User")
+                    let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
                     fetchRequest.predicate = NSPredicate(format: "emailAddress == %@", emailAddress)
                     do
                     {
-                        let result = try managedObjectContext.executeFetchRequest(fetchRequest)
+                        let result = try managedObjectContext.fetch(fetchRequest)
                         
                         if result.count > 0, let thisUser = result[0] as? User
                         {
@@ -121,16 +122,17 @@ class KeyController: NSObject
         {
             //Send key email to this user
             
-            let gmailMessage = GTLGmailMessage()
+            let gmailMessage = GTLRGmail_Message()
             gmailMessage.raw = MailController.sharedInstance.generateKeyMessage(emailAddress)
             
-            let query = GTLQueryGmail.queryForUsersMessagesSendWithUploadParameters(nil)
-            query.message = gmailMessage
-            
-            GmailProps.service.executeQuery(query, completionHandler: {(ticket, response, error) in
+            let sendMessageQuery = GTLRGmailQuery_UsersMessagesSend.query(withObject: gmailMessage, userId: "me", uploadParameters: nil)
+            GmailProps.service.executeQuery(sendMessageQuery, completionHandler:
+            {
+                (ticket, maybeResponse, maybeError) in
+                
                 print("\nsend key email ticket: \(ticket)")
-                print("send key email response: \(response)")
-                print("send key email error: \(error)\n")
+                print("send key email response: \(maybeResponse)")
+                print("send key email error: \(maybeError)\n")
                 
                 //Update sentKey to "true"
                 penPal.sentKey = true
@@ -152,7 +154,7 @@ class KeyController: NSObject
         }
     }
     
-    private func createNewKeyPair() -> Box.KeyPair
+    fileprivate func createNewKeyPair() -> Box.KeyPair
     {
         //Generate a key pair for the user.
         let mySodium = Sodium()!
@@ -162,11 +164,11 @@ class KeyController: NSObject
     }
     
     //MARK: Helper Methods
-    func showAlert(message: String)
+    func showAlert(_ message: String)
     {
         let alert = NSAlert()
         alert.messageText = message
-        alert.addButtonWithTitle(localizedOKButtonTitle)
+        alert.addButton(withTitle: localizedOKButtonTitle)
         alert.runModal()
     }
     

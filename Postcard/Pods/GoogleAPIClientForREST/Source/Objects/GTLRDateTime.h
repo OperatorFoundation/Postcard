@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Constructor from a string representation.
  */
-+ (instancetype)dateTimeWithRFC3339String:(nullable NSString *)str;
++ (nullable instancetype)dateTimeWithRFC3339String:(nullable NSString *)str;
 
 /**
  *  Constructor from a date and time representation.
@@ -69,8 +69,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  *  The date and time as a RFC3339 string representation.
- *
- *  This returns the same string as @c stringValue.
  */
 @property(nonatomic, readonly) NSString *RFC3339String;
 

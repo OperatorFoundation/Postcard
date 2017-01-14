@@ -16,7 +16,7 @@ install_framework()
     local source="$1"
   fi
 
-  local destination="${CONFIGURATION_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}"
+  local destination="${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}"
 
   if [ -L "${source}" ]; then
       echo "Symlinked..."
@@ -59,8 +59,8 @@ code_sign_if_enabled() {
   if [ -n "${EXPANDED_CODE_SIGN_IDENTITY}" -a "${CODE_SIGNING_REQUIRED}" != "NO" -a "${CODE_SIGNING_ALLOWED}" != "NO" ]; then
     # Use the current code_sign_identitiy
     echo "Code Signing $1 with Identity ${EXPANDED_CODE_SIGN_IDENTITY_NAME}"
-    echo "/usr/bin/codesign --force --sign ${EXPANDED_CODE_SIGN_IDENTITY} --preserve-metadata=identifier,entitlements \"$1\""
-    /usr/bin/codesign --force --sign ${EXPANDED_CODE_SIGN_IDENTITY} --preserve-metadata=identifier,entitlements "$1"
+    echo "/usr/bin/codesign --force --sign ${EXPANDED_CODE_SIGN_IDENTITY} ${OTHER_CODE_SIGN_FLAGS} --preserve-metadata=identifier,entitlements \"$1\""
+    /usr/bin/codesign --force --sign ${EXPANDED_CODE_SIGN_IDENTITY} ${OTHER_CODE_SIGN_FLAGS} --preserve-metadata=identifier,entitlements "$1"
   fi
 }
 
@@ -84,20 +84,16 @@ strip_invalid_archs() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_framework "Pods-Postcard/CBOR.framework"
-  install_framework "Pods-Postcard/GTMOAuth2.framework"
-  install_framework "Pods-Postcard/GTMSessionFetcher.framework"
-  install_framework "Pods-Postcard/GoogleAPIClient.framework"
-  install_framework "Pods-Postcard/GoogleAPIClientForREST.framework"
-  install_framework "Pods-Postcard/SSKeychain.framework"
-  install_framework "Pods-Postcard/Sodium.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/GTMOAuth2/GTMOAuth2.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/GTMSessionFetcher/GTMSessionFetcher.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/GoogleAPIClientForREST/GoogleAPIClientForREST.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/SSKeychain/SSKeychain.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/Sodium/Sodium.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_framework "Pods-Postcard/CBOR.framework"
-  install_framework "Pods-Postcard/GTMOAuth2.framework"
-  install_framework "Pods-Postcard/GTMSessionFetcher.framework"
-  install_framework "Pods-Postcard/GoogleAPIClient.framework"
-  install_framework "Pods-Postcard/GoogleAPIClientForREST.framework"
-  install_framework "Pods-Postcard/SSKeychain.framework"
-  install_framework "Pods-Postcard/Sodium.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/GTMOAuth2/GTMOAuth2.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/GTMSessionFetcher/GTMSessionFetcher.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/GoogleAPIClientForREST/GoogleAPIClientForREST.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/SSKeychain/SSKeychain.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/Sodium/Sodium.framework"
 fi

@@ -11,18 +11,26 @@ import Foundation
 public class ShortHash {
     public let Bytes = Int(crypto_shorthash_bytes())
     public let KeyBytes = Int(crypto_shorthash_keybytes())
-    
-    public func hash(message: NSData, key: NSData) -> NSData? {
-        if key.length != KeyBytes {
+
+    public func hash(message: Data, key: Data) -> Data? {
+        if key.count != KeyBytes {
             return nil
         }
-        let output = NSMutableData(length: Bytes)
-        if output == nil {
+
+        var output = Data(count: Bytes)
+
+        let result = output.withUnsafeMutableBytes { outputPtr in
+            return message.withUnsafeBytes { messagePtr in
+                return key.withUnsafeBytes { keyPtr in
+                    return crypto_shorthash(outputPtr, messagePtr, CUnsignedLongLong(message.count), keyPtr)
+                }
+            }
+        }
+
+        if result != 0 {
             return nil
         }
-        if crypto_shorthash(output!.mutableBytesPtr, message.bytesPtr, CUnsignedLongLong(message.length), key.bytesPtr) != 0 {
-            return nil
-        }
+
         return output
     }
 }

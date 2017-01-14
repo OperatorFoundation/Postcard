@@ -12,17 +12,17 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
 {
     @IBOutlet var postcardsArrayController: NSArrayController!
     
-    var managedContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    var managedContext = (NSApplication.shared().delegate as! AppDelegate).managedObjectContext
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         // Do view setup here.
         
-        let splitVC = parentViewController as! NSSplitViewController
+        let splitVC = parent as! NSSplitViewController
         if let messageVC: MessageViewController = splitVC.childViewControllers[1] as? MessageViewController, let messageView = messageVC.messageContentView
         {
-            messageView.hidden = true
+            messageView.isHidden = true
         }
     }
     
@@ -39,7 +39,7 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
         }
     }
     
-    @IBAction func rowSelected(sender: NSTableView)
+    @IBAction func rowSelected(_ sender: NSTableView)
     {
         if let selectedPostcard = postcardsArrayController.selectedObjects[0] as? Postcard
         {
@@ -51,7 +51,7 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
             }
             
             //Tell the message VC what message to display
-            let splitVC = parentViewController as! NSSplitViewController
+            let splitVC = parent as! NSSplitViewController
             if let messageVC: MessageViewController = splitVC.childViewControllers[1] as? MessageViewController
             {
                 messageVC.postcardObjectController.content = selectedPostcard
@@ -59,7 +59,7 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
         }
         else
         {
-            let splitVC = parentViewController as! NSSplitViewController
+            let splitVC = parent as! NSSplitViewController
             if let messageVC: MessageViewController = splitVC.childViewControllers[1] as? MessageViewController
             {
                 messageVC.postcardObjectController.content = nil
@@ -80,15 +80,15 @@ class MessagesTableCell: NSTableCellView
     @IBOutlet weak var snippetLabel: NSTextField!
     @IBOutlet weak var penPalImageView: NSImageView!
     
-    override func drawRect(dirtyRect: NSRect)
+    override func draw(_ dirtyRect: NSRect)
     {
-        super.drawRect(dirtyRect)
+        super.draw(dirtyRect)
         
         //When a cell is selected the system sets background style to dark by default
         //Use this to change the cell color
-        if backgroundStyle == NSBackgroundStyle.Dark
+        if backgroundStyle == NSBackgroundStyle.dark
         {
-            NSColor.whiteColor().setFill()
+            NSColor.white.setFill()
             NSRectFill(dirtyRect)
         }
     }

@@ -3,6 +3,7 @@
 #define sodium_lib_H
 
 #include "core.h"
+#include "crypto_aead_aes256gcm.h"
 #include "crypto_aead_chacha20poly1305.h"
 #include "crypto_auth.h"
 #include "crypto_auth_hmacsha256.h"
@@ -11,6 +12,7 @@
 #include "crypto_box.h"
 #include "crypto_box_curve25519xsalsa20poly1305.h"
 #include "crypto_core_hsalsa20.h"
+#include "crypto_core_hchacha20.h"
 #include "crypto_core_salsa20.h"
 #include "crypto_core_salsa2012.h"
 #include "crypto_core_salsa208.h"
@@ -21,6 +23,8 @@
 #include "crypto_hash_sha512.h"
 #include "crypto_onetimeauth.h"
 #include "crypto_onetimeauth_poly1305.h"
+#include "crypto_pwhash.h"
+#include "crypto_pwhash_argon2i.h"
 #include "crypto_pwhash_scryptsalsa208sha256.h"
 #include "crypto_scalarmult.h"
 #include "crypto_scalarmult_curve25519.h"
@@ -41,6 +45,9 @@
 #include "crypto_verify_32.h"
 #include "crypto_verify_64.h"
 #include "randombytes.h"
+#ifdef __native_client__
+# include "randombytes_nativeclient.h"
+#endif
 #include "randombytes_salsa20_random.h"
 #include "randombytes_sysrandom.h"
 #include "runtime.h"

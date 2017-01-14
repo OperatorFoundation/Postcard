@@ -15,11 +15,11 @@ import CoreData
 extension Postcard {
 
     @NSManaged var body: String?
-    @NSManaged var cipherText: NSData?
+    @NSManaged var cipherText: Data?
     @NSManaged var decrypted: Bool
     @NSManaged var hasPackage: Bool
     @NSManaged var identifier: String?
-    @NSManaged var receivedDate: NSTimeInterval
+    @NSManaged var receivedDate: TimeInterval
     @NSManaged var snippet: String?
     @NSManaged var subject: String?
     @NSManaged var to: String?

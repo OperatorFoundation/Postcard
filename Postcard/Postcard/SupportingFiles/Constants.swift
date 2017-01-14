@@ -7,8 +7,9 @@
 //
 
 import Foundation
-import GoogleAPIClient
+//import GoogleAPIClient
 import GoogleAPIClientForREST
+
 
 /*
  Font Names
@@ -25,7 +26,7 @@ import GoogleAPIClientForREST
  ProximaNovaAExCn-Light
  */
 
-let bundle = NSBundle.mainBundle()
+let bundle = Bundle.main
 
 //PopUpMessages Strings
 
@@ -105,11 +106,11 @@ let localizedLogoutButtonTitle = NSLocalizedString("BUTTON-TITLE", tableName: "M
 
 struct GmailProps
 {
-    static let service = GTLServiceGmail()
+    static let service = GTLRGmailService()
     static let servicePeople = GTLRPeopleService()
     
     /*If modifying these scopes, delete your previously saved credentials by resetting the iOS simulator or uninstalling the app.*/
-    static let scopes = [kGTLAuthScopeGmail, kGTLRAuthScopePeopleContactsReadonly, kGTLRAuthScopePeoplePlusLogin]
+    static let scopes = [kGTLRAuthScopeGmailCompose, kGTLRAuthScopeGmailMailGoogleCom, kGTLRAuthScopePeopleContactsReadonly, kGTLRAuthScopePeoplePlusLogin]
     static let kKeychainItemName = "Gmail API"
     static let kClientID = "313251347973-cpo986nne3t21bus5499b4kt1kb8thrm.apps.googleusercontent.com"
 }

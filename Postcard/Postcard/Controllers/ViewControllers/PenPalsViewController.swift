@@ -13,7 +13,7 @@ class PenPalsViewController: NSViewController, NSTableViewDelegate
     @IBOutlet weak var penPalsTableView: NSTableView!
     @IBOutlet var penPalsArrayController: NSArrayController!
     
-    var managedContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    var managedContext = (NSApplication.shared().delegate as! AppDelegate).managedObjectContext
     
     override func viewDidLoad()
     {
@@ -43,12 +43,12 @@ class PenPalsViewController: NSViewController, NSTableViewDelegate
         {
             if thisPenPal.sentKey == true
             {
-                performSegueWithIdentifier("Email PenPal", sender: self)
+                performSegue(withIdentifier: "Email PenPal", sender: self)
             }
         }
     }
     
-    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?)
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?)
     {
         if segue.identifier == "Email PenPal"
         {
@@ -76,9 +76,9 @@ class PenPalTableCell: NSTableCellView
     @IBOutlet weak var backgroundView: DesignableView!
     
     var actionTitle = ""
-    var managedContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    var managedContext = (NSApplication.shared().delegate as! AppDelegate).managedObjectContext
     
-    override var objectValue: AnyObject?
+    override var objectValue: Any?
     {
         didSet
         {
@@ -86,13 +86,13 @@ class PenPalTableCell: NSTableCellView
             if let penPal = objectValue as? PenPal
             {
                 let paragraphStyle = NSMutableParagraphStyle()
-                paragraphStyle.alignment = .Center
-                var buttonFont = NSFont.boldSystemFontOfSize(13)
+                paragraphStyle.alignment = .center
+                var buttonFont = NSFont.boldSystemFont(ofSize: 13)
                 if let maybeFont = NSFont(name: PostcardUI.boldFutura, size: 13)
                 {
                     buttonFont = maybeFont
                 }
-                let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
+                let attributes = [NSForegroundColorAttributeName: NSColor.white,NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
                 let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
                 
                 if penPal.key == nil && penPal.sentKey == false
@@ -102,7 +102,7 @@ class PenPalTableCell: NSTableCellView
                     actionButton.target = self
                     actionButton.action = #selector(inviteAction)
                     backgroundView.viewColor = PostcardUI.gray
-                    actionButton.hidden = false
+                    actionButton.isHidden = false
                 }
                 else if penPal.key != nil && penPal.sentKey == false
                 {
@@ -110,12 +110,12 @@ class PenPalTableCell: NSTableCellView
                     actionButton.image = NSImage(named: "greenButton")
                     actionButton.target = self
                     actionButton.action = #selector(addAction)
-                    backgroundView.viewColor = NSColor.whiteColor()
-                    actionButton.hidden = false
+                    backgroundView.viewColor = NSColor.white
+                    actionButton.isHidden = false
                 }
                 else //if penPal.key != nil && penPal.sentKey == true
                 {
-                    actionButton.hidden = true
+                    actionButton.isHidden = true
                     backgroundView.viewColor = PostcardUI.gray
                 }
                 
@@ -134,7 +134,7 @@ class PenPalTableCell: NSTableCellView
             KeyController.sharedInstance.sendKey(toPenPal: penPal)
         }
         
-        actionButton.hidden = true
+        actionButton.isHidden = true
     }
     
     //We don't have their key, and they don't have ours
@@ -146,7 +146,7 @@ class PenPalTableCell: NSTableCellView
             KeyController.sharedInstance.sendKey(toPenPal: penPal)
         }
         
-        actionButton.hidden = true
+        actionButton.isHidden = true
     }
     
     

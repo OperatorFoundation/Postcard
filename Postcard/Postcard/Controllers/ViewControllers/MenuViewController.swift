@@ -11,7 +11,7 @@ import GTMOAuth2
 
 enum SelectedMode
 {
-    case Inbox, Penpals
+    case inbox, penpals
 }
 
 class MenuViewController: NSViewController
@@ -34,20 +34,20 @@ class MenuViewController: NSViewController
     {
         super.viewWillAppear()
         
-        selectMode(.Inbox)
+        selectMode(.inbox)
     }
     
     //MARK: Actions
     
-    @IBAction func composeClick(sender: NSButton) {
+    @IBAction func composeClick(_ sender: NSButton) {
     }
     
-    @IBAction func inboxClick(sender: NSButton)
+    @IBAction func inboxClick(_ sender: NSButton)
     {
         showMessages()
     }
     
-    @IBAction func penPalsClick(sender: NSButton)
+    @IBAction func penPalsClick(_ sender: NSButton)
     {
         showPenPals()
     }
@@ -55,12 +55,12 @@ class MenuViewController: NSViewController
     lazy var welcomeWindowController: WelcomeWindowController =
     {
         let storyboard: NSStoryboard = NSStoryboard(name: "Main", bundle: nil)
-        let newWindowController = storyboard.instantiateControllerWithIdentifier("WelcomeWindowController") as! WelcomeWindowController
+        let newWindowController = storyboard.instantiateController(withIdentifier: "WelcomeWindowController") as! WelcomeWindowController
         return newWindowController
     }()
 
     
-    @IBAction func lockdownClick(sender: NSButton)
+    @IBAction func lockdownClick(_ sender: NSButton)
     {
         //'Lock' Postcards
         if let currentUser = GlobalVars.currentUser
@@ -70,7 +70,7 @@ class MenuViewController: NSViewController
         
         //Present Welcome View
         let storyboard: NSStoryboard = NSStoryboard(name: "Main", bundle: nil)
-        let newContentController = storyboard.instantiateControllerWithIdentifier("Locked View") as! LockedViewController
+        let newContentController = storyboard.instantiateController(withIdentifier: "Locked View") as! LockedViewController
         welcomeWindowController.contentViewController = newContentController
         welcomeWindowController.showWindow(sender)
         
@@ -78,14 +78,14 @@ class MenuViewController: NSViewController
         self.view.window?.close()
     }
     
-    @IBAction func logoutClick(sender: NSButton)
+    @IBAction func logoutClick(_ sender: NSButton)
     {
         //Remove current User from Constants
         GlobalVars.currentUser = nil
         KeyController.sharedInstance.resetKeys()
         
         //Remove google Auth Token
-        GTMOAuth2WindowController.removeAuthFromKeychainForName(GmailProps.kKeychainItemName)
+        GTMOAuth2WindowController.removeAuthFromKeychain(forName: GmailProps.kKeychainItemName)
 
         //Present Welcome View
         welcomeWindowController.showWindow(sender)
@@ -95,21 +95,21 @@ class MenuViewController: NSViewController
     
     //MARK: Content
     
-    func selectMode(mode: SelectedMode)
+    func selectMode(_ mode: SelectedMode)
     {
         switch mode
         {
-        case .Inbox:
+        case .inbox:
             showMessages()
-        case .Penpals:
+        case .penpals:
             showPenPals()
         }
     }
     
     func showPenPals()
     {
-        let splitVC = parentViewController as! NSSplitViewController
-        let penPalVC = storyboard?.instantiateControllerWithIdentifier("PenPals View") as! PenPalsViewController
+        let splitVC = parent as! NSSplitViewController
+        let penPalVC = storyboard?.instantiateController(withIdentifier: "PenPals View") as! PenPalsViewController
         let splitViewItem = NSSplitViewItem(viewController: penPalVC)
         splitVC.removeSplitViewItem(splitVC.splitViewItems[1])
         splitVC.addSplitViewItem(splitViewItem)
@@ -122,8 +122,8 @@ class MenuViewController: NSViewController
     
     func showMessages()
     {
-        let splitVC = parentViewController as! NSSplitViewController
-        let contentVC = storyboard?.instantiateControllerWithIdentifier("Messages Split View") as! NSSplitViewController
+        let splitVC = parent as! NSSplitViewController
+        let contentVC = storyboard?.instantiateController(withIdentifier: "Messages Split View") as! NSSplitViewController
         let splitViewItem = NSSplitViewItem(viewController: contentVC)
         splitVC.removeSplitViewItem(splitVC.splitViewItems[1] )
         splitVC.addSplitViewItem(splitViewItem)
@@ -138,25 +138,25 @@ class MenuViewController: NSViewController
     func styleButtons()
     {
         let paragraphStyleCenter = NSMutableParagraphStyle()
-        paragraphStyleCenter.alignment = .Center
+        paragraphStyleCenter.alignment = .center
         
         let paragraphStyleLeft = NSMutableParagraphStyle()
-        paragraphStyleLeft.alignment = .Justified
+        paragraphStyleLeft.alignment = .justified
         
-        var buttonFont = NSFont.boldSystemFontOfSize(13)
+        var buttonFont = NSFont.boldSystemFont(ofSize: 13)
         if let maybeFont = NSFont(name: PostcardUI.boldFutura, size: 13)
         {
             buttonFont = maybeFont
         }
         
-        var buttonFont2 = NSFont.boldSystemFontOfSize(13)
+        var buttonFont2 = NSFont.boldSystemFont(ofSize: 13)
         if let maybeFont2 = NSFont(name: PostcardUI.boldAFont, size: 13)
         {
             buttonFont2 = maybeFont2
         }
         
-        let composeAttributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyleCenter, NSFontAttributeName: buttonFont]
-        let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyleLeft, NSFontAttributeName: buttonFont2]
+        let composeAttributes = [NSForegroundColorAttributeName: NSColor.white,NSParagraphStyleAttributeName: paragraphStyleCenter, NSFontAttributeName: buttonFont]
+        let attributes = [NSForegroundColorAttributeName: NSColor.white,NSParagraphStyleAttributeName: paragraphStyleLeft, NSFontAttributeName: buttonFont2]
         let altInboxAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyleLeft, NSFontAttributeName: buttonFont2]
         let altPenpalAttributes = [NSForegroundColorAttributeName: PostcardUI.green, NSParagraphStyleAttributeName: paragraphStyleLeft, NSFontAttributeName: buttonFont2]
         let altAttributes = [NSForegroundColorAttributeName: PostcardUI.orange, NSParagraphStyleAttributeName: paragraphStyleLeft, NSFontAttributeName: buttonFont2]

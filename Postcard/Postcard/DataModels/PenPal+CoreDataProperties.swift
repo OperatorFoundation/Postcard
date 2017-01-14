@@ -14,9 +14,9 @@ import CoreData
 
 extension PenPal {
 
-    @NSManaged var addedDate: NSTimeInterval
+    @NSManaged var addedDate: TimeInterval
     @NSManaged var email: String?
-    @NSManaged var key: NSData?
+    @NSManaged var key: Data?
     @NSManaged var name: String?
     @NSManaged var photo: NSObject?
     @NSManaged var sentKey: Bool

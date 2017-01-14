@@ -8,7 +8,7 @@
 
 import Cocoa
 import GTMOAuth2
-import GoogleAPIClient
+//import GoogleAPIClient
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
@@ -17,7 +17,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     
     //MARK: Application Lifecycle
     
-    func applicationDidFinishLaunching(aNotification: NSNotification)
+    func applicationDidFinishLaunching(_ aNotification: Notification)
     {
 
     }
@@ -25,43 +25,43 @@ class AppDelegate: NSObject, NSApplicationDelegate
     //MARK: Helper Methods
     
     //Helper for showing an alert.
-    func showAlert(message: String)
+    func showAlert(_ message: String)
     {
         let alert = NSAlert()
         alert.messageText = message
-        alert.addButtonWithTitle("OK")
+        alert.addButton(withTitle: "OK")
         alert.runModal()
     }
 
     // MARK: - Core Data stack
 
-    lazy var applicationDocumentsDirectory: NSURL =
+    lazy var applicationDocumentsDirectory: URL =
     {
         // The directory the application uses to store the Core Data store file. This code uses a directory named "org.operatorfoundation.Postcard" in the user's Application Support directory.
-        let urls = NSFileManager.defaultManager().URLsForDirectory(.ApplicationSupportDirectory, inDomains: .UserDomainMask)
+        let urls = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
         let appSupportURL = urls[urls.count - 1]
-        return appSupportURL.URLByAppendingPathComponent("org.operatorfoundation.Postcard")
+        return appSupportURL.appendingPathComponent("org.operatorfoundation.Postcard")
     }()
 
     lazy var managedObjectModel: NSManagedObjectModel =
     {
         // The managed object model for the application. This property is not optional. It is a fatal error for the application not to be able to find and load its model.
-        let modelURL = NSBundle.mainBundle().URLForResource("Postcard", withExtension: "momd")!
-        return NSManagedObjectModel(contentsOfURL: modelURL)!
+        let modelURL = Bundle.main.url(forResource: "Postcard", withExtension: "momd")!
+        return NSManagedObjectModel(contentsOf: modelURL)!
     }()
 
     lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator =
     {
         // The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it. (The directory for the store is created, if necessary.) This property is optional since there are legitimate error conditions that could cause the creation of the store to fail.
-        let fileManager = NSFileManager.defaultManager()
+        let fileManager = FileManager.default
         var failError: NSError? = nil
         var shouldFail = false
         var failureReason = "There was an error creating or loading the application's saved data."
 
         // Make sure the application files directory is there
         do {
-            let properties = try self.applicationDocumentsDirectory.resourceValuesForKeys([NSURLIsDirectoryKey])
-            if !properties[NSURLIsDirectoryKey]!.boolValue {
+            let properties = try (self.applicationDocumentsDirectory as NSURL).resourceValues(forKeys: [URLResourceKey.isDirectoryKey])
+            if !(properties[URLResourceKey.isDirectoryKey]! as AnyObject).boolValue {
                 failureReason = "Expected a folder to store application data, found a file \(self.applicationDocumentsDirectory.path)."
                 shouldFail = true
             }
@@ -71,7 +71,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
             if nserror.code == NSFileReadNoSuchFileError
             {
                 do {
-                    try fileManager.createDirectoryAtPath(self.applicationDocumentsDirectory.path!, withIntermediateDirectories: true, attributes: nil)
+                    try fileManager.createDirectory(atPath: self.applicationDocumentsDirectory.path, withIntermediateDirectories: true, attributes: nil)
                 }
                 catch {
                     failError = nserror
@@ -88,9 +88,9 @@ class AppDelegate: NSObject, NSApplicationDelegate
         if failError == nil
         {
             coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-            let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent("CocoaAppCD.storedata")
+            let url = self.applicationDocumentsDirectory.appendingPathComponent("CocoaAppCD.storedata")
             do {
-                try coordinator!.addPersistentStoreWithType(NSXMLStoreType, configuration: nil, URL: url, options: nil)
+                try coordinator!.addPersistentStore(ofType: NSXMLStoreType, configurationName: nil, at: url, options: nil)
             }
             catch {
                 failError = error as NSError
@@ -101,13 +101,13 @@ class AppDelegate: NSObject, NSApplicationDelegate
         {
             // Report any error we got.
             var dict = [String: AnyObject]()
-            dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data"
-            dict[NSLocalizedFailureReasonErrorKey] = failureReason
+            dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data" as AnyObject?
+            dict[NSLocalizedFailureReasonErrorKey] = failureReason as AnyObject?
             if failError != nil {
                 dict[NSUnderlyingErrorKey] = failError
             }
             let error = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict)
-            NSApplication.sharedApplication().presentError(error)
+            NSApplication.shared().presentError(error)
             
             //TODO: More user friendly way of handling non-migrated coreData changes
             abort()
@@ -122,21 +122,21 @@ class AppDelegate: NSObject, NSApplicationDelegate
     {
         // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.) This property is optional since there are legitimate error conditions that could cause the creation of the context to fail.
         let coordinator = self.persistentStoreCoordinator
-        var managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        var managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         managedObjectContext.persistentStoreCoordinator = coordinator
-        managedObjectContext.mergePolicy = NSMergePolicy(mergeType: NSMergePolicyType.MergeByPropertyObjectTrumpMergePolicyType)
+        managedObjectContext.mergePolicy = NSMergePolicy(merge: NSMergePolicyType.mergeByPropertyObjectTrumpMergePolicyType)
         
         return managedObjectContext
     }()
 
     // MARK: - Core Data Saving and Undo support
 
-    @IBAction func saveAction(sender: AnyObject!)
+    @IBAction func saveAction(_ sender: AnyObject!)
     {
         // Performs the save action for the application, which is to send the save: message to the application's managed object context. Any encountered errors are presented to the user.
         if !managedObjectContext.commitEditing()
         {
-            NSLog("\(NSStringFromClass(self.dynamicType)) unable to commit editing before saving")
+            NSLog("\(NSStringFromClass(type(of: self))) unable to commit editing before saving")
         }
         if managedObjectContext.hasChanges
         {
@@ -145,30 +145,30 @@ class AppDelegate: NSObject, NSApplicationDelegate
             }
             catch {
                 let nserror = error as NSError
-                NSApplication.sharedApplication().presentError(nserror)
+                NSApplication.shared().presentError(nserror)
             }
         }
     }
 
-    func windowWillReturnUndoManager(window: NSWindow) -> NSUndoManager?
+    func windowWillReturnUndoManager(_ window: NSWindow) -> UndoManager?
     {
         // Returns the NSUndoManager for the application. In this case, the manager returned is that of the managed object context for the application.
         return managedObjectContext.undoManager
     }
 
-    func applicationShouldTerminate(sender: NSApplication) -> NSApplicationTerminateReply
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplicationTerminateReply
     {
         // Save changes in the application's managed object context before the application terminates.
         
         if !managedObjectContext.commitEditing()
         {
-            NSLog("\(NSStringFromClass(self.dynamicType)) unable to commit editing to terminate")
-            return .TerminateCancel
+            NSLog("\(NSStringFromClass(type(of: self))) unable to commit editing to terminate")
+            return .terminateCancel
         }
         
         if !managedObjectContext.hasChanges
         {
-            return .TerminateNow
+            return .terminateNow
         }
         
         do {
@@ -180,7 +180,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
             let result = sender.presentError(nserror)
             if (result)
             {
-                return .TerminateCancel
+                return .terminateCancel
             }
             
             let question = NSLocalizedString("Could not save changes while quitting. Quit anyway?", comment: "Quit without saves error question message")
@@ -190,17 +190,17 @@ class AppDelegate: NSObject, NSApplicationDelegate
             let alert = NSAlert()
             alert.messageText = question
             alert.informativeText = info
-            alert.addButtonWithTitle(quitButton)
-            alert.addButtonWithTitle(cancelButton)
+            alert.addButton(withTitle: quitButton)
+            alert.addButton(withTitle: cancelButton)
             
             let answer = alert.runModal()
             if answer == NSAlertFirstButtonReturn
             {
-                return .TerminateCancel
+                return .terminateCancel
             }
         }
         // If we got here, it is time to quit.
-        return .TerminateNow
+        return .terminateNow
     }
 
 }

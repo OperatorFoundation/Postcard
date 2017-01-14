@@ -14,7 +14,7 @@ class LockedViewController: NSViewController
     lazy var mainWindowController: MainWindowController =
     {
         let storyboard: NSStoryboard = NSStoryboard(name: "Main", bundle: nil)
-        let newWindowController = storyboard.instantiateControllerWithIdentifier("MainWindowController") as! MainWindowController
+        let newWindowController = storyboard.instantiateController(withIdentifier: "MainWindowController") as! MainWindowController
         return newWindowController
     }()
 
@@ -23,7 +23,7 @@ class LockedViewController: NSViewController
         // Do view setup here.
     }
     
-    @IBAction func unlockTap(sender: NSButton)
+    @IBAction func unlockTap(_ sender: NSButton)
     {
         //Present Home View
         mainWindowController.showWindow(self)

@@ -17,8 +17,8 @@ class MainWindowController: NSWindowController
         self.window?.setContentSize(NSSize(width: 1070, height: 640))
         self.window?.titlebarAppearsTransparent = true
         
-        window?.movableByWindowBackground = true
-        window?.titleVisibility = NSWindowTitleVisibility.Hidden
+        window?.isMovableByWindowBackground = true
+        window?.titleVisibility = NSWindowTitleVisibility.hidden
         window?.backgroundColor = PostcardUI.blue
         
     }

@@ -9,22 +9,21 @@
 import Foundation
 
 public class RandomBytes {
-    public func buf(length: Int) -> NSData? {
+    public func buf(length: Int) -> Data? {
         if length < 0 {
             return nil
         }
-        let output = NSMutableData(length: length)
-        if output == nil {
-            return nil
+        var output = Data(count: length)
+        output.withUnsafeMutableBytes { outputPtr in
+            randombytes_buf(outputPtr, output.count)
         }
-        randombytes_buf(output!.mutableBytesPtr, output!.length)
         return output
     }
-    
+
     public func random() -> UInt32 {
         return randombytes_random()
     }
-    
+
     public func uniform(upperBound: UInt32) -> UInt32 {
         return randombytes_uniform(upperBound)
     }

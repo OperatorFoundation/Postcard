@@ -1,6 +1,9 @@
+#ifdef __OBJC__
 #import <Cocoa/Cocoa.h>
+#endif
 
 #import "core.h"
+#import "crypto_aead_aes256gcm.h"
 #import "crypto_aead_chacha20poly1305.h"
 #import "crypto_auth.h"
 #import "crypto_auth_hmacsha256.h"
@@ -8,6 +11,7 @@
 #import "crypto_auth_hmacsha512256.h"
 #import "crypto_box.h"
 #import "crypto_box_curve25519xsalsa20poly1305.h"
+#import "crypto_core_hchacha20.h"
 #import "crypto_core_hsalsa20.h"
 #import "crypto_core_salsa20.h"
 #import "crypto_core_salsa2012.h"
@@ -21,6 +25,8 @@
 #import "crypto_int64.h"
 #import "crypto_onetimeauth.h"
 #import "crypto_onetimeauth_poly1305.h"
+#import "crypto_pwhash.h"
+#import "crypto_pwhash_argon2i.h"
 #import "crypto_pwhash_scryptsalsa208sha256.h"
 #import "crypto_scalarmult.h"
 #import "crypto_scalarmult_curve25519.h"

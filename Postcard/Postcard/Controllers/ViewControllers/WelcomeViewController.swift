@@ -8,7 +8,7 @@
 
 import Cocoa
 import GTMOAuth2
-import GoogleAPIClient
+//import GoogleAPIClient
 
 class WelcomeViewController: NSViewController
 {
@@ -24,13 +24,13 @@ class WelcomeViewController: NSViewController
         super.viewDidLoad()
         
         //The description label should be at the same angle as the Big "Postcard"
-        descriptionView.rotateByAngle(11.0)
+        descriptionView.rotate(byDegrees: 11.0)
     }
     
     func isAuthorized() -> Bool
     {
         //Initialize GMail API Service
-        if let auth = GTMOAuth2WindowController.authForGoogleFromKeychainForName(GmailProps.kKeychainItemName , clientID: GmailProps.kClientID, clientSecret: nil)
+        if let auth = GTMOAuth2WindowController.authForGoogleFromKeychain(forName: GmailProps.kKeychainItemName , clientID: GmailProps.kClientID, clientSecret: nil)
         {
             GmailProps.service.authorizer = auth
             GmailProps.servicePeople.authorizer = auth
@@ -38,7 +38,7 @@ class WelcomeViewController: NSViewController
         
         //TODO: This goes inside the keychain check
         //Ensure Gmail API service is authorized and perform API calls (fetch postcards)
-        if let authorizer = GmailProps.service.authorizer, canAuth = authorizer.canAuthorize where canAuth
+        if let authorizer = GmailProps.service.authorizer, let canAuth = authorizer.canAuthorize, canAuth
         {
             
             if (GlobalVars.currentUser?.emailAddress) != nil
@@ -47,29 +47,30 @@ class WelcomeViewController: NSViewController
             }
             else
             {
-                let currentEmailAddress: String = authorizer.userEmail
-                
-                //Check if a user entity already exists
-                if let existingUser = fetchUserFromCoreData(currentEmailAddress)
+                if let currentEmailAddress: String = authorizer.userEmail
                 {
-                    GlobalVars.currentUser = existingUser
-                    self.fetchGoodies()
-                }
-                else
-                {
-                    //Create a new user
-                    if let authWindowController = googleAuthWindowController, let name = authWindowController.signIn.userProfile["name"] as? String
+                    //Check if a user entity already exists
+                    if let existingUser = fetchUserFromCoreData(currentEmailAddress)
                     {
-                        if createUser(currentEmailAddress, firstName: name) != nil
-                        {
-                            self.fetchGoodies()
-                        }
+                        GlobalVars.currentUser = existingUser
+                        self.fetchGoodies()
                     }
                     else
                     {
-                        if createUser(currentEmailAddress) != nil
+                        //Create a new user
+                        if let authWindowController = googleAuthWindowController, let name = authWindowController.signIn.userProfile["name"] as? String
                         {
-                            self.fetchGoodies()
+                            if createUser(currentEmailAddress, firstName: name) != nil
+                            {
+                                self.fetchGoodies()
+                            }
+                        }
+                        else
+                        {
+                            if createUser(currentEmailAddress) != nil
+                            {
+                                self.fetchGoodies()
+                            }
                         }
                     }
                 }
@@ -83,17 +84,17 @@ class WelcomeViewController: NSViewController
         }
     }
     
-    func fetchUserFromCoreData(userEmail: String) -> User?
+    func fetchUserFromCoreData(_ userEmail: String) -> User?
     {
         //Check if a user entity already exists
         //Get this User Entity
-        let fetchRequest = NSFetchRequest(entityName: "User")
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let managedObjectContext = appDelegate.managedObjectContext
         fetchRequest.predicate = NSPredicate(format: "emailAddress == %@", userEmail)
         do
         {
-            let result = try managedObjectContext.executeFetchRequest(fetchRequest)
+            let result = try managedObjectContext.fetch(fetchRequest)
             if result.count > 0, let thisUser = result[0] as? User
             {
                 return thisUser
@@ -112,19 +113,19 @@ class WelcomeViewController: NSViewController
         }
     }
     
-    func createUser(userEmail: String) -> User?
+    func createUser(_ userEmail: String) -> User?
     {
         return createUser(userEmail, firstName: nil)
     }
     
-    func createUser(userEmail: String, firstName: String?) -> User?
+    func createUser(_ userEmail: String, firstName: String?) -> User?
     {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let managedObjectContext = appDelegate.managedObjectContext
         
-        if let userEntity = NSEntityDescription.entityForName("User", inManagedObjectContext: managedObjectContext)
+        if let userEntity = NSEntityDescription.entity(forEntityName: "User", in: managedObjectContext)
         {
-            let newUser = User(entity: userEntity, insertIntoManagedObjectContext: managedObjectContext)
+            let newUser = User(entity: userEntity, insertInto: managedObjectContext)
             newUser.emailAddress = userEmail
             
             //Save this user to core Data
@@ -164,20 +165,20 @@ class WelcomeViewController: NSViewController
         }
         else
         {
-            googleLoginButton.enabled = true
+            googleLoginButton.isEnabled = true
         }
     }
     
     lazy var mainWindowController: MainWindowController =
     {
         let storyboard: NSStoryboard = NSStoryboard(name: "Main", bundle: nil)
-        let newWindowController = storyboard.instantiateControllerWithIdentifier("MainWindowController") as! MainWindowController
+        let newWindowController = storyboard.instantiateController(withIdentifier: "MainWindowController") as! MainWindowController
         return newWindowController
     }()
     
     //MARK: Actions
     
-    @IBAction func googleSignInTap(sender: AnyObject)
+    @IBAction func googleSignInTap(_ sender: AnyObject)
     {
         _ = createAuthController()
     }
@@ -185,24 +186,30 @@ class WelcomeViewController: NSViewController
     //MARK: OAuth2 Methods
     
     //Creates the Auth Controller for authorizing access to Gmail
-    private func createAuthController() -> GTMOAuth2WindowController
+    fileprivate func createAuthController() -> GTMOAuth2WindowController
     {
-        let scopeString = GmailProps.scopes.joinWithSeparator(" ")
+        let scopeString = GmailProps.scopes.joined(separator: " ")
         let controller = GTMOAuth2WindowController(scope: scopeString, clientID: GmailProps.kClientID, clientSecret: nil, keychainItemName: GmailProps.kKeychainItemName, resourceBundle: nil)
-        controller.signIn.shouldFetchGoogleUserProfile = true
-        controller.signInSheetModalForWindow(NSApplication.sharedApplication().mainWindow, completionHandler: {(auth, error) in
-            //Handle response
-            self.finishedWithAuth(controller, authResult: auth, error: error)
+        controller?.signIn.shouldFetchGoogleUserProfile = true
+        controller?.signInSheetModal(for: NSApplication.shared().mainWindow, completionHandler:
+        {
+            (auth: GTMOAuth2Authentication?, error: Error?) -> Void in
+            
+            if auth != nil
+            {
+                self.finishedWithAuth(controller!, authResult: auth!, error: error)
+            }
         })
-        return controller
+        
+        return controller!
     }
     
     //Handle completion of authorization process and update the Gmail API with the new credentials
-    func finishedWithAuth(authWindowController: GTMOAuth2WindowController, authResult: GTMOAuth2Authentication, error: NSError?)
+    func finishedWithAuth(_ authWindowController: GTMOAuth2WindowController, authResult: GTMOAuth2Authentication, error: Error?)
     {
         googleAuthWindowController = authWindowController
         
-        if let error: NSError = error
+        if let error: Error = error
         {
             GmailProps.service.authorizer = nil
             showAlert(localizedAuthErrorPrompt + error.localizedDescription)
@@ -225,11 +232,11 @@ class WelcomeViewController: NSViewController
     //MARK: Helper Methods
     
     //Helper for showing an alert.
-    func showAlert(message: String)
+    func showAlert(_ message: String)
     {
         let alert = NSAlert()
         alert.messageText = message
-        alert.addButtonWithTitle(localizedOKButtonTitle)
+        alert.addButton(withTitle: localizedOKButtonTitle)
         alert.runModal()
     }
    

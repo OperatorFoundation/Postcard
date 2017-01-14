@@ -97,12 +97,12 @@ static NSString *const kTokenFetchSelectorKey = @"sel";
   NSError *error_;
 }
 
-@property (retain) NSMutableURLRequest *request;
-@property (retain) id delegate;
-@property (assign) SEL selector;
-@property (copy) id completionHandler;
-@property (retain) NSThread *thread;
-@property (retain) NSError *error;
+@property (atomic, retain) NSMutableURLRequest *request;
+@property (atomic, retain) id delegate;
+@property (atomic, assign) SEL selector;
+@property (atomic, copy) id completionHandler;
+@property (atomic, retain) NSThread *thread;
+@property (atomic, retain) NSError *error;
 
 + (GTMOAuth2AuthorizationArgs *)argsWithRequest:(NSMutableURLRequest *)req
                                        delegate:(id)delegate
@@ -149,7 +149,7 @@ static NSString *const kTokenFetchSelectorKey = @"sel";
 
 @interface GTMOAuth2Authentication ()
 
-@property (retain) NSMutableArray *authorizationQueue;
+@property (atomic, retain) NSMutableArray *authorizationQueue;
 @property (readonly) NSString *authorizationToken;
 
 - (void)setKeysForResponseJSONData:(NSData *)data;
@@ -741,7 +741,7 @@ finishedRefreshWithFetcher:(GTMOAuth2Fetcher *)fetcher
   NSString *code = self.code;
   NSString *assertion = self.assertion;
   NSString *grantType = nil;
-  
+
   if (refreshToken) {
     // We have a refresh token
     grantType = @"refresh_token";
@@ -869,7 +869,9 @@ finishedRefreshWithFetcher:(GTMOAuth2Fetcher *)fetcher
 
   NSDictionary *responseHeaders = [fetcher responseHeaders];
   NSString *responseType = [responseHeaders valueForKey:@"Content-Type"];
-  BOOL isResponseJSON = [responseType hasPrefix:@"application/json"];
+  // "text/javascript" supports Dropbox's out-of-spec OAuth 2.
+  BOOL isResponseJSON = ([responseType hasPrefix:@"application/json"] ||
+                         [responseType hasPrefix:@"text/javascript"]);
   BOOL hasData = ([data length] > 0);
 
   if (error) {

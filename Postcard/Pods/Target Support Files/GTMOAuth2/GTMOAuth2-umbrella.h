@@ -1,4 +1,6 @@
+#ifdef __OBJC__
 #import <Cocoa/Cocoa.h>
+#endif
 
 #import "GTMOAuth2Authentication.h"
 #import "GTMOAuth2SignIn.h"

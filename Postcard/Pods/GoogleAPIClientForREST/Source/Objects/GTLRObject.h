@@ -20,6 +20,7 @@
 
 #import "GTLRDefines.h"
 #import "GTLRDateTime.h"
+#import "GTLRDuration.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -283,12 +284,12 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  The downloaded media data.
  */
-@property(strong) NSData *data;
+@property(atomic, strong) NSData *data;
 
 /**
  *  The MIME type of the downloaded media data.
  */
-@property(copy) NSString *contentType;
+@property(atomic, copy) NSString *contentType;
 
 @end
 

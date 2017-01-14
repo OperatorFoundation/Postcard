@@ -18,7 +18,7 @@ extension User {
     @NSManaged var firstName: String?
     @NSManaged var lastName: String?
     @NSManaged var peopleSyncToken: String?
-    @NSManaged var publicKey: NSData?
+    @NSManaged var publicKey: Data?
     @NSManaged var pal: NSSet?
     @NSManaged var postcard: NSSet?
 

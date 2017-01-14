@@ -21,14 +21,6 @@
 #import <TargetConditionals.h>
 #import <AvailabilityMacros.h>
 
-//
-// The developer may choose to define these in the project:
-//
-//   #define STRIP_GTM_FETCH_LOGGING 1 // omit http logging code (default for iPhone release builds)
-//
-// Mac developers may find STRIP_GTM_FETCH_LOGGING useful for reducing code size.
-//
-
 // These can be redefined via a prefix if you are prefixing symbols to prefix
 // the names used in strings. Something like:
 //   #define _HELPER(x) "MyPrefix" #x
@@ -77,14 +69,6 @@
   #endif
 #endif
 
-#ifndef STRIP_GTM_FETCH_LOGGING
-  #if TARGET_OS_IPHONE && !DEBUG
-    #define STRIP_GTM_FETCH_LOGGING 1
-  #else
-    #define STRIP_GTM_FETCH_LOGGING 0
-  #endif
-#endif
-
 #ifndef GTLR_DEBUG_ASSERT_CURRENT_QUEUE
   #define GTLR_ASSERT_CURRENT_QUEUE_DEBUG(targetQueue)                  \
       GTLR_DEBUG_ASSERT(0 == strcmp(GTLR_QUEUE_NAME(targetQueue),       \
@@ -99,7 +83,9 @@
 
 // Sanity check the min versions.
 
-#if TARGET_OS_IPHONE
+#if (defined(TARGET_OS_TV) && TARGET_OS_TV) || (defined(TARGET_OS_WATCH) && TARGET_OS_WATCH)
+  // No min checks for these two.
+#elif TARGET_OS_IPHONE
   #if !defined(__IPHONE_9_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0)
     #error "This project expects to be compiled with the iOS 9.0 SDK (or later)."
   #endif

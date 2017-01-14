@@ -8,13 +8,37 @@
 
 import Cocoa
 import GoogleAPIClientForREST
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class PenPalController: NSObject
 {
     static let sharedInstance = PenPalController()
-    let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+    let appDelegate = NSApplication.shared().delegate as! AppDelegate
     var managedObjectContext: NSManagedObjectContext?
-    private override init()
+    fileprivate override init()
     {
         managedObjectContext = appDelegate.managedObjectContext
     }
@@ -24,9 +48,9 @@ class PenPalController: NSObject
         getGoogleContacts(nil)
     }
     
-    func getGoogleContacts(nextPageToken: String?)
+    func getGoogleContacts(_ nextPageToken: String?)
     {
-        let query = GTLRPeopleQuery_PeopleConnectionsList.queryWithResourceName("people/me")
+        let query = GTLRPeopleQuery_PeopleConnectionsList.query(withResourceName: "people/me")
         
         //You've got to be kidding me
         //Your documentation says otherwise buttheads
@@ -40,11 +64,11 @@ class PenPalController: NSObject
         
         //Next Page Token
         query.pageToken = nextPageToken
-        
+
         GmailProps.servicePeople.executeQuery(query, completionHandler: processPeopleResponse)
     }
     
-    func processPeopleResponse(ticket: GTLRServiceTicket, maybeResponse: AnyObject?, maybeError: NSError?)
+    func processPeopleResponse(_ ticket: GTLRServiceTicket, maybeResponse: Any?, maybeError: Error?)
     {
         //Do we have friends??
         var count = 0
@@ -84,9 +108,9 @@ class PenPalController: NSObject
                                 else
                                 {
                                     //Otherwise, create a new PenPal
-                                    if let managedObjectContext = self.managedObjectContext, let entity = NSEntityDescription.entityForName("PenPal", inManagedObjectContext: managedObjectContext)
+                                    if let managedObjectContext = self.managedObjectContext, let entity = NSEntityDescription.entity(forEntityName: "PenPal", in: managedObjectContext)
                                     {
-                                        let newPal = PenPal(entity: entity, insertIntoManagedObjectContext: managedObjectContext)
+                                        let newPal = PenPal(entity: entity, insertInto: managedObjectContext)
                                         self.saveConnection(thisConnection, asPenPal: newPal, withEmailAddress: emailAddress)
                                     }
                                 }
@@ -107,26 +131,26 @@ class PenPalController: NSObject
         }
     }
     
-    func saveConnection(connection:GTLRPeople_Person, asPenPal penPal: PenPal, withEmailAddress email: String)
+    func saveConnection(_ connection:GTLRPeople_Person, asPenPal penPal: PenPal, withEmailAddress email: String)
     {
         penPal.owner = GlobalVars.currentUser
         penPal.email = email
         
         //Name
-        if let names = connection.names where names.isEmpty == false
+        if let names = connection.names, names.isEmpty == false
         {
             penPal.name = names[0].displayName
         }
         
         //PenPal Image
-        if let coverPhotos = connection.photos where coverPhotos.isEmpty == false
+        if let coverPhotos = connection.photos, coverPhotos.isEmpty == false
         {
             let coverPhoto = coverPhotos[0]
-            if let photoURLString = coverPhoto.url, let photoURL = NSURL(string: photoURLString)
+            if let photoURLString = coverPhoto.url, let photoURL = URL(string: photoURLString)
             {
                 imageDataFromURL(photoURL) { (maybeData, maybeResponse, maybeError) in
-                    guard let data = maybeData where maybeError == nil else {return}
-                    dispatch_async(dispatch_get_main_queue(), {
+                    guard let data = maybeData, maybeError == nil else {return}
+                    DispatchQueue.main.async(execute: {
                         penPal.photo = NSImage(data: data)
                     })
                 }
@@ -146,15 +170,15 @@ class PenPalController: NSObject
     }
     
     //Check core data for a pen pal with the provided email address
-    func fetchPenPal(emailAddress: String) -> PenPal?
+    func fetchPenPal(_ emailAddress: String) -> PenPal?
     {
-        let fetchRequest = NSFetchRequest(entityName: "PenPal")
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "PenPal")
         
         //Check for a penpal with this email address AND this current user as owner
         fetchRequest.predicate = NSPredicate(format: "email == %@", emailAddress)
         do
         {
-            let result = try self.managedObjectContext?.executeFetchRequest(fetchRequest)
+            let result = try self.managedObjectContext?.fetch(fetchRequest)
             if result?.count > 0, let thisPenpal = result?[0] as? PenPal
             {
                 return thisPenpal
@@ -173,12 +197,12 @@ class PenPalController: NSObject
     }
     
     //MARK: Get Image Data from URL
-    func imageDataFromURL(url: NSURL, completionHandler:((data: NSData?, response: NSURLResponse?, error: NSError?) -> Void))
+    func imageDataFromURL(_ url: URL, completionHandler:@escaping ((_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Void))
     {
-        NSURLSession.sharedSession().dataTaskWithURL(url){(data, response, error) in
-            completionHandler(data: data, response: response, error: error)
-        }.resume()
+        URLSession.shared.dataTask(with: url, completionHandler: {(data, response, error) in
+            completionHandler(data, response, error)
+        }).resume()
     }
     
-    
+  //📭//
 }

@@ -18,7 +18,7 @@ class MessageViewController: NSViewController
     @IBOutlet weak var attachmentButton: NSButton!
     @IBOutlet weak var messageContentView: NSView!
     
-    var managedContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    var managedContext = (NSApplication.shared().delegate as! AppDelegate).managedObjectContext
 
     override func viewDidLoad()
     {
@@ -26,14 +26,14 @@ class MessageViewController: NSViewController
         
         // Do view setup here.
         view.wantsLayer = true
-        view.layer?.backgroundColor = NSColor.whiteColor().CGColor
+        view.layer?.backgroundColor = NSColor.white.cgColor
         
         styleButtons()
         
         //Do we have an attachment?
         if let thisPostcard = postcardObjectController.content as? Postcard
         {
-            attachmentButton.hidden = !(thisPostcard.hasPackage)
+            attachmentButton.isHidden = !(thisPostcard.hasPackage)
         }
     }
     
@@ -61,7 +61,7 @@ class MessageViewController: NSViewController
         }
     }
     
-    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?)
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?)
     {
         //Populate compose view with this message information.
         
@@ -81,7 +81,7 @@ class MessageViewController: NSViewController
         }
     }
     
-    @IBAction func deleteClick(sender: NSButton)
+    @IBAction func deleteClick(_ sender: NSButton)
     {
         if let thisPostcard = postcardObjectController.content as? Postcard
         {
@@ -102,14 +102,14 @@ class MessageViewController: NSViewController
     func styleButtons()
     {
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .Center
-        var buttonFont = NSFont.boldSystemFontOfSize(13)
+        paragraphStyle.alignment = .center
+        var buttonFont = NSFont.boldSystemFont(ofSize: 13)
         if let maybeFont = NSFont(name: PostcardUI.boldFutura, size: 13)
         {
             buttonFont = maybeFont
         }
         
-        let attributes = [NSForegroundColorAttributeName: NSColor.whiteColor(),NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
+        let attributes = [NSForegroundColorAttributeName: NSColor.white,NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
         let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
         
         replyButton.attributedTitle = NSAttributedString(string: localizedReplyTitle, attributes: attributes)
@@ -120,11 +120,11 @@ class MessageViewController: NSViewController
     }
     
     //MARK: Helper Methods
-    func showAlert(message: String)
+    func showAlert(_ message: String)
     {
         let alert = NSAlert()
         alert.messageText = message
-        alert.addButtonWithTitle(localizedOKButtonTitle)
+        alert.addButton(withTitle: localizedOKButtonTitle)
         alert.runModal()
     }
     
