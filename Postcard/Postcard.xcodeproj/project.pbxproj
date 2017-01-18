@@ -37,7 +37,6 @@
 		B430D5EB1CF7C31D0025365E /* WelcomeWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B430D5EA1CF7C31D0025365E /* WelcomeWindowController.swift */; };
 		B430FC8D1CF8A22900205015 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AB1CC17B9A009C577D /* AppDelegate.swift */; };
 		B430FC8E1CF8A23200205015 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AB1CC17B9A009C577D /* AppDelegate.swift */; };
-		B4572D801E2F09890072813D /* Sodium.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4572D7F1E2F09890072813D /* Sodium.framework */; };
 		B460CCE91D41805D00507EFD /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = B460CCE81D41805D00507EFD /* Globals.swift */; };
 		B486A0771E2F2ECB009664A2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4238F541CD2A24D0054E7EF /* Security.framework */; };
 		B48A273E1D08B4B8007BBB27 /* LockedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */; };
@@ -131,7 +130,6 @@
 			files = (
 				B486A0771E2F2ECB009664A2 /* Security.framework in Frameworks */,
 				B4238F571CD2A6030054E7EF /* SystemConfiguration.framework in Frameworks */,
-				B4572D801E2F09890072813D /* Sodium.framework in Frameworks */,
 				3930C8C6518B7B64B1928A70 /* Pods_Postcard.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

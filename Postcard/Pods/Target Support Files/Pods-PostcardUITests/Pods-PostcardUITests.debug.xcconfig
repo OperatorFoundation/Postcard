@@ -1,14 +1,12 @@
-ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES
+ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO
 CODE_SIGN_IDENTITY =
-EMBEDDED_CONTENT_CONTAINS_SWIFT = YES
-FRAMEWORK_SEARCH_PATHS = $(inherited) "$PODS_CONFIGURATION_BUILD_DIR/GTMOAuth2" "$PODS_CONFIGURATION_BUILD_DIR/GTMSessionFetcher" "$PODS_CONFIGURATION_BUILD_DIR/GoogleAPIClientForREST" "$PODS_CONFIGURATION_BUILD_DIR/SAMKeychain" "$PODS_CONFIGURATION_BUILD_DIR/Sodium"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "$PODS_CONFIGURATION_BUILD_DIR/GTMOAuth2" "$PODS_CONFIGURATION_BUILD_DIR/GTMSessionFetcher" "$PODS_CONFIGURATION_BUILD_DIR/GoogleAPIClientForREST" "$PODS_CONFIGURATION_BUILD_DIR/SAMKeychain"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1 $(inherited) GTM_OAUTH2_USE_FRAMEWORK_IMPORTS=1 $(inherited) GTLR_USE_FRAMEWORK_IMPORTS=1
 HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/mailcore2-osx"
 LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/../Frameworks' '@loader_path/Frameworks'
 LIBRARY_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/mailcore2-osx/lib"
-OTHER_CFLAGS = $(inherited) -iquote "$PODS_CONFIGURATION_BUILD_DIR/GTMOAuth2/GTMOAuth2.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/GTMSessionFetcher/GTMSessionFetcher.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/GoogleAPIClientForREST/GoogleAPIClientForREST.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/SAMKeychain/SAMKeychain.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/Sodium/Sodium.framework/Headers" -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/mailcore2-osx"
-OTHER_LDFLAGS = $(inherited) -ObjC -l"MailCore" -l"c++" -l"crypto" -l"iconv" -l"resolv" -l"sasl2" -l"ssl" -l"tidy" -l"xml2" -l"z" -framework "GTMOAuth2" -framework "GTMSessionFetcher" -framework "GoogleAPIClientForREST" -framework "SAMKeychain" -framework "Sodium"
-OTHER_SWIFT_FLAGS = $(inherited) "-D" "COCOAPODS"
+OTHER_CFLAGS = $(inherited) -iquote "$PODS_CONFIGURATION_BUILD_DIR/GTMOAuth2/GTMOAuth2.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/GTMSessionFetcher/GTMSessionFetcher.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/GoogleAPIClientForREST/GoogleAPIClientForREST.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/SAMKeychain/SAMKeychain.framework/Headers" -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/mailcore2-osx"
+OTHER_LDFLAGS = $(inherited) -ObjC -l"MailCore" -l"c++" -l"crypto" -l"iconv" -l"resolv" -l"sasl2" -l"ssl" -l"tidy" -l"xml2" -l"z" -framework "GTMOAuth2" -framework "GTMSessionFetcher" -framework "GoogleAPIClientForREST" -framework "SAMKeychain"
 PODS_BUILD_DIR = $BUILD_DIR
 PODS_CONFIGURATION_BUILD_DIR = $PODS_BUILD_DIR/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
 PODS_ROOT = ${SRCROOT}/Pods
