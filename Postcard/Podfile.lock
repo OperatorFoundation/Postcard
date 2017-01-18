@@ -15,6 +15,7 @@ PODS:
   - GTMSessionFetcher/Full (1.1.7):
     - GTMSessionFetcher/Core (= 1.1.7)
   - mailcore2-osx (0.6.4)
+  - Sodium (0.2)
   - SSKeychain (1.4.0)
 
 DEPENDENCIES:
@@ -22,15 +23,26 @@ DEPENDENCIES:
   - GoogleAPIClientForREST/People
   - GTMOAuth2 (~> 1.1.4)
   - mailcore2-osx
+  - Sodium (from `https://github.com/jedisct1/swift-sodium.git`)
   - SSKeychain
+
+EXTERNAL SOURCES:
+  Sodium:
+    :git: https://github.com/jedisct1/swift-sodium.git
+
+CHECKOUT OPTIONS:
+  Sodium:
+    :commit: db8bc00b6bc6d2168c96931f46d42722e74ce9a7
+    :git: https://github.com/jedisct1/swift-sodium.git
 
 SPEC CHECKSUMS:
   GoogleAPIClientForREST: f272e35f7fe9f80ab232756c798adc32245ece8c
   GTMOAuth2: 7fc9c10f5c745f4d9850419ea88889fe3baa6b7d
   GTMSessionFetcher: a1f8ed39e4fe21c68957daed472c7afbcdf29166
   mailcore2-osx: 56890045e50f3b09b6530f5bd008eda67e1f6b82
+  Sodium: 7d83a94ede23a9b6a7a18d9f3cfb397db518a178
   SSKeychain: c71293fa57216a40ab06c23f4085387583293de4
 
-PODFILE CHECKSUM: c7b287e094c13902f00e40af6fcd273a70ecdc9b
+PODFILE CHECKSUM: 52c7ebdf8932f739b23ae0ab9137dcbf9cdc4e4d
 
 COCOAPODS: 1.1.1

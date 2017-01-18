@@ -8,9 +8,8 @@
 
 import Cocoa
 import SSKeychain
-import Sodium
 import GoogleAPIClientForREST
-//import GoogleAPIClient
+import Sodium
 
 private var _singletonSharedInstance: KeyController! = KeyController()
 class KeyController: NSObject
