@@ -6,11 +6,10 @@ target 'Postcard' do
 source 'https://github.com/CocoaPods/Specs.git'
 source 'https://github.com/OperatorFoundation/OperatorPods'
 
-#pod 'GoogleAPIClient/Gmail'
 pod 'GoogleAPIClientForREST/People'
 pod 'GoogleAPIClientForREST/Gmail', '~> 1.1.1'
 pod 'GTMOAuth2', '~> 1.1.4'
-pod 'Sodium', :git => 'https://github.com/jedisct1/swift-sodium.git'
+#pod 'Sodium', :git => 'https://github.com/jedisct1/swift-sodium.git'
 pod 'mailcore2-osx'
 pod 'SSKeychain'
 
@@ -21,11 +20,10 @@ target 'PostcardTests' do
 source 'https://github.com/CocoaPods/Specs.git'
 source 'https://github.com/OperatorFoundation/OperatorPods'
 
-#pod 'GoogleAPIClient/Gmail'
 pod 'GoogleAPIClientForREST/People'
 pod 'GoogleAPIClientForREST/Gmail', '~> 1.1.1'
 pod 'GTMOAuth2', '~> 1.1.4'
-pod 'Sodium', :git => 'https://github.com/jedisct1/swift-sodium.git'
+#pod 'Sodium', :git => 'https://github.com/jedisct1/swift-sodium.git'
 pod 'mailcore2-osx'
 pod 'SSKeychain'
 
@@ -36,11 +34,10 @@ target 'PostcardUITests' do
 source 'https://github.com/CocoaPods/Specs.git'
 source 'https://github.com/OperatorFoundation/OperatorPods'
 
-#pod 'GoogleAPIClient/Gmail'
 pod 'GoogleAPIClientForREST/People'
 pod 'GoogleAPIClientForREST/Gmail', '~> 1.1.1'
 pod 'GTMOAuth2', '~> 1.1.4'
-pod 'Sodium', :git => 'https://github.com/jedisct1/swift-sodium.git'
+#pod 'Sodium', :git => 'https://github.com/jedisct1/swift-sodium.git'
 pod 'mailcore2-osx'
 pod 'SSKeychain'
 

@@ -38,6 +38,7 @@
 		B430D5EB1CF7C31D0025365E /* WelcomeWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B430D5EA1CF7C31D0025365E /* WelcomeWindowController.swift */; };
 		B430FC8D1CF8A22900205015 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AB1CC17B9A009C577D /* AppDelegate.swift */; };
 		B430FC8E1CF8A23200205015 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AB1CC17B9A009C577D /* AppDelegate.swift */; };
+		B43645A71E2F04DB00C50253 /* Sodium.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B43645A61E2F04DB00C50253 /* Sodium.framework */; };
 		B460CCE91D41805D00507EFD /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = B460CCE81D41805D00507EFD /* Globals.swift */; };
 		B48A273E1D08B4B8007BBB27 /* LockedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */; };
 		B4EAA8F91D1361D000E9169F /* Postcard+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAA8F51D1361D000E9169F /* Postcard+CoreDataProperties.swift */; };
@@ -108,6 +109,7 @@
 		B4238F601CD2DF630054E7EF /* Postcard-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Postcard-Bridging-Header.h"; sourceTree = "<group>"; };
 		B430D5EA1CF7C31D0025365E /* WelcomeWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeWindowController.swift; path = Controllers/ViewControllers/WelcomeWindowController.swift; sourceTree = "<group>"; };
 		B4316C9B1D527F83000138D0 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
+		B43645A61E2F04DB00C50253 /* Sodium.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sodium.framework; sourceTree = "<group>"; };
 		B455798C1D10C99B00E56D6D /* FuturaT_Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaT_Bold.ttf; sourceTree = "<group>"; };
 		B460CCE81D41805D00507EFD /* Globals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Globals.swift; path = SupportingFiles/Globals.swift; sourceTree = "<group>"; };
 		B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LockedViewController.swift; path = Controllers/ViewControllers/LockedViewController.swift; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B4238F571CD2A6030054E7EF /* SystemConfiguration.framework in Frameworks */,
+				B43645A71E2F04DB00C50253 /* Sodium.framework in Frameworks */,
 				B4238F551CD2A24D0054E7EF /* Security.framework in Frameworks */,
 				3930C8C6518B7B64B1928A70 /* Pods_Postcard.framework in Frameworks */,
 			);
@@ -305,6 +308,7 @@
 		CD953D86455DD95CB6DAFBBB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B43645A61E2F04DB00C50253 /* Sodium.framework */,
 				B4238F561CD2A6030054E7EF /* SystemConfiguration.framework */,
 				B4238F541CD2A24D0054E7EF /* Security.framework */,
 				B0D435509511DC88D515D16B /* Pods_Postcard.framework */,
@@ -391,7 +395,9 @@
 				TargetAttributes = {
 					461891A71CC17B99009C577D = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = 67Y4NSLDQ3;
 						LastSwiftMigration = 0820;
+						ProvisioningStyle = Automatic;
 					};
 					461891BB1CC17B9A009C577D = {
 						CreatedOnToolsVersion = 7.3;
@@ -769,9 +775,19 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 67Y4NSLDQ3;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Postcard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Sodium/Sodium",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.operatorfoundation.Postcard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Postcard/Postcard-Bridging-Header.h";
@@ -788,9 +804,19 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 67Y4NSLDQ3;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Postcard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Sodium/Sodium",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.operatorfoundation.Postcard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Postcard/Postcard-Bridging-Header.h";
