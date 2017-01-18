@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import SSKeychain
+import SAMKeychain
 import GoogleAPIClientForREST
 import Sodium
 
@@ -20,6 +20,7 @@ class KeyController: NSObject
         {
             _singletonSharedInstance = KeyController()
         }
+        
         return _singletonSharedInstance
     }
     
@@ -38,7 +39,7 @@ class KeyController: NSObject
         if let emailAddress: String = GlobalVars.currentUser?.emailAddress, !emailAddress.isEmpty
         {
             //Check the keychain for the private key
-            if let privateKey = SSKeychain.passwordData(forService: service, account: emailAddress)
+            if let privateKey = SAMKeychain.passwordData(forService: service, account: emailAddress)
             {
                 myPrivateKey = privateKey
             }
@@ -63,9 +64,10 @@ class KeyController: NSObject
                 let newKeyPair = createNewKeyPair()
                 mySharedKey = newKeyPair.publicKey
                 myPrivateKey = newKeyPair.secretKey
-                
+                    
                 //Save it to the Keychain
-                SSKeychain.setPasswordData(myPrivateKey, forService: service, account: emailAddress)
+                SAMKeychain.setPasswordData(myPrivateKey!, forService: service, account: emailAddress)
+                
                 
                 //Save Public Key to Core Data
                 if let appDelegate = NSApplication.shared().delegate as? AppDelegate

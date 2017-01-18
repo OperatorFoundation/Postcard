@@ -674,7 +674,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			<key>License</key>
 			<string>MIT</string>
 			<key>Title</key>
-			<string>SSKeychain</string>
+			<string>SAMKeychain</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>

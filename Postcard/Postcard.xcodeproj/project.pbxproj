@@ -30,7 +30,6 @@
 		4695FD681D21AE1F00160CB2 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4695FD661D21AE1F00160CB2 /* User.swift */; };
 		46A6F4AE1CEFB578007C2D17 /* MainContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A6F4AD1CEFB578007C2D17 /* MainContainerViewController.swift */; };
 		B4056FD11CC99B3A00D81301 /* GTMOAuth2Window.xib in Resources */ = {isa = PBXBuildFile; fileRef = B4056FD01CC99B3A00D81301 /* GTMOAuth2Window.xib */; };
-		B4238F551CD2A24D0054E7EF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4238F541CD2A24D0054E7EF /* Security.framework */; };
 		B4238F571CD2A6030054E7EF /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4238F561CD2A6030054E7EF /* SystemConfiguration.framework */; };
 		B4238F591CD2C0100054E7EF /* MailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4238F581CD2C0100054E7EF /* MailController.swift */; };
 		B4238F5C1CD2C11C0054E7EF /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4238F5B1CD2C11C0054E7EF /* Constants.swift */; };
@@ -40,6 +39,7 @@
 		B430FC8E1CF8A23200205015 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AB1CC17B9A009C577D /* AppDelegate.swift */; };
 		B4572D801E2F09890072813D /* Sodium.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4572D7F1E2F09890072813D /* Sodium.framework */; };
 		B460CCE91D41805D00507EFD /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = B460CCE81D41805D00507EFD /* Globals.swift */; };
+		B486A0771E2F2ECB009664A2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4238F541CD2A24D0054E7EF /* Security.framework */; };
 		B48A273E1D08B4B8007BBB27 /* LockedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */; };
 		B4EAA8F91D1361D000E9169F /* Postcard+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAA8F51D1361D000E9169F /* Postcard+CoreDataProperties.swift */; };
 		B4EAA8FA1D1361D000E9169F /* Postcard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAA8F61D1361D000E9169F /* Postcard.swift */; };
@@ -129,9 +129,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B486A0771E2F2ECB009664A2 /* Security.framework in Frameworks */,
 				B4238F571CD2A6030054E7EF /* SystemConfiguration.framework in Frameworks */,
 				B4572D801E2F09890072813D /* Sodium.framework in Frameworks */,
-				B4238F551CD2A24D0054E7EF /* Security.framework in Frameworks */,
 				3930C8C6518B7B64B1928A70 /* Pods_Postcard.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -788,6 +788,28 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/Sodium/Sodium",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"MailCore\"",
+					"-l\"c++\"",
+					"-l\"iconv\"",
+					"-l\"resolv\"",
+					"-l\"sasl2\"",
+					"-l\"tidy\"",
+					"-l\"xml2\"",
+					"-l\"z\"",
+					"-framework",
+					"\"GTMOAuth2\"",
+					"-framework",
+					"\"GTMSessionFetcher\"",
+					"-framework",
+					"\"GoogleAPIClientForREST\"",
+					"-framework",
+					"\"SAMKeychain\"",
+					"-framework",
+					"\"Sodium\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.operatorfoundation.Postcard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Postcard/Postcard-Bridging-Header.h";
@@ -816,6 +838,28 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/Sodium/Sodium",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"MailCore\"",
+					"-l\"c++\"",
+					"-l\"iconv\"",
+					"-l\"resolv\"",
+					"-l\"sasl2\"",
+					"-l\"tidy\"",
+					"-l\"xml2\"",
+					"-l\"z\"",
+					"-framework",
+					"\"GTMOAuth2\"",
+					"-framework",
+					"\"GTMSessionFetcher\"",
+					"-framework",
+					"\"GoogleAPIClientForREST\"",
+					"-framework",
+					"\"SAMKeychain\"",
+					"-framework",
+					"\"Sodium\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.operatorfoundation.Postcard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
