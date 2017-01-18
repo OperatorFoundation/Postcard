@@ -14,23 +14,20 @@ PODS:
   - GTMSessionFetcher/Core (1.1.7)
   - GTMSessionFetcher/Full (1.1.7):
     - GTMSessionFetcher/Core (= 1.1.7)
-  - mailcore2-osx (0.6.4)
   - SAMKeychain (1.5.2)
 
 DEPENDENCIES:
   - GoogleAPIClientForREST/Gmail (~> 1.1.1)
   - GoogleAPIClientForREST/People
   - GTMOAuth2 (~> 1.1.4)
-  - mailcore2-osx
   - SAMKeychain
 
 SPEC CHECKSUMS:
   GoogleAPIClientForREST: f272e35f7fe9f80ab232756c798adc32245ece8c
   GTMOAuth2: 7fc9c10f5c745f4d9850419ea88889fe3baa6b7d
   GTMSessionFetcher: a1f8ed39e4fe21c68957daed472c7afbcdf29166
-  mailcore2-osx: 56890045e50f3b09b6530f5bd008eda67e1f6b82
   SAMKeychain: 1865333198217411f35327e8da61b43de79b635b
 
-PODFILE CHECKSUM: 07a5a104f566501a15ede3c3653e1bcaf0ce21e9
+PODFILE CHECKSUM: 86b3fe6fe63794744178477f0ec6c551d05964f1
 
 COCOAPODS: 1.1.1

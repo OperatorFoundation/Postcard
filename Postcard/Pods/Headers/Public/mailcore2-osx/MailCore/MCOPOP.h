@@ -1,1 +1,0 @@
-../../../../mailcore2-osx/include/MailCore/MCOPOP.h
