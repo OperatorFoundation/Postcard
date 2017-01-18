@@ -214,7 +214,7 @@ class ComposeViewController: NSViewController
             
             //Remove the attachment URL from the list of items to attach to the message
             
-            if let index = attachments.index(of: sender.attachmentURL)
+            if let index = attachments.index(of: attachmentSender.attachmentURL)
             {
                 attachments.remove(at: index)
             }
