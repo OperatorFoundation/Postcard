@@ -348,8 +348,34 @@ class MailController: NSObject
         let subject = messageParser?.header.subject
         postcard.subject = subject
         postcard.decrypted = true
-        let deliveredTo = messageParser?.header.to
-        postcard.to = (deliveredTo?.first as AnyObject).email
+        if let deliveredTo = messageParser?.header.to as? [MCOAddress]
+        {
+            var allToAddresses = ""
+            for thisRecipient in deliveredTo
+            {
+                if let thisAddress = thisRecipient.mailbox
+                {
+                    allToAddresses.append(", \(thisAddress)")
+                }
+            }
+            
+            if allToAddresses.isEmpty
+            {
+                print("Did not find any recipient email addresses in the decrypted message")
+            }
+            else
+            {
+                postcard.to = allToAddresses
+            }
+            
+//            if let firstAddress = deliveredTo.first
+//            {
+//                if let emailAddress = firstAddress.mailbox
+//                {
+//                    postcard.to = emailAddress
+//                }
+//            }
+        }
         
         //Snippet?
         //Attachment?
@@ -586,33 +612,102 @@ class MailController: NSObject
         return false
     }
     
-    func sendEmail(_ to: String, subject: String, body: String, maybeAttachments:[URL]?, completion: @escaping (_ successful: Bool) -> Void)
+    func sendEmail(_ to: [String], subject: String, body: String, maybeAttachments:[URL]?, completion: @escaping (_ successful: Bool) -> Void)
     {
-        if let rawMessage = generateMessage(sendToEmail: to, subject: subject, body: body, maybeAttachments: maybeAttachments)
+        //This method handles any error alerts if there are invalid emails
+        if allEmailsAreValid(forRecipients: to)
         {
-            let gmailMessage = GTLRGmail_Message()
-            gmailMessage.raw = rawMessage
-            
-            let sendGmailQuery = GTLRGmailQuery_UsersMessagesSend.query(withObject: gmailMessage, userId: gmailUserId, uploadParameters: nil)
-
-            
-            GmailProps.service.executeQuery(sendGmailQuery, completionHandler: {(ticket, maybeResponse, maybeError) in
-                print("\nSent an email to : \(to)")
-                print("send email response: \(maybeResponse)")
-                print("send email error: \(maybeError)")
-                if let response = maybeResponse as? GTLRGmail_Message, let labelIds = response.labelIds
+            for thisRecipient in to
+            {
+                //Make sure each recipient is a Gmail Contact (this is already checked in allEmailsAreValid:forRecipients so no error handling here)
+                if let thisPenpal = fetchPenPalForCurrentUser(thisRecipient)
                 {
-                    print(labelIds.description)
+                    //Make sure we have a key for each recipient (this is already checked in allEmailsAreValid:forRecipients so no error handling here)
+                    if let penPalKey = thisPenpal.key
+                    {
+                        //Send a seperate email to each valid recipient in the list
+                        if let rawMessage = generateMessage(sendToEmail: thisRecipient, subject: subject, body: body, maybeAttachments: maybeAttachments, withKey: penPalKey)
+                        {
+                            let gmailMessage = GTLRGmail_Message()
+                            gmailMessage.raw = rawMessage
+                            
+                            let sendGmailQuery = GTLRGmailQuery_UsersMessagesSend.query(withObject: gmailMessage, userId: gmailUserId, uploadParameters: nil)
+                            
+                            GmailProps.service.executeQuery(sendGmailQuery, completionHandler:
+                            {
+                                (ticket, maybeResponse, maybeError) in
+                                
+                                print("\nSent an email to: \(thisRecipient)")
+                                print("send email response: \(maybeResponse)")
+                                print("send email error: \(maybeError)")
+                                if let response = maybeResponse as? GTLRGmail_Message, let labelIds = response.labelIds
+                                {
+                                    print(labelIds.description)
+                                }
+                                if maybeError == nil
+                                {
+                                    completion(true)
+                                    return
+                                }
+                            })
+                        }
+                    }
                 }
-                if maybeError == nil
-                {
-                    completion(true)
-                    return
-                }
-            })
+            }
         }
-
-        completion(false)
+    }
+    
+    func allEmailsAreValid(forRecipients recipients: [String]) -> Bool
+    {
+        var recipientEmails = [String]()
+        var notaContact = [String]()
+        var notaPalEmails = [String]()
+        var errorMessage = ""
+        
+        for thisRecipient in recipients
+        {
+            //Make sure each recipient is a Gmail Contact
+            if let thisPenpal = fetchPenPalForCurrentUser(thisRecipient)
+            {
+                //Make sure we have a key for each recipient
+                if thisPenpal.key == nil
+                {
+                    notaPalEmails.append(thisRecipient)
+                }
+                else
+                {
+                    recipientEmails.append(thisRecipient)
+                }
+            }
+            else
+            {
+                notaContact.append(thisRecipient)
+            }
+        }
+        
+        //Show user what went wrong
+        if recipientEmails.isEmpty
+        {
+            errorMessage = errorMessage + localizedSendErrorNoValidEmails
+        }
+        if !notaPalEmails.isEmpty
+        {
+            errorMessage = errorMessage + "\n" + String(format: localizedSendErrorNoKey, notaPalEmails.joined(separator: ","))
+        }
+        if !notaContact.isEmpty
+        {
+            errorMessage = errorMessage + "\n" + String(format: localizedSendErrorNotAContact, notaContact.joined(separator: ","))
+        }
+        
+        if errorMessage.isEmpty
+        {
+            return true
+        }
+        else
+        {
+            showAlert(errorMessage)
+            return false
+        }
     }
     
     //MARK: Create the message
@@ -670,10 +765,10 @@ class MailController: NSObject
 //        }
 //    }
     
-    func generateMessage(sendToEmail to: String, subject: String, body: String, maybeAttachments: [URL]?) -> String?
+    func generateMessage(sendToEmail to: String, subject: String, body: String, maybeAttachments: [URL]?, withKey key: Data) -> String?
     {
         //This is the actual User's Message
-        if let messageData = generateMessagePostcard(sendToEmail: to, subject: subject, body: body)
+        if let messageData = generateMessagePostcard(sendToEmail: to, subject: subject, body: body, withKey: key)
         {
             //TODO: This will call generateMessagePackage for user's attachments
             let packageData:Data? = nil
@@ -723,48 +818,36 @@ class MailController: NSObject
 //        return GTLEncodeWebSafeBase64(messageBuilder.data())
     }
     
-    func generateMessagePostcard(sendToEmail to: String, subject: String, body: String) -> Data?
+    func generateMessagePostcard(sendToEmail to: String, subject: String, body: String, withKey key: Data) -> Data?
     {
-            if let thisPenpal = fetchPenPalForCurrentUser(to)
+
+        print("\nSending an email to: \(to)\nRecipient's Public Key: \(key)")
+
+        let messageBuilder = MCOMessageBuilder()
+        messageBuilder.header.to = [MCOAddress(mailbox: to)]
+        messageBuilder.header.subject = subject
+        messageBuilder.textBody = body
+        
+        let keyAttachment = MCOAttachment(data: KeyController.sharedInstance.mySharedKey as Data!, filename: "postcard.key")
+        messageBuilder.addAttachment(keyAttachment)
+        
+        if let sodium = Sodium(), let secretKey = KeyController.sharedInstance.myPrivateKey
+        {
+            if let encryptedMessageData: Data = sodium.box.seal(message: messageBuilder.data(), recipientPublicKey: key, senderSecretKey: secretKey)
             {
-                if let penPalKey = thisPenpal.key
-                {
-                    print("\nSending an email to: \(to)\nRecipient's Public Key: \(penPalKey)")
-                    
-                    let messageBuilder = MCOMessageBuilder()
-                    messageBuilder.header.to = [MCOAddress(mailbox: to)]
-                    messageBuilder.header.subject = subject
-                    messageBuilder.textBody = body
-                    
-                    let keyAttachment = MCOAttachment(data: KeyController.sharedInstance.mySharedKey as Data!, filename: "postcard.key")
-                    messageBuilder.addAttachment(keyAttachment)
-                    
-                    if let sodium = Sodium(), let secretKey = KeyController.sharedInstance.myPrivateKey
-                    {
-                        if let encryptedMessageData: Data = sodium.box.seal(message: messageBuilder.data(), recipientPublicKey: penPalKey, senderSecretKey: secretKey)
-                        {
-                            return encryptedMessageData
-                        }
-                        else
-                        {
-                            print("We could not encrypt this message.")
-                        }
-                    }
-                    else
-                    {
-                        print("Couldn't send a Postcard because either sodium blew up, or we couldn't find your secret key DX")
-                    }
-                }
-                else
-                {
-                    showAlert(String(format: localizedSendErrorNoKey, to))
-                }
+                return encryptedMessageData
             }
             else
             {
-                showAlert(String(format: localizedSendErrorNotAContact, to))
+                //We are not showing alerts for these because there is nothing the user can do about this
+                print("We could not encrypt this message.")
             }
-        
+        }
+        else
+        {
+            print("Couldn't send a Postcard because either sodium blew up, or we couldn't find your secret key DX")
+        }
+
         return nil
     }
     

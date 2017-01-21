@@ -85,6 +85,7 @@ class PenPalTableCell: NSTableCellView
             //Set up the action button based on penpal status
             if let penPal = objectValue as? PenPal
             {
+                //Button Appearance
                 let paragraphStyle = NSMutableParagraphStyle()
                 paragraphStyle.alignment = .center
                 var buttonFont = NSFont.boldSystemFont(ofSize: 13)
@@ -97,6 +98,7 @@ class PenPalTableCell: NSTableCellView
                 
                 if penPal.key == nil && penPal.sentKey == false
                 {
+                    //We have not sent an invite, and neither have they
                     actionTitle = localizedInviteButtonTitle
                     actionButton.image = NSImage(named: "redButton")
                     actionButton.target = self
@@ -106,6 +108,7 @@ class PenPalTableCell: NSTableCellView
                 }
                 else if penPal.key != nil && penPal.sentKey == false
                 {
+                    //They sent a key, but we have not
                     actionTitle = localizedAddButtonTitle
                     actionButton.image = NSImage(named: "greenButton")
                     actionButton.target = self
@@ -115,6 +118,7 @@ class PenPalTableCell: NSTableCellView
                 }
                 else //if penPal.key != nil && penPal.sentKey == true
                 {
+                    //They have sent a key and so have we, these are Postcard Contacts
                     actionButton.isHidden = true
                     backgroundView.viewColor = PostcardUI.gray
                 }

@@ -688,22 +688,18 @@
                                     <action selector="sendClick:" target="NgT-Wc-b8b" id="xLz-Ox-t5C"/>
                                 </connections>
                             </button>
-                            <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lEB-I6-xfr">
+                            <tokenField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vfc-Lm-8nE">
                                 <rect key="frame" x="54" y="423" width="581" height="22"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="22" id="mkx-hZ-BeU"/>
-                                </constraints>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" focusRingType="none" drawsBackground="YES" id="egI-7f-gti">
+                                <tokenFieldCell key="cell" selectable="YES" editable="YES" focusRingType="none" alignment="left" drawsBackground="YES" allowsEditingTextAttributes="YES" id="H4c-hF-9W9">
                                     <font key="font" size="14" name="ProximaNovaA-Regular"/>
                                     <color key="textColor" red="0.47843137250000001" green="0.48627450979999998" blue="0.49019607840000001" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
+                                </tokenFieldCell>
+                            </tokenField>
                         </subviews>
                         <constraints>
                             <constraint firstItem="d82-zE-K9r" firstAttribute="leading" secondItem="irE-I5-Saq" secondAttribute="leading" id="0c7-ap-1aS"/>
                             <constraint firstItem="utJ-nP-Yiq" firstAttribute="top" secondItem="irE-I5-Saq" secondAttribute="top" id="0p6-Xa-pdi"/>
-                            <constraint firstAttribute="trailing" secondItem="lEB-I6-xfr" secondAttribute="trailing" id="3GV-Lf-m9m"/>
                             <constraint firstItem="9EL-pR-XQd" firstAttribute="top" secondItem="fTO-Yo-Dj2" secondAttribute="bottom" id="6XE-ix-Zsp"/>
                             <constraint firstItem="d82-zE-K9r" firstAttribute="top" secondItem="utJ-nP-Yiq" secondAttribute="bottom" id="6wT-zQ-Cow"/>
                             <constraint firstAttribute="bottom" secondItem="R4u-UO-xbN" secondAttribute="bottom" constant="8" id="7mo-S8-jGW"/>
@@ -716,12 +712,11 @@
                             <constraint firstItem="zJk-x7-jfF" firstAttribute="top" secondItem="d82-zE-K9r" secondAttribute="bottom" id="JKl-Ln-tQa"/>
                             <constraint firstItem="FcW-Jg-crP" firstAttribute="leading" secondItem="irE-I5-Saq" secondAttribute="leading" id="M7J-7w-6uh"/>
                             <constraint firstItem="Pli-WJ-UFO" firstAttribute="leading" secondItem="Iqa-1B-bQp" secondAttribute="trailing" id="Pwj-2h-Hps"/>
+                            <constraint firstItem="zJk-x7-jfF" firstAttribute="top" secondItem="vfc-Lm-8nE" secondAttribute="bottom" id="RUG-Kc-hWp"/>
                             <constraint firstAttribute="trailing" secondItem="zJk-x7-jfF" secondAttribute="trailing" id="SpW-Qb-ZoX"/>
                             <constraint firstItem="FcW-Jg-crP" firstAttribute="top" secondItem="Iqa-1B-bQp" secondAttribute="bottom" id="VVC-Gy-XPx"/>
                             <constraint firstAttribute="trailing" secondItem="utJ-nP-Yiq" secondAttribute="trailing" id="XjI-N6-nHL"/>
-                            <constraint firstItem="lEB-I6-xfr" firstAttribute="leading" secondItem="d82-zE-K9r" secondAttribute="trailing" id="Zfy-KR-wxr"/>
                             <constraint firstItem="R4u-UO-xbN" firstAttribute="top" secondItem="fTO-Yo-Dj2" secondAttribute="bottom" constant="8" id="b4m-VC-aCE"/>
-                            <constraint firstItem="Pli-WJ-UFO" firstAttribute="top" secondItem="lEB-I6-xfr" secondAttribute="bottom" id="bV0-iE-TwP"/>
                             <constraint firstItem="R4u-UO-xbN" firstAttribute="leading" secondItem="9EL-pR-XQd" secondAttribute="trailing" constant="8" id="dny-Jj-yvD"/>
                             <constraint firstAttribute="bottom" secondItem="XYK-ei-Nsi" secondAttribute="bottom" constant="8" id="fjk-Sd-kEE"/>
                             <constraint firstAttribute="trailing" secondItem="ZqX-NR-IcW" secondAttribute="trailing" id="g0N-pP-nq3"/>
@@ -730,10 +725,12 @@
                             <constraint firstItem="9EL-pR-XQd" firstAttribute="leading" secondItem="XYK-ei-Nsi" secondAttribute="trailing" constant="8" id="lHZ-k8-brb"/>
                             <constraint firstItem="XYK-ei-Nsi" firstAttribute="top" secondItem="ZqX-NR-IcW" secondAttribute="bottom" constant="8" id="ltj-58-QEz"/>
                             <constraint firstAttribute="trailing" secondItem="Pli-WJ-UFO" secondAttribute="trailing" id="mRI-6P-Nqb"/>
+                            <constraint firstItem="vfc-Lm-8nE" firstAttribute="top" secondItem="utJ-nP-Yiq" secondAttribute="bottom" id="o6X-wX-rdE"/>
                             <constraint firstAttribute="trailing" secondItem="FcW-Jg-crP" secondAttribute="trailing" id="oSZ-6B-y5W"/>
                             <constraint firstItem="XYK-ei-Nsi" firstAttribute="leading" secondItem="irE-I5-Saq" secondAttribute="leading" constant="8" id="p3j-qM-wTZ"/>
+                            <constraint firstItem="vfc-Lm-8nE" firstAttribute="leading" secondItem="d82-zE-K9r" secondAttribute="trailing" id="pCE-eJ-3Px"/>
+                            <constraint firstAttribute="trailing" secondItem="vfc-Lm-8nE" secondAttribute="trailing" id="r6j-yO-H0Z"/>
                             <constraint firstItem="ZqX-NR-IcW" firstAttribute="leading" secondItem="irE-I5-Saq" secondAttribute="leading" id="slL-36-afA"/>
-                            <constraint firstItem="lEB-I6-xfr" firstAttribute="top" secondItem="utJ-nP-Yiq" secondAttribute="bottom" id="ue5-IC-7JE"/>
                         </constraints>
                     </view>
                     <connections>
@@ -742,7 +739,7 @@
                         <outlet property="bodyTextView" destination="fTO-Yo-Dj2" id="L8A-ub-TbN"/>
                         <outlet property="sendButton" destination="R4u-UO-xbN" id="eBO-nv-i4N"/>
                         <outlet property="subjectTextField" destination="Pli-WJ-UFO" id="DGc-qu-qWe"/>
-                        <outlet property="toTextField" destination="lEB-I6-xfr" id="v8H-zW-jNp"/>
+                        <outlet property="toTextField" destination="vfc-Lm-8nE" id="aQl-0K-fGa"/>
                     </connections>
                 </viewController>
                 <customObject id="uGt-Q3-BoH" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -1343,7 +1340,7 @@
                                         </connections>
                                     </textField>
                                     <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="RNK-18-31p">
-                                        <rect key="frame" x="0.0" y="-2" width="86" height="4"/>
+                                        <rect key="frame" x="0.0" y="-2" width="86" height="5"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     </box>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hAF-E4-yyR">

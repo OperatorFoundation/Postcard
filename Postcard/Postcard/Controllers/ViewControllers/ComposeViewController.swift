@@ -10,7 +10,7 @@ import Cocoa
 
 class ComposeViewController: NSViewController
 {
-    @IBOutlet weak var toTextField: NSTextField!
+    @IBOutlet weak var toTextField: NSTokenField!
     @IBOutlet var bodyTextView: NSTextView!
     @IBOutlet weak var subjectTextField: NSTextField!
     @IBOutlet weak var attachmentButton: NSButton!
@@ -39,6 +39,12 @@ class ComposeViewController: NSViewController
         if !sendTo.isEmpty {toTextField.stringValue = sendTo}
         if !reSubject.isEmpty {subjectTextField.stringValue = reSubject}
         if !bodyText.isEmpty {bodyTextView.string = bodyText}
+        
+        //Setup "to" tokenField
+        toTextField.delegate = self
+        //Should attempt to tokenize when user types a comma, a space, or a carriage return (default setting does not include a space)
+        let characterSet = CharacterSet(charactersIn: " \n,")
+        toTextField.tokenizingCharacterSet = characterSet
     }
     
     override func viewDidAppear()
@@ -77,37 +83,38 @@ class ComposeViewController: NSViewController
     
     @IBAction func sendClick(_ sender: NSButton)
     {
-        let recipient:String = toTextField.stringValue
-        let subject:String = subjectTextField.stringValue
-        
-        if recipient.isEmpty
+        if let allRecipients = toTextField.objectValue as? [String]
         {
-            print("There is no recipient for this message.")
-        }
-        else if subject.isEmpty
-        {
-            print("There is no subject for this message.")
-        }
-        else
-        {
-            if let body: String = bodyTextView.string
+            let subject:String = subjectTextField.stringValue
+            if allRecipients.isEmpty
             {
-                if body.isEmpty
+                print("There is no recipient for this message.")
+            }
+            else if subject.isEmpty
+            {
+                print("There is no subject for this message.")
+            }
+            else
+            {
+                if let body: String = bodyTextView.string
                 {
-                    print("This message has no body.")
-                }
-                else
-                {
-                    MailController.sharedInstance.sendEmail(recipient, subject: subject, body: body, maybeAttachments: attachments, completion:
+                    if body.isEmpty
                     {
-                        (successful) in
-                        
-                        if successful
+                        print("This message has no body.")
+                    }
+                    else
+                    {
+                        MailController.sharedInstance.sendEmail(allRecipients, subject: subject, body: body, maybeAttachments: attachments, completion:
                         {
-                            //Close Window
-                            self.view.window?.close()
-                        }
-                    })
+                            (successful) in
+                            
+                            if successful
+                            {
+                                //Close Window
+                                self.view.window?.close()
+                            }
+                        })
+                    }
                 }
             }
         }
@@ -225,7 +232,75 @@ class ComposeViewController: NSViewController
         }
     }
  
-//
+//✏️//
+}
+
+extension ComposeViewController: NSTokenFieldDelegate
+{
+    func tokenField(_ tokenField: NSTokenField, styleForRepresentedObject representedObject: Any) -> NSTokenStyle
+    {
+        //Visually Token-ize valid emails
+        if let maybeEmail = representedObject as? String
+        {
+            if isValidEmailAddress(emailAddressString: maybeEmail)
+            {
+                return NSRoundedTokenStyle
+            }
+        }
+        
+        //Leave everything else in NSPlainTextTokenStyle
+        return NSPlainTextTokenStyle
+    }
+    
+/*
+     From https://www.cocoanetics.com/2013/05/tokenize-this/
+     If you use represented objects instead of the default strings, then you have to implement several delegate methods because the token field needs to convert between the object and what it should write on the token and what the editing value should be. From the NSTokenField.h header:
+     
+    // If you return nil or don't implement these delegate methods, we will assume
+    // editing string = display string = represented object
+    - (NSString *)tokenField:(NSTokenField *)tokenField displayStringForRepresentedObject:(id)representedObject;
+    - (NSString *)tokenField:(NSTokenField *)tokenField editingStringForRepresentedObject:(id)representedObject;
+    - (id)tokenField:(NSTokenField *)tokenField representedObjectForEditingString: (NSString *)editingString;
+     
+     You provide backing object for a given editing string. Conversely if the user double-clicks on a token this turns into editable text. Finally the display string is the inscription on the blue pills.
+     
+     For example if you have the token represent an email address, then the editing string could be “Oliver Drobnik <oliver@cocoanetics.com>” and the display string be just “Oliver Drobnik”. In that case you could have a token object class with a displayName and an email string.
+*/
+    
+//    //Set Autocompletion Values for "To:" Token Field
+//    func tokenField(_ tokenField: NSTokenField, completionsForSubstring substring: String, indexOfToken tokenIndex: Int, indexOfSelectedItem selectedIndex: UnsafeMutablePointer<Int>?) -> [Any]?
+//    {
+//        return (names as NSArray).filteredArrayUsingPredicate(NSPredicate(format: "SELF beginswith[cd] %@", substring))
+//    }
+    
+    
+    func isValidEmailAddress(emailAddressString: String) -> Bool
+    {
+        //Thanks to: http://swiftdeveloperblog.com/email-address-validation-in-swift/
+        var returnValue = true
+        let emailRegEx = "[A-Z0-9a-z.-_]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,3}"
+        
+        do
+        {
+            let regex = try NSRegularExpression(pattern: emailRegEx)
+            let nsString = emailAddressString as NSString
+            let results = regex.matches(in: emailAddressString, range: NSRange(location: 0, length: nsString.length))
+            
+            if results.count == 0
+            {
+                returnValue = false
+            }
+            
+        }
+        catch let error as NSError
+        {
+            print("invalid regex for To field email address: \(error.localizedDescription)")
+            returnValue = false
+        }
+        
+        return  returnValue
+    }
+    
 }
 
 
@@ -245,5 +320,5 @@ class AttachmentButton: NSButton
         fatalError("init(coder:) has not been implemented")
     }
     
-//✏️//
+
 }

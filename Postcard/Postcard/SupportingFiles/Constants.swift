@@ -54,6 +54,8 @@ let localizedSendErrorNoKey = NSLocalizedString("ERROR-Sending-Email-No-Pal-Key"
 
 let localizedSendErrorNotAContact = NSLocalizedString("ERROR-Sending-Email-Not-A-Pal", tableName: "PopUpMessages", bundle: bundle, value: "You cannot send a postcard to %@, they are not in your contacts yet.", comment: "Unable to send an email to this address because the person is not a known contact. *recipient's email*")
 
+let localizedSendErrorNoValidEmails = NSLocalizedString("ERROR-Sending-Email-No-Valid-Emails", tableName: "PopUpMessages", bundle: bundle, value: "You cannot send a Postcard because you did not enter any valid email addresses.", comment: "Unable to send the email because all emails entered were either invalid, or not a contact, or we did not have their key.")
+
 let localizedPenPalStatusError = NSLocalizedString("ERROR-Saving-PenPal-Status", tableName: "PopUpMessages", bundle: bundle, value: "Warning: We could not save the sent your connection status for %@", comment: "Unable to save the new status of a connection (e.g. added or invited)")
 
 let localizedDeleteGmailError = NSLocalizedString("ERROR-Deleting-Message-From-Gmail", tableName: "PopUpMessages", bundle: bundle, value: "We couldn't delete this message from Gmail. Try again later or try deleting this email from Gmail directly.", comment: "Unable to delete the selected email from the user's gmail account.")
@@ -110,7 +112,8 @@ struct GmailProps
     static let servicePeople = GTLRPeopleService()
     
     /*If modifying these scopes, delete your previously saved credentials by resetting the iOS simulator or uninstalling the app.*/
-    static let scopes = [kGTLRAuthScopeGmailCompose, kGTLRAuthScopeGmailMailGoogleCom, kGTLRAuthScopePeopleContactsReadonly, kGTLRAuthScopePeoplePlusLogin]
+    //kGTLRAuthScopeGmailCompose, kGTLRAuthScopePeoplePlusLogin
+    static let scopes = [kGTLRAuthScopeGmailMailGoogleCom, kGTLRAuthScopePeopleContactsReadonly]
     static let kKeychainItemName = "Gmail API"
     static let kClientID = "313251347973-cpo986nne3t21bus5499b4kt1kb8thrm.apps.googleusercontent.com"
 }
