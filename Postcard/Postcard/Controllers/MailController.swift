@@ -306,9 +306,9 @@ class MailController: NSObject
                         {
                             showAlert(String(format: localizedWrongKeyError, penPalEMail))
                             print("\nFailed to decrypt message:\n")
-                            print("Sender Key: \(penPalKey)\n")
+                            print("Sender's Public Key: \(penPalKey)\n")
                             print("My public key: \(keyController.mySharedKey)")
-                            print("Secret Key: \(secretKey)\n")
+                            print("My Secret Key: \(secretKey)\n")
                         }
                     }
                     else
@@ -696,7 +696,7 @@ class MailController: NSObject
         }
         if !notaContact.isEmpty
         {
-            errorMessage = errorMessage + "\n" + String(format: localizedSendErrorNotAContact, notaContact.joined(separator: ","))
+            errorMessage = errorMessage + "\n" + String(format: localizedSendErrorNoKey, notaContact.joined(separator: ","))
         }
         
         if errorMessage.isEmpty
@@ -861,7 +861,7 @@ class MailController: NSObject
     {
         let messageBuilder = MCOMessageBuilder()
         messageBuilder.header.to = [MCOAddress(mailbox: emailAddress)]
-        messageBuilder.header.subject = localizedGenericSubject
+        messageBuilder.header.subject = localizedInviteSubject
         messageBuilder.textBody = localizedGenericBody
         
         //Generate the main Postcard Attachment.
