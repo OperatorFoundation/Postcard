@@ -36,8 +36,12 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 class PenPalController: NSObject
 {
     static let sharedInstance = PenPalController()
+    
     let appDelegate = NSApplication.shared().delegate as! AppDelegate
+    let penPalEntityName = "PenPal"
+    
     var managedObjectContext: NSManagedObjectContext?
+    
     fileprivate override init()
     {
         managedObjectContext = appDelegate.managedObjectContext
@@ -108,7 +112,7 @@ class PenPalController: NSObject
                                 else
                                 {
                                     //Otherwise, create a new PenPal
-                                    if let managedObjectContext = self.managedObjectContext, let entity = NSEntityDescription.entity(forEntityName: "PenPal", in: managedObjectContext)
+                                    if let managedObjectContext = self.managedObjectContext, let entity = NSEntityDescription.entity(forEntityName: penPalEntityName, in: managedObjectContext)
                                     {
                                         let newPal = PenPal(entity: entity, insertInto: managedObjectContext)
                                         self.saveConnection(thisConnection, asPenPal: newPal, withEmailAddress: emailAddress)
@@ -125,9 +129,23 @@ class PenPalController: NSObject
                 }
             }
         }
-        else if let error = maybeError
+        else if let error = maybeError as? NSError
         {
             print(error)
+            //This is likely due to an expired sync token
+            if error.code >= 400
+            {
+                GlobalVars.currentUser?.peopleSyncToken = nil
+                do
+                {
+                    try GlobalVars.currentUser?.managedObjectContext?.save()
+                }
+                catch
+                {
+                    print("Unable to clear value for user.peopleSyncToken")
+                }
+
+            }
         }
     }
     
@@ -172,7 +190,7 @@ class PenPalController: NSObject
     //Check core data for a pen pal with the provided email address
     func fetchPenPal(_ emailAddress: String) -> PenPal?
     {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "PenPal")
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: penPalEntityName)
         
         //Check for a penpal with this email address AND this current user as owner
         fetchRequest.predicate = NSPredicate(format: "email == %@", emailAddress)
@@ -188,7 +206,7 @@ class PenPalController: NSObject
         {
             //Could not fetch this Penpal from core data
             let fetchError = error as NSError
-            print(fetchError)
+            print("Error fetching penpal \(emailAddress):\(fetchError)")
             
             return nil
         }
@@ -202,6 +220,70 @@ class PenPalController: NSObject
         URLSession.shared.dataTask(with: url, completionHandler: {(data, response, error) in
             completionHandler(data, response, error)
         }).resume()
+    }
+    
+    //This will send your key to all current penpals
+    //If you just updated to a new key, this is useful
+    //If not, it's not so useful
+    func sendKeyToAllExistingPenPals()
+    {
+        if let currentPals = getAllPenPalsWhoHaveMyKey()
+        {
+            for thisPal in currentPals
+            {
+                KeyController.sharedInstance.sendKey(toPenPal: thisPal)
+            }
+        }
+
+    }
+    
+    //This will set the sentKey property to false for all PenPals
+    func updateAllPenPalsKeyNotSent()
+    {
+        if let currentPals = getAllPenPalsWhoHaveMyKey()
+        {
+            for thisPal in currentPals
+            {
+                thisPal.sentKey = false
+                
+                //Save PenPal
+                do
+                {
+                    try thisPal.managedObjectContext?.save()
+                }
+                catch
+                {
+                    let saveError = error as NSError
+                    print("Could not save penpal to core data: \(saveError)")
+                }
+            }
+        }
+    }
+    
+    func getAllPenPalsWhoHaveMyKey() ->[PenPal]?
+    {
+        //Get current penpals where sentKey is true
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: penPalEntityName)
+        fetchRequest.predicate = NSPredicate(format: "sentKey == true")
+        //fetchRequest.predicate = NSPredicate(format: "sentKey == %@", "true")
+        do
+        {
+            let result = try self.managedObjectContext?.fetch(fetchRequest)
+            if result?.count > 0, result is [PenPal]
+            {
+                return result as? [PenPal]
+            }
+            else
+            {
+                //There were no matches
+                return nil
+            }
+        }
+        catch
+        {
+            print("error fetching penpals where sentkey is true: \(error.localizedDescription)")
+            return nil
+        }
     }
     
   //📭//

@@ -11,4 +11,5 @@ import Foundation
 struct GlobalVars
 {
     static var currentUser: User?
+    static var userActivity: NSUserActivity?
 }

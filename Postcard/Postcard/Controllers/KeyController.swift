@@ -61,52 +61,64 @@ class KeyController: NSObject
             //If we do not already have a key pair make one.
             if missingKey
             {
-                let newKeyPair = createNewKeyPair()
-                mySharedKey = newKeyPair.publicKey
-                myPrivateKey = newKeyPair.secretKey
-                    
-                //Save it to the Keychain
-                SAMKeychain.setPasswordData(myPrivateKey!, forService: service, account: emailAddress)
-                
-                
-                //Save Public Key to Core Data
-                if let appDelegate = NSApplication.shared().delegate as? AppDelegate
-                {
-                    //Fetch the correct user
-                    let managedObjectContext = appDelegate.managedObjectContext
-                    let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
-                    fetchRequest.predicate = NSPredicate(format: "emailAddress == %@", emailAddress)
-                    do
-                    {
-                        let result = try managedObjectContext.fetch(fetchRequest)
-                        
-                        if result.count > 0, let thisUser = result[0] as? User
-                        {
-                            thisUser.publicKey = mySharedKey
-                            
-                            //Save this user
-                            do
-                            {
-                                try thisUser.managedObjectContext?.save()
-                            }
-                            catch
-                            {
-                                let saveError = error as NSError
-                                print(saveError)
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        let fetchError = error as NSError
-                        print(fetchError)
-                    }
-                }
+                createAndSaveUserKeys(forUserWithEmail: emailAddress)
             }
         }
         else
         {
             print("REALLY TERRIBLE ERROR: Couldn't find my user id so I don't know what my secret key is!!!!")
+        }
+    }
+    
+    func createAndSaveUserKeys(forUserWithEmail email: String)
+    {
+        let newKeyPair = createNewKeyPair()
+        save(privateKey: newKeyPair.secretKey, publicKey: newKeyPair.publicKey, forUserWithEmail: email)
+    }
+    
+    func save(privateKey: Data, publicKey: Data, forUserWithEmail email: String)
+    {
+        //Save it to the Keychain
+        SAMKeychain.setPasswordData(privateKey, forService: service, account: email)
+        
+        //Save it to the class var as well
+        myPrivateKey = privateKey
+        
+        //Save Public Key to Core Data
+        if let appDelegate = NSApplication.shared().delegate as? AppDelegate
+        {
+            //Fetch the correct user
+            let managedObjectContext = appDelegate.managedObjectContext
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
+            fetchRequest.predicate = NSPredicate(format: "emailAddress == %@", email)
+            do
+            {
+                let result = try managedObjectContext.fetch(fetchRequest)
+                
+                if result.count > 0, let thisUser = result[0] as? User
+                {
+                    thisUser.publicKey = publicKey
+                    
+                    //Save this user
+                    do
+                    {
+                        try thisUser.managedObjectContext?.save()
+                        
+                        //Update the class variable as well
+                        mySharedKey = publicKey
+                    }
+                    catch
+                    {
+                        let saveError = error as NSError
+                        print("Error Saving public key: \(saveError)")
+                    }
+                }
+            }
+            catch
+            {
+                let fetchError = error as NSError
+                print(fetchError)
+            }
         }
     }
     

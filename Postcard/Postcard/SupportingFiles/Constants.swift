@@ -10,7 +10,6 @@ import Foundation
 //import GoogleAPIClient
 import GoogleAPIClientForREST
 
-
 /*
  Font Names
  ProximaNova-Black
@@ -26,11 +25,22 @@ import GoogleAPIClientForREST
  ProximaNovaAExCn-Light
  */
 
+//User Activity for Handoff
 let bundle = Bundle.main
+let activityTypePrivateKeySync = "org.operatorfoundation.Postcard.keySync"
+let activityItemKeyPrivateKey = "postcard.privateKey.key"
+let activityItemKeyPublicKey = "postcard.publicKey.key"
+let activityItemKeyTimestamp = "postcard.timestamp.key"
+let activityItemKeyVersion = "postcard.version.key"
+let activityKeySyncVersion = "1.0"
+
+//Notification Keys
+let keyHandoffNotificationName = "PostcardKeyHandoffNotification"
 
 //PopUpMessages Strings
 
 let localizedOKButtonTitle = NSLocalizedString("OK-Button-Title", tableName: "PopUpMessages", bundle: bundle, value: "OK", comment: "Button to dismiss pop-up windows.")
+let localizedCancelButtonTitle = NSLocalizedString("Cancel-Button-Title", tableName: "PopUpMessages", bundle: bundle, value: "Cancel", comment: "Button to dismiss pop-up windows.")
 
 //BRANDON START HERE
 

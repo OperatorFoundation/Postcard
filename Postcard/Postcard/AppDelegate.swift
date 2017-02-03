@@ -8,18 +8,35 @@
 
 import Cocoa
 import GTMOAuth2
-//import GoogleAPIClient
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
 {
     @IBOutlet weak var postcardWindow: NSWindow!
     
+    //Notification Keys
+    let keyHandoffNotificationName = "PostcardKeyHandoffNotification"
+    
     //MARK: Application Lifecycle
     
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
-
+        
+    }
+    
+    
+    //UserActivity Delegate
+    func application(_ application: NSApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool
+    {
+        if let userInfo = userActivity.userInfo
+        {
+            print("Received a payload via handoff: \(userInfo)")
+            
+            //Post handoff notification to listeners
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: keyHandoffNotificationName) , object: userInfo)
+        }
+        
+        return true
     }
     
     //MARK: Helper Methods
@@ -171,10 +188,12 @@ class AppDelegate: NSObject, NSApplicationDelegate
             return .terminateNow
         }
         
-        do {
+        do
+        {
             try managedObjectContext.save()
         }
-        catch {
+        catch
+        {
             let nserror = error as NSError
             // Customize this code block to include application-specific recovery steps.
             let result = sender.presentError(nserror)

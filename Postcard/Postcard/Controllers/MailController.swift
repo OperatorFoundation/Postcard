@@ -126,7 +126,6 @@ class MailController: NSObject
     {
         let userMessagesListQuery = GTLRGmailQuery_UsersMessagesList.query(withUserId: gmailUserId)
         userMessagesListQuery.labelIds = ["INBOX"]
-        //query.q = "has:attachment"
         GmailProps.service.executeQuery(userMessagesListQuery)
         {
             (ticket, maybeResponse, maybeError) in
@@ -139,7 +138,14 @@ class MailController: NSObject
                     //Get message payloads
                     self.fetchAndSaveGmailPayloads(metaMessages)
                 }
+                
+                if let nextPageToken = listMessagesResponse.nextPageToken, !nextPageToken.isEmpty
+                {
+                    //Fetch the next page of results
+                }
             }
+            
+            
         }
 //        
 //        let query = GTLQueryGmail.queryForUsersMessagesList()
