@@ -2,28 +2,31 @@
 //  Postcard+CoreDataProperties.swift
 //  Postcard
 //
-//  Created by Adelita Schule on 7/13/16.
-//  Copyright © 2016 operatorfoundation.org. All rights reserved.
-//
-//  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
-//  to delete and recreate this implementation file for your updated model.
+//  Created by Adelita Schule on 2/7/17.
+//  Copyright © 2017 operatorfoundation.org. All rights reserved.
+//  This file was automatically generated and should not be edited.
 //
 
 import Foundation
 import CoreData
 
+
 extension Postcard {
 
-    @NSManaged var body: String?
-    @NSManaged var cipherText: Data?
-    @NSManaged var decrypted: Bool
-    @NSManaged var hasPackage: Bool
-    @NSManaged var identifier: String?
-    @NSManaged var receivedDate: TimeInterval
-    @NSManaged var snippet: String?
-    @NSManaged var subject: String?
-    @NSManaged var to: String?
-    @NSManaged var from: PenPal?
-    @NSManaged var owner: User?
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<Postcard> {
+        return NSFetchRequest<Postcard>(entityName: "Postcard");
+    }
+
+    @NSManaged public var body: String?
+    @NSManaged public var cipherText: NSData?
+    @NSManaged public var decrypted: Bool
+    @NSManaged public var hasPackage: Bool
+    @NSManaged public var identifier: String?
+    @NSManaged public var receivedDate: NSDate?
+    @NSManaged public var snippet: String?
+    @NSManaged public var subject: String?
+    @NSManaged public var to: String?
+    @NSManaged public var from: PenPal?
+    @NSManaged public var owner: User?
 
 }

@@ -89,15 +89,19 @@ class KeyController: NSObject
         {
             //Fetch the correct user
             let managedObjectContext = appDelegate.managedObjectContext
-            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
+            let fetchRequest: NSFetchRequest<User> = User.fetchRequest()
             fetchRequest.predicate = NSPredicate(format: "emailAddress == %@", email)
             do
             {
                 let result = try managedObjectContext.fetch(fetchRequest)
                 
-                if result.count > 0, let thisUser = result[0] as? User
+                if result.count > 0
                 {
-                    thisUser.publicKey = publicKey
+                    let thisUser = result[0]
+                    thisUser.publicKey = publicKey as NSData?
+                    
+                    //Set key timestamp to now
+                    thisUser.keyTimestamp = NSDate()
                     
                     //Save this user
                     do
@@ -136,7 +140,7 @@ class KeyController: NSObject
             //Send key email to this user
             
             let gmailMessage = GTLRGmail_Message()
-            gmailMessage.raw = MailController.sharedInstance.generateKeyMessage(emailAddress)
+            gmailMessage.raw = MailController.sharedInstance.generateKeyMessage(forPenPal: penPal)
             
             let sendMessageQuery = GTLRGmailQuery_UsersMessagesSend.query(withObject: gmailMessage, userId: "me", uploadParameters: nil)
             GmailProps.service.executeQuery(sendMessageQuery, completionHandler:

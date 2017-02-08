@@ -2,25 +2,46 @@
 //  PenPal+CoreDataProperties.swift
 //  Postcard
 //
-//  Created by Adelita Schule on 7/13/16.
-//  Copyright © 2016 operatorfoundation.org. All rights reserved.
-//
-//  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
-//  to delete and recreate this implementation file for your updated model.
+//  Created by Adelita Schule on 2/7/17.
+//  Copyright © 2017 operatorfoundation.org. All rights reserved.
+//  This file was automatically generated and should not be edited.
 //
 
 import Foundation
 import CoreData
 
+
 extension PenPal {
 
-    @NSManaged var addedDate: TimeInterval
-    @NSManaged var email: String?
-    @NSManaged var key: Data?
-    @NSManaged var name: String?
-    @NSManaged var photo: NSObject?
-    @NSManaged var sentKey: Bool
-    @NSManaged var messages: NSSet?
-    @NSManaged var owner: User?
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<PenPal> {
+        return NSFetchRequest<PenPal>(entityName: "PenPal");
+    }
+
+    @NSManaged public var addedDate: NSDate?
+    @NSManaged public var email: String?
+    @NSManaged public var key: NSData?
+    @NSManaged public var keyTimestamp: NSDate?
+    @NSManaged public var name: String?
+    @NSManaged public var photo: NSObject?
+    @NSManaged public var sentKey: Bool
+    @NSManaged public var messages: NSSet?
+    @NSManaged public var owner: User?
+
+}
+
+// MARK: Generated accessors for messages
+extension PenPal {
+
+    @objc(addMessagesObject:)
+    @NSManaged public func addToMessages(_ value: Postcard)
+
+    @objc(removeMessagesObject:)
+    @NSManaged public func removeFromMessages(_ value: Postcard)
+
+    @objc(addMessages:)
+    @NSManaged public func addToMessages(_ values: NSSet)
+
+    @objc(removeMessages:)
+    @NSManaged public func removeFromMessages(_ values: NSSet)
 
 }

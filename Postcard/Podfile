@@ -10,7 +10,7 @@ pod 'GoogleAPIClientForREST/People'
 pod 'GoogleAPIClientForREST/Gmail', '~> 1.1.1'
 pod 'GTMOAuth2', '~> 1.1.4'
 pod 'Sodium', :git => 'https://github.com/jedisct1/swift-sodium.git'
-#pod 'mailcore2-osx'
+pod 'MessagePack.swift', '~> 2.0.0'
 pod 'SAMKeychain'
 
 end
@@ -24,7 +24,7 @@ pod 'GoogleAPIClientForREST/People'
 pod 'GoogleAPIClientForREST/Gmail', '~> 1.1.1'
 pod 'GTMOAuth2', '~> 1.1.4'
 pod 'Sodium', :git => 'https://github.com/jedisct1/swift-sodium.git'
-#pod 'mailcore2-osx'
+pod 'MessagePack.swift', '~> 2.0.0'
 pod 'SAMKeychain'
 
 end
@@ -38,7 +38,7 @@ pod 'GoogleAPIClientForREST/People'
 pod 'GoogleAPIClientForREST/Gmail', '~> 1.1.1'
 pod 'GTMOAuth2', '~> 1.1.4'
 pod 'Sodium', :git => 'https://github.com/jedisct1/swift-sodium.git'
-#pod 'mailcore2-osx'
+pod 'MessagePack.swift', '~> 2.0.0'
 pod 'SAMKeychain'
 
 end

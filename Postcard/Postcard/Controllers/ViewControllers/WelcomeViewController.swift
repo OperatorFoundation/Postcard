@@ -88,15 +88,16 @@ class WelcomeViewController: NSViewController
     {
         //Check if a user entity already exists
         //Get this User Entity
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
+        let fetchRequest: NSFetchRequest<User> = User.fetchRequest()
         let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let managedObjectContext = appDelegate.managedObjectContext
         fetchRequest.predicate = NSPredicate(format: "emailAddress == %@", userEmail)
         do
         {
             let result = try managedObjectContext.fetch(fetchRequest)
-            if result.count > 0, let thisUser = result[0] as? User
+            if result.count > 0
             {
+                let thisUser = result[0]
                 return thisUser
             }
             else

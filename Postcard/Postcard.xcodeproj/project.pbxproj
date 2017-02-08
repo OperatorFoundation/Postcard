@@ -26,8 +26,6 @@
 		461C0A671CE696E300C5B5A5 /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461C0A661CE696E300C5B5A5 /* MainSplitViewController.swift */; };
 		463E68531D0B43E600F70845 /* SignPainter.otf in Resources */ = {isa = PBXBuildFile; fileRef = 463E68521D0B434300F70845 /* SignPainter.otf */; };
 		466FC5FD1D021BA100B8AABB /* Proxima Nova Font Free in Resources */ = {isa = PBXBuildFile; fileRef = 466FC5FC1D021BA100B8AABB /* Proxima Nova Font Free */; };
-		4695FD671D21AE1F00160CB2 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4695FD651D21AE1F00160CB2 /* User+CoreDataProperties.swift */; };
-		4695FD681D21AE1F00160CB2 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4695FD661D21AE1F00160CB2 /* User.swift */; };
 		46A6F4AE1CEFB578007C2D17 /* MainContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A6F4AD1CEFB578007C2D17 /* MainContainerViewController.swift */; };
 		46A7D0611E2FFC8200855A48 /* libMailCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46A7D0511E2FFBF400855A48 /* libMailCore.a */; };
 		46A7D0661E3000D800855A48 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46A7D0651E3000D800855A48 /* WebKit.framework */; };
@@ -42,10 +40,12 @@
 		B460CCE91D41805D00507EFD /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = B460CCE81D41805D00507EFD /* Globals.swift */; };
 		B486A0771E2F2ECB009664A2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4238F541CD2A24D0054E7EF /* Security.framework */; };
 		B48A273E1D08B4B8007BBB27 /* LockedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */; };
-		B4EAA8F91D1361D000E9169F /* Postcard+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAA8F51D1361D000E9169F /* Postcard+CoreDataProperties.swift */; };
-		B4EAA8FA1D1361D000E9169F /* Postcard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAA8F61D1361D000E9169F /* Postcard.swift */; };
-		B4EAA8FB1D1361D000E9169F /* PenPal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAA8F71D1361D000E9169F /* PenPal+CoreDataProperties.swift */; };
-		B4EAA8FC1D1361D000E9169F /* PenPal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAA8F81D1361D000E9169F /* PenPal.swift */; };
+		B4BFDD291E4AA1B700455232 /* PenPal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BFDD231E4AA1B700455232 /* PenPal+CoreDataClass.swift */; };
+		B4BFDD2A1E4AA1B700455232 /* PenPal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BFDD241E4AA1B700455232 /* PenPal+CoreDataProperties.swift */; };
+		B4BFDD2B1E4AA1B700455232 /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BFDD251E4AA1B700455232 /* User+CoreDataClass.swift */; };
+		B4BFDD2C1E4AA1B700455232 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BFDD261E4AA1B700455232 /* User+CoreDataProperties.swift */; };
+		B4BFDD2D1E4AA1B700455232 /* Postcard+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BFDD271E4AA1B700455232 /* Postcard+CoreDataClass.swift */; };
+		B4BFDD2E1E4AA1B700455232 /* Postcard+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BFDD281E4AA1B700455232 /* Postcard+CoreDataProperties.swift */; };
 		B4EDBB4E1CEF6BC50094853F /* ComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EDBB4D1CEF6BC50094853F /* ComposeViewController.swift */; };
 		B4EDBB501CEF74D80094853F /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */; };
 		B4EDBB521CEF7C040094853F /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EDBB511CEF7C040094853F /* MainWindowController.swift */; };
@@ -157,8 +157,6 @@
 		461C0A661CE696E300C5B5A5 /* MainSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainSplitViewController.swift; path = Controllers/ViewControllers/MainSplitViewController.swift; sourceTree = "<group>"; };
 		463E68521D0B434300F70845 /* SignPainter.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SignPainter.otf; sourceTree = "<group>"; };
 		466FC5FC1D021BA100B8AABB /* Proxima Nova Font Free */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Proxima Nova Font Free"; sourceTree = "<group>"; };
-		4695FD651D21AE1F00160CB2 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "User+CoreDataProperties.swift"; path = "DataModels/User+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		4695FD661D21AE1F00160CB2 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = DataModels/User.swift; sourceTree = "<group>"; };
 		46A6F4AD1CEFB578007C2D17 /* MainContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainContainerViewController.swift; path = Controllers/ViewControllers/MainContainerViewController.swift; sourceTree = "<group>"; };
 		46A7D0451E2FFBF400855A48 /* mailcore2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = mailcore2.xcodeproj; path = "mailcore2/build-mac/mailcore2.xcodeproj"; sourceTree = "<group>"; };
 		46A7D0651E3000D800855A48 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
@@ -179,10 +177,12 @@
 		B4572D7F1E2F09890072813D /* Sodium.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sodium.framework; sourceTree = "<group>"; };
 		B460CCE81D41805D00507EFD /* Globals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Globals.swift; path = SupportingFiles/Globals.swift; sourceTree = "<group>"; };
 		B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LockedViewController.swift; path = Controllers/ViewControllers/LockedViewController.swift; sourceTree = "<group>"; };
-		B4EAA8F51D1361D000E9169F /* Postcard+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Postcard+CoreDataProperties.swift"; path = "DataModels/Postcard+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B4EAA8F61D1361D000E9169F /* Postcard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Postcard.swift; path = DataModels/Postcard.swift; sourceTree = "<group>"; };
-		B4EAA8F71D1361D000E9169F /* PenPal+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PenPal+CoreDataProperties.swift"; path = "DataModels/PenPal+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B4EAA8F81D1361D000E9169F /* PenPal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PenPal.swift; path = DataModels/PenPal.swift; sourceTree = "<group>"; };
+		B4BFDD231E4AA1B700455232 /* PenPal+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PenPal+CoreDataClass.swift"; path = "DataModels/PenPal+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B4BFDD241E4AA1B700455232 /* PenPal+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PenPal+CoreDataProperties.swift"; path = "DataModels/PenPal+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B4BFDD251E4AA1B700455232 /* User+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "User+CoreDataClass.swift"; path = "DataModels/User+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B4BFDD261E4AA1B700455232 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "User+CoreDataProperties.swift"; path = "DataModels/User+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B4BFDD271E4AA1B700455232 /* Postcard+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Postcard+CoreDataClass.swift"; path = "DataModels/Postcard+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B4BFDD281E4AA1B700455232 /* Postcard+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Postcard+CoreDataProperties.swift"; path = "DataModels/Postcard+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B4EDBB4D1CEF6BC50094853F /* ComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComposeViewController.swift; path = Controllers/ViewControllers/ComposeViewController.swift; sourceTree = "<group>"; };
 		B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeViewController.swift; path = Controllers/ViewControllers/WelcomeViewController.swift; sourceTree = "<group>"; };
 		B4EDBB511CEF7C040094853F /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainWindowController.swift; path = Controllers/ViewControllers/MainWindowController.swift; sourceTree = "<group>"; };
@@ -377,12 +377,12 @@
 		B4BF355A1CDAC02F00C3CDD0 /* DataModels */ = {
 			isa = PBXGroup;
 			children = (
-				4695FD651D21AE1F00160CB2 /* User+CoreDataProperties.swift */,
-				4695FD661D21AE1F00160CB2 /* User.swift */,
-				B4EAA8F51D1361D000E9169F /* Postcard+CoreDataProperties.swift */,
-				B4EAA8F61D1361D000E9169F /* Postcard.swift */,
-				B4EAA8F71D1361D000E9169F /* PenPal+CoreDataProperties.swift */,
-				B4EAA8F81D1361D000E9169F /* PenPal.swift */,
+				B4BFDD231E4AA1B700455232 /* PenPal+CoreDataClass.swift */,
+				B4BFDD241E4AA1B700455232 /* PenPal+CoreDataProperties.swift */,
+				B4BFDD251E4AA1B700455232 /* User+CoreDataClass.swift */,
+				B4BFDD261E4AA1B700455232 /* User+CoreDataProperties.swift */,
+				B4BFDD271E4AA1B700455232 /* Postcard+CoreDataClass.swift */,
+				B4BFDD281E4AA1B700455232 /* Postcard+CoreDataProperties.swift */,
 				461891AF1CC17B9A009C577D /* Postcard.xcdatamodeld */,
 			);
 			name = DataModels;
@@ -754,29 +754,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				461C0A581CE663D500C5B5A5 /* ContentViewController.swift in Sources */,
+				B4BFDD2A1E4AA1B700455232 /* PenPal+CoreDataProperties.swift in Sources */,
+				B4BFDD2C1E4AA1B700455232 /* User+CoreDataProperties.swift in Sources */,
+				B4BFDD2E1E4AA1B700455232 /* Postcard+CoreDataProperties.swift in Sources */,
 				461C0A611CE6664200C5B5A5 /* MessageViewController.swift in Sources */,
-				4695FD671D21AE1F00160CB2 /* User+CoreDataProperties.swift in Sources */,
-				4695FD681D21AE1F00160CB2 /* User.swift in Sources */,
-				B4EAA8FA1D1361D000E9169F /* Postcard.swift in Sources */,
 				461891B11CC17B9A009C577D /* Postcard.xcdatamodeld in Sources */,
 				B460CCE91D41805D00507EFD /* Globals.swift in Sources */,
 				B4238F5F1CD2DF050054E7EF /* KeyController.swift in Sources */,
+				B4BFDD2B1E4AA1B700455232 /* User+CoreDataClass.swift in Sources */,
 				461C0A641CE682AF00C5B5A5 /* DesignableView.swift in Sources */,
 				B4EDBB501CEF74D80094853F /* WelcomeViewController.swift in Sources */,
+				B4BFDD291E4AA1B700455232 /* PenPal+CoreDataClass.swift in Sources */,
 				461C0A671CE696E300C5B5A5 /* MainSplitViewController.swift in Sources */,
+				B4BFDD2D1E4AA1B700455232 /* Postcard+CoreDataClass.swift in Sources */,
 				46A6F4AE1CEFB578007C2D17 /* MainContainerViewController.swift in Sources */,
 				461891AC1CC17B9A009C577D /* AppDelegate.swift in Sources */,
 				B4EDBB521CEF7C040094853F /* MainWindowController.swift in Sources */,
 				B4238F591CD2C0100054E7EF /* MailController.swift in Sources */,
 				461C0A551CE6638C00C5B5A5 /* MenuViewController.swift in Sources */,
-				B4EAA8F91D1361D000E9169F /* Postcard+CoreDataProperties.swift in Sources */,
 				461C0A531CE63F0B00C5B5A5 /* PenPalController.swift in Sources */,
-				B4EAA8FC1D1361D000E9169F /* PenPal.swift in Sources */,
 				B4EDBB4E1CEF6BC50094853F /* ComposeViewController.swift in Sources */,
 				B4238F5C1CD2C11C0054E7EF /* Constants.swift in Sources */,
 				B430D5EB1CF7C31D0025365E /* WelcomeWindowController.swift in Sources */,
 				461C0A5E1CE664D900C5B5A5 /* MessageListViewController.swift in Sources */,
-				B4EAA8FB1D1361D000E9169F /* PenPal+CoreDataProperties.swift in Sources */,
 				461C0A5B1CE6645300C5B5A5 /* PenPalsViewController.swift in Sources */,
 				B48A273E1D08B4B8007BBB27 /* LockedViewController.swift in Sources */,
 			);
@@ -943,6 +943,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/Sodium/Sodium",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -996,6 +997,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/Sodium/Sodium",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

@@ -14,6 +14,7 @@ PODS:
   - GTMSessionFetcher/Core (1.1.7)
   - GTMSessionFetcher/Full (1.1.7):
     - GTMSessionFetcher/Core (= 1.1.7)
+  - MessagePack.swift (2.0.1)
   - SAMKeychain (1.5.2)
   - Sodium (0.2)
 
@@ -21,6 +22,7 @@ DEPENDENCIES:
   - GoogleAPIClientForREST/Gmail (~> 1.1.1)
   - GoogleAPIClientForREST/People
   - GTMOAuth2 (~> 1.1.4)
+  - MessagePack.swift (~> 2.0.0)
   - SAMKeychain
   - Sodium (from `https://github.com/jedisct1/swift-sodium.git`)
 
@@ -37,9 +39,10 @@ SPEC CHECKSUMS:
   GoogleAPIClientForREST: f272e35f7fe9f80ab232756c798adc32245ece8c
   GTMOAuth2: 7fc9c10f5c745f4d9850419ea88889fe3baa6b7d
   GTMSessionFetcher: a1f8ed39e4fe21c68957daed472c7afbcdf29166
+  MessagePack.swift: 6fb01448a9a1759ca64a7952683095471e64dbed
   SAMKeychain: 1865333198217411f35327e8da61b43de79b635b
   Sodium: 7d83a94ede23a9b6a7a18d9f3cfb397db518a178
 
-PODFILE CHECKSUM: 515cc7c8a7ee469922dc8594f02ab421f478181e
+PODFILE CHECKSUM: 53bf66913a79bf55a940eee7f43a55228a47762b
 
 COCOAPODS: 1.1.1

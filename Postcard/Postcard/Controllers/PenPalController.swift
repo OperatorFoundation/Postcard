@@ -38,7 +38,7 @@ class PenPalController: NSObject
     static let sharedInstance = PenPalController()
     
     let appDelegate = NSApplication.shared().delegate as! AppDelegate
-    let penPalEntityName = "PenPal"
+    //let penPalEntityName = "PenPal"
     
     var managedObjectContext: NSManagedObjectContext?
     
@@ -112,9 +112,9 @@ class PenPalController: NSObject
                                 else
                                 {
                                     //Otherwise, create a new PenPal
-                                    if let managedObjectContext = self.managedObjectContext, let entity = NSEntityDescription.entity(forEntityName: penPalEntityName, in: managedObjectContext)
+                                    if let managedObjectContext = self.managedObjectContext
                                     {
-                                        let newPal = PenPal(entity: entity, insertInto: managedObjectContext)
+                                        let newPal = PenPal(context: managedObjectContext)
                                         self.saveConnection(thisConnection, asPenPal: newPal, withEmailAddress: emailAddress)
                                     }
                                 }
@@ -190,15 +190,16 @@ class PenPalController: NSObject
     //Check core data for a pen pal with the provided email address
     func fetchPenPal(_ emailAddress: String) -> PenPal?
     {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: penPalEntityName)
+        let fetchRequest:NSFetchRequest<PenPal> = PenPal.fetchRequest()
         
         //Check for a penpal with this email address AND this current user as owner
         fetchRequest.predicate = NSPredicate(format: "email == %@", emailAddress)
         do
         {
             let result = try self.managedObjectContext?.fetch(fetchRequest)
-            if result?.count > 0, let thisPenpal = result?[0] as? PenPal
+            if result?.count > 0
             {
+                let thisPenpal = result?[0]
                 return thisPenpal
             }
         }
@@ -263,15 +264,14 @@ class PenPalController: NSObject
     func getAllPenPalsWhoHaveMyKey() ->[PenPal]?
     {
         //Get current penpals where sentKey is true
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: penPalEntityName)
+        let fetchRequest: NSFetchRequest<PenPal> = PenPal.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "sentKey == true")
-        //fetchRequest.predicate = NSPredicate(format: "sentKey == %@", "true")
         do
         {
             let result = try self.managedObjectContext?.fetch(fetchRequest)
-            if result?.count > 0, result is [PenPal]
+            if result?.count > 0
             {
-                return result as? [PenPal]
+                return result
             }
             else
             {
