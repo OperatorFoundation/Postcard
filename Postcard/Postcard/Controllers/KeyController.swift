@@ -28,6 +28,7 @@ class KeyController: NSObject
     
     var mySharedKey: Data?
     var myPrivateKey: Data?
+    var myKeyTimestamp: NSDate?
     
     fileprivate override init()
     {
@@ -46,6 +47,7 @@ class KeyController: NSObject
             else
             {
                 missingKey = true
+                print("Couldn't find user's Private Key. A new key pair will be generated.")
             }
             
             //Check the user for a public key
@@ -56,6 +58,18 @@ class KeyController: NSObject
             else
             {
                 missingKey = true
+                print("Couldn't find user's Public Key. A new key pair will be generated.")
+            }
+            
+            //Check the user for a key timestamp
+            if let keyTimestamp = GlobalVars.currentUser?.keyTimestamp
+            {
+                myKeyTimestamp = keyTimestamp
+            }
+            else
+            {
+                missingKey = true
+                print("Couldn't find user's key timestamp. A new key pair will be generated.")
             }
             
             //If we do not already have a key pair make one.
@@ -110,6 +124,7 @@ class KeyController: NSObject
                         
                         //Update the class variable as well
                         mySharedKey = publicKey
+                        myKeyTimestamp = thisUser.keyTimestamp
                     }
                     catch
                     {

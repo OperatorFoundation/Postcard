@@ -42,8 +42,6 @@ let keyHandoffNotificationName = "PostcardKeyHandoffNotification"
 let localizedOKButtonTitle = NSLocalizedString("OK-Button-Title", tableName: "PopUpMessages", bundle: bundle, value: "OK", comment: "Button to dismiss pop-up windows.")
 let localizedCancelButtonTitle = NSLocalizedString("Cancel-Button-Title", tableName: "PopUpMessages", bundle: bundle, value: "Cancel", comment: "Button to dismiss pop-up windows.")
 
-//BRANDON START HERE
-
 let localizedWrongKeyError = NSLocalizedString("ERROR-Decryption-Wrong-Key", tableName: "PopUpMessages", bundle: bundle, value: "We were unable to decrypt a message from %@. It looks like they reinstalled Postcard, ask them to invite you again.", comment: "A message could not be decrypted, possibly because we have the wrong key for the sender.")
 
 let localizedMissingCipherError = NSLocalizedString("ERROR-Decryption-No-Cipher-Text", tableName: "PopUpMessages", bundle: bundle, value: "We could not decrypt a postcard from %@. The email is not properly encrypted.", comment: "A message from *email* could not be decrypted because the cipher text was not found.")
@@ -51,8 +49,6 @@ let localizedMissingCipherError = NSLocalizedString("ERROR-Decryption-No-Cipher-
 let localizedMissingPalKeyError = NSLocalizedString("ERROR-Decryption-No-Key-For-Pal", tableName: "PopUpMessages", bundle: bundle, value: "We were unable to decrypt a message. This person is not your PenPal yet.", comment: "A message could not be decrypted because we do not have the sender's key")
 
 let localizedMissingKeyError = NSLocalizedString("ERROR-Decryption-Missing-No-Key-For-User", tableName: "PopUpMessages", bundle: bundle, value: "We were unable to decrypt your emails. There is an error with your Postcard installation.", comment: "No emails were decrypted because the user's key is missing.")
-
-let localizedDifferentKeyError = NSLocalizedString("ERROR-Different-Key-For-Pal", tableName: "PopUpMessages", bundle: bundle, value: "It looks like %@ reinstalled Postcard. You may not be able to read new messages from this sender.", comment: "The key we have stored for a contact does not match the key we just received. *sender's email*")
 
 let localizedSendErrorNoKey = NSLocalizedString("ERROR-Sending-Email-No-Pal-Key", tableName: "PopUpMessages", bundle: bundle, value: "You cannot send a Postcard to %@ because they are not your PenPal.", comment: "Unable to send the email because we do not have a key for the recipient. *recipient's email*")
 
@@ -126,7 +122,8 @@ struct PostCardProps
 {
     static let postcardMimeType = "application/postcard-encrypted"
     static let packageMimeType = "application/postcard-package-encrypted"
-    static let keyMimeType = "application/postcard-key"
+    static let keyMimeType = "application/postcard-keys"
+    static let senderKeyMimeType = "application/postcard-key"
 }
 
 struct PostcardUI

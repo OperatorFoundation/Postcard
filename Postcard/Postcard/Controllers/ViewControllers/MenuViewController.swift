@@ -115,7 +115,7 @@ class MenuViewController: NSViewController, NSUserActivityDelegate
                             let response = confirmKeySyncAlert.runModal()
                             if response == NSAlertFirstButtonReturn
                             {
-                                //User canceled sync.
+                                //User cancelled sync.
                                 showAlert("You cannot have multiple encryption settings for the same email account. Please update your settings on your other device with the ones that you have here.")
                             }
                             else
