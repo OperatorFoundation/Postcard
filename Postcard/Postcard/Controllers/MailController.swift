@@ -63,7 +63,11 @@ class MailController: NSObject
     fileprivate override init()
     {
         super.init()
+        
         managedObjectContext = appDelegate.managedObjectContext
+        
+        //Make sure we are fetching any additional pages for Google requests
+        GmailProps.service.shouldFetchNextPages = true
     }
     
     //TODO: Make sure that deleting emails via bindings to the array congtroller also removes them from gmail?
@@ -111,6 +115,7 @@ class MailController: NSObject
     {
         let userMessagesListQuery = GTLRGmailQuery_UsersMessagesList.query(withUserId: gmailUserId)
         userMessagesListQuery.labelIds = ["INBOX"]
+        userMessagesListQuery.maxResults = 600
         GmailProps.service.executeQuery(userMessagesListQuery)
         {
             (ticket, maybeResponse, maybeError) in
@@ -131,22 +136,6 @@ class MailController: NSObject
                 }
             }
         }
-        //
-        //        let query = GTLQueryGmail.queryForUsersMessagesList()
-        //        //query.q = "has:attachment"
-        //        query?.labelIds = ["INBOX"]
-        //
-        //        GmailProps.service.executeQuery(query!, completionHandler: {(ticket, response, error) in
-        //            if let listMessagesResponse = response as? GTLGmailListMessagesResponse
-        //            {
-        //                //If there are messages that meet the query criteria in the list, get the message payload from Gmail
-        //                if let metaMessages = listMessagesResponse.messages as? [GTLGmailMessage]
-        //                {
-        //                    //Get message payloads
-        //                    self.fetchAndSaveGmailPayloads(metaMessages)
-        //                }
-        //            }
-        //        })
     }
     
     func fetchAndSaveGmailPayloads(_ messages: [GTLRGmail_Message])
@@ -544,6 +533,7 @@ class MailController: NSObject
                                 
                                 //This Penpal didn't have a key stored, save the received key
                                 thisPenPal.key = timestampedKeys.senderPublicKey as NSData?
+                                thisPenPal.keyTimestamp = NSDate(timeIntervalSince1970: TimeInterval(timestampedKeys.senderKeyTimestamp))
                                 
                                 //Save this PenPal to core data
                                 do
@@ -585,6 +575,7 @@ class MailController: NSObject
                                 print("Unable to find penpal key when procesing key attachment.")
                                 //This Penpal didn't have a key stored, save the received key
                                 thisPenPal.key = timestampedKey.senderPublicKey as NSData?
+                                thisPenPal.keyTimestamp = NSDate(timeIntervalSince1970: TimeInterval(timestampedKey.senderKeyTimestamp))
                                 
                                 //Save this PenPal to core data
                                 do
@@ -1346,6 +1337,7 @@ class MailController: NSObject
                                                          senderKeyTimestamp: senderKeyTimestamp,
                                                          recipientKey: recipientKey as Data,
                                                          recipientKeyTimestamp: recipientKeyTimestamp)
+        ///TODO: Include Versioned Data
         let keyMessagePack = timestampedKeys.messagePackValue()
         return pack(keyMessagePack)
     }
@@ -1368,48 +1360,73 @@ class MailController: NSObject
         
         let timestampedKeys = TimestampedSenderPublicKey.init(senderKey: senderKey, senderKeyTimestamp: senderKeyTimestamp)
         
+        ///TODO: Include Versioned Data
         let keyMessagePack = timestampedKeys.messagePackValue()
         return pack(keyMessagePack)
     }
     
     func dataToPublicKeys(keyData: Data) -> TimestampedPublicKeys?
     {
-        let messagePack = MessagePackValue(keyData)
-        guard let versionedData = VersionedData.init(value: messagePack)
-            else
+        do
         {
-            print("could not get versioned data")
+            let unpackResult = try unpack(keyData)
+            let unpackValue: MessagePackValue = unpackResult.value
+            return TimestampedPublicKeys.init(value: unpackValue)
+        }
+        catch let unpackError as NSError
+        {
+            print("Unpack error: \(unpackError.localizedDescription)")
             return nil
         }
         
-        guard versionedData.version == keyFormatVersion
-            else
-        {
-            print("Key format versions do not match.")
-            return nil
-        }
-        
-        return TimestampedPublicKeys.init(value: MessagePackValue(versionedData.serializedData))
+//        let messagePack = MessagePackValue(keyData)
+//        guard let versionedData = VersionedData.init(value: messagePack)
+//            else
+//        {
+//            print("could not get versioned data")
+//            return nil
+//        }
+//        
+//        guard versionedData.version == keyFormatVersion
+//            else
+//        {
+//            print("Key format versions do not match.")
+//            return nil
+//        }
+//        
+//        return TimestampedPublicKeys.init(value: MessagePackValue(versionedData.serializedData))
     }
     
     func dataToSenderPublicKeys(keyData: Data) -> TimestampedSenderPublicKey?
     {
-        let messagePack = MessagePackValue(keyData)
-        guard let versionedData = VersionedData.init(value: messagePack)
-            else
+        do
         {
-            print("could not get versioned data")
+            let unpackResult = try unpack(keyData)
+            let unpackValue: MessagePackValue = unpackResult.value
+            return TimestampedSenderPublicKey.init(value: unpackValue)
+        }
+        catch let unpackError as NSError
+        {
+            print("Unpack error: \(unpackError.localizedDescription)")
             return nil
         }
+//        let messagePack = MessagePackValue(keyData)
+//        guard let versionedData = VersionedData.init(value: messagePack)
+//            else
+//        {
+//            print("could not get versioned data")
+//            return nil
+//        }
+//        
+//        guard versionedData.version == keyFormatVersion
+//            else
+//        {
+//            print("Key format versions do not match.")
+//            return nil
+//        }
+//        
+//        return TimestampedSenderPublicKey.init(value: MessagePackValue(versionedData.serializedData))
         
-        guard versionedData.version == keyFormatVersion
-            else
-        {
-            print("Key format versions do not match.")
-            return nil
-        }
-        
-        return TimestampedSenderPublicKey.init(value: MessagePackValue(versionedData.serializedData))
     }
     
     //MARK: Helper Methods

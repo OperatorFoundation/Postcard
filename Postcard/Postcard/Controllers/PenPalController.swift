@@ -45,6 +45,7 @@ class PenPalController: NSObject
     fileprivate override init()
     {
         managedObjectContext = appDelegate.managedObjectContext
+        GmailProps.servicePeople.shouldFetchNextPages = true
     }
     
     func getGoogleContacts()
@@ -65,6 +66,9 @@ class PenPalController: NSObject
         
         //Sync Token
         query.syncToken = GlobalVars.currentUser?.peopleSyncToken
+        
+        //Results per page
+        query.pageSize = 500
         
         //Next Page Token
         query.pageToken = nextPageToken
@@ -122,11 +126,11 @@ class PenPalController: NSObject
                         }
                     }
                 }
-                
-                if nextPageToken != nil
-                {
-                    getGoogleContacts(nextPageToken)
-                }
+            }
+            
+            if nextPageToken != nil
+            {
+                getGoogleContacts(nextPageToken)
             }
         }
         else if let error = maybeError as? NSError

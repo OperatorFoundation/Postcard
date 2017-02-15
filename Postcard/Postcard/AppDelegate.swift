@@ -20,11 +20,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
     
     //MARK: Application Lifecycle
     
-    func applicationDidFinishLaunching(_ aNotification: Notification)
-    {
-        
-    }
-    
     
     //UserActivity Delegate
     func application(_ application: NSApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool
