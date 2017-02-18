@@ -1,0 +1,12 @@
+/* Cancel button title */
+"Cancel" = "Cancelar";
+
+/* Quit without saves error question message */
+"Could not save changes while quitting. Quit anyway?" = "No se pudieron guardar los cambios al salir. ¿Desea salir de Calquier Manera?.";
+
+/* Quit anyway button title */
+"Quit anyway" = "Salir de cualquier manera";
+
+/* Quit without saves error question info */
+"Quitting now will lose any changes you have made since the last successful save" = "Si sale ahora, se perderá cualquier cambio que haya realizado desde la ultima vez que guardo exitosamente";
+

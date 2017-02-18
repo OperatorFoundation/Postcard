@@ -162,10 +162,6 @@ class KeyController: NSObject
             {
                 (ticket, maybeResponse, maybeError) in
                 
-                print("\nsend key email ticket: \(ticket)")
-                print("send key email response: \(maybeResponse)")
-                print("send key email error: \(maybeError)\n")
-                
                 //Update sentKey to "true"
                 penPal.sentKey = true
                 

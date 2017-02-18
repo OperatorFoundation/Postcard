@@ -1,0 +1,30 @@
+/* This is the title for a pop-up. the error itself will be provided by Google. */
+"ERROR-Authenticating-User" = "Error de autenticacion:";
+
+/* No emails were decrypted because the user's key is missing. */
+"ERROR-Decryption-Missing-No-Key-For-User" = "No fue posible desencriptar sus correos electrónicos. Ocurrió un error con la instalación de Postcard.";
+
+/* A message from *email* could not be decrypted because the cipher text was not found. */
+"ERROR-Decryption-No-Cipher-Text" = "No fue posible desencriptar un mensaje de %@. El correo no se encriptó acorrectmente.";
+
+/* A message could not be decrypted because we do not have the sender's key */
+"ERROR-Decryption-No-Key-For-Pal" = "No fue posible desencriptar un mensaje. Esta persona aun no es su amigo por correspondencia.";
+
+/* A message could not be decrypted, possibly because we have the wrong key for the sender. */
+"ERROR-Decryption-Wrong-Key" = "No fue posible desencriptar un mensaje de %@. Parece que instalaron Postcard de nuevo. Pida que le vuelvan a invitar.";
+
+/* Unable to delete the selected email from the user's gmail account. */
+"ERROR-Deleting-Message-From-Gmail" = "No fue posible borrar este mensaje de Gmail. Intente otra vez o trate borrar este correo directamente desde Gmail.";
+
+/* Unable to save the new status of a connection (e.g. added or invited) */
+"ERROR-Saving-PenPal-Status" = "Advertencia: No fue posible guardar el estatus PenPal para %@.";
+
+/* Unable to send the email because we do not have a key for the recipient. *recipient's email* */
+"ERROR-Sending-Email-No-Pal-Key" = "No puede enviar un mensaje Postcard a %@ porque no es su amigo por correspondencia.";
+
+/* Unable to send the email because all emails entered were either invalid, or not a contact, or we did not have their key. */
+"ERROR-Sending-Email-No-Valid-Emails" = "No puede enviar un mensaje Postcard porque no introdujo ninguna direccion electrónica valida.";
+
+/* Button to dismiss pop-up windows. */
+"OK-Button-Title" = "OK";
+

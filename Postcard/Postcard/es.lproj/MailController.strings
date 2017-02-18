@@ -1,0 +1,9 @@
+/* We expect this never to be read, but just in case... */
+"Dummy-Postcard-Key-Attachment-Body" = "Esta es una invitación creada con la aplicación de encriptacion total de correos electrónicos Postcard. Para aceptar la invitación y empezar a enviar correos electrónicos totalmente encriptados, es necesario que instale Postcard. Para mayor información, acuda a: http://operatorfoundation.org";
+
+/* This is the body of the 'wrapper' email. */
+"Wrapper-Body-Text" = "Este es un corre electrónico encriptado creado con la aplicación de encriptacion total de correo electrónico Postcard. Para poder leer este mensaje, tiene que instalar Postcard. Para obtener mayor información, acuda a: http://operatorfoundation.org.";
+
+/* This is the subject line for the 'wrapper' email. The email that the user will see in their Gmail account that does not have to be decrypted. The postcard/encrypted message itself will be an attachment to this wrapper message. */
+"Wrapper-Subject-Line" = "Ha recibido una Invitacion para usar Postcard";
+

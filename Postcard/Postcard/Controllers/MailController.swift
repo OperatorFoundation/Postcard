@@ -48,6 +48,9 @@ let keyAttachmentRecipientPublicKeyTimestamp = "recipientPublicKeyTimestamp"
 let versionKey = "version"
 let serializedDataKey = "serializedData"
 let keyFormatVersion = "0.0.1"
+let ourLabel = "Postcard"
+var ourLabelId: String?
+var inboxLabelId: String?
 
 class MailController: NSObject
 {
@@ -68,9 +71,96 @@ class MailController: NSObject
         
         //Make sure we are fetching any additional pages for Google requests
         GmailProps.service.shouldFetchNextPages = true
+        
+        //Get our Gmail label ID
+        getGmailLabelId()
+        
     }
     
-    //TODO: Make sure that deleting emails via bindings to the array congtroller also removes them from gmail?
+    //MARK: Create Gmail Label
+    
+    func createGmailLabel()
+    {
+        let labelDict = [
+            "name": ourLabel, //The display name of the label.
+            "messageListVisibility": "hide", //Do not show the label in the message list.
+            "labelListVisibility": "labelHide" //Do not show the label in the label list.
+        ]
+        let userLabelObject = GTLRGmail_Label(json: labelDict)
+        let createLabelQuery = GTLRGmailQuery_UsersLabelsCreate.query(withObject: userLabelObject, userId: gmailUserId)
+        GmailProps.service.executeQuery(createLabelQuery)
+        {
+            (ticket, maybeResponse, maybeError) in
+            
+            if let error = maybeError
+            {
+                //Likely this label already exists
+                print("ERROR creating a new user label:\(error.localizedDescription)")
+            }
+            else if let response = maybeResponse as? GTLRGmail_Label
+            {
+                ourLabelId = response.identifier
+            }
+        }
+    }
+    
+    func getGmailLabelId()
+    {
+        //Get a list of the user's labels from Gmail
+        let listLabelsQuery = GTLRGmailQuery_UsersLabelsList.query(withUserId: gmailUserId)
+        GmailProps.service.executeQuery(listLabelsQuery)
+        {
+            (ticket, maybeResponse, maybeError) in
+            
+            if let error = maybeError
+            {
+                print("ERROR getting user's label:\(error.localizedDescription)")
+            }
+            else if let response = maybeResponse as? GTLRGmail_ListLabelsResponse
+            {
+                let labels = response.labels
+                if let postcardLabel = labels?.first(where: { $0.name == ourLabel})
+                {
+                    ourLabelId = postcardLabel.identifier
+                    return
+                }
+            }
+            
+            //That didn't work, let's try making one.
+            self.createGmailLabel()
+        }
+    }
+    
+    func updateLabels(forMessage message: GTLRGmail_Message)
+    {
+        if ourLabelId != nil, message.identifier != nil
+        {
+            if !(message.labelIds!.contains(ourLabelId!))
+            {
+                //Update the message so that it has a Postcard label
+                let modifyRequestObject = GTLRGmail_ModifyMessageRequest(json: ["addLabelIds": [ourLabelId],
+                                                                                "removeLabelIds": ["INBOX", "UNREAD"]])
+                let updateLabelQuery = GTLRGmailQuery_UsersMessagesModify.query(withObject: modifyRequestObject, userId: self.gmailUserId, identifier: message.identifier!)
+                GmailProps.service.executeQuery(updateLabelQuery, completionHandler:
+                    {
+                        (ticket, maybeResponse, maybeError) in
+                        
+                        if let error = maybeError
+                        {
+                            print("ERROR adding a label to gmail message:\(error.localizedDescription)")
+                        }
+                        else if let _ = maybeResponse
+                        {
+                            print("ADDED POSTCARD LABEL TO GMAIL MESSAGE")
+                        }
+                })
+            }
+        }
+    }
+    
+    //MARK: Delete Messages
+    
+    //Delete Gmail Message as well as Postcard
     func trashGmailMessage(_ thisPostcard: Postcard, completion: @escaping (_ successful: Bool) -> Void)
     {
         if let postcardIdentifier = thisPostcard.identifier
@@ -83,7 +173,7 @@ class MailController: NSObject
                     if let error = maybeError
                     {
                         completion(false)
-                        print(error)
+                        print("ERROR deleting email:\(error.localizedDescription)")
                     }
                     if let _ = maybeResponse, let managedContext = self.managedObjectContext
                     {
@@ -102,6 +192,31 @@ class MailController: NSObject
         }
     }
     
+    //Deletes Gmail Messages only
+    func trashGmailMessage(withId messageId: String, completion: @escaping (_ successful: Bool) -> Void)
+    {
+        if messageId != ""
+        {
+            let trashQuery = GTLRGmailQuery_UsersMessagesTrash.query(withUserId: gmailUserId, identifier: messageId)
+            GmailProps.service.executeQuery(trashQuery, completionHandler:
+            {
+                (ticket, maybeResponse, maybeError) in
+                
+                if let error = maybeError
+                {
+                    completion(false)
+                    print("ERROR deleting email:\(error.localizedDescription)")
+                }
+                if let _ = maybeResponse
+                {
+                    completion(true)
+                }
+            })
+        }
+    }
+    
+    //MARK: Get Messages
+    
     func updateMail()
     {
         fetchGmailMessagesList()
@@ -113,9 +228,13 @@ class MailController: NSObject
     //This gets a bare list of messages that meet our criteria and then calls a func to retrieve the payload for each one
     func fetchGmailMessagesList()
     {
+        //First get messages from the inbox
         let userMessagesListQuery = GTLRGmailQuery_UsersMessagesList.query(withUserId: gmailUserId)
-        userMessagesListQuery.labelIds = ["INBOX"]
-        userMessagesListQuery.maxResults = 600
+        userMessagesListQuery.maxResults = 800
+        
+        //Search for messages thathave an attachment and the Inbox or Postcard labels
+        userMessagesListQuery.q = "has:attachment {label:INBOX label:\(ourLabel)}"
+        
         GmailProps.service.executeQuery(userMessagesListQuery)
         {
             (ticket, maybeResponse, maybeError) in
@@ -127,12 +246,6 @@ class MailController: NSObject
                 {
                     //Get message payloads
                     self.fetchAndSaveGmailPayloads(metaMessages)
-                }
-                
-                if let nextPageToken = listMessagesResponse.nextPageToken, !nextPageToken.isEmpty
-                {
-                    //Fetch the next page of results
-                    print("Received a next page token from List Messages: \(nextPageToken.description)")
                 }
             }
         }
@@ -151,120 +264,128 @@ class MailController: NSObject
                     
                     //Get full messages
                     GmailProps.service.executeQuery(userMessagesQuery, completionHandler:
+                    {
+                        (ticket, maybeMessage, maybeError) in
+                        
+                        if let message = maybeMessage as? GTLRGmail_Message, let payload = message.payload, let parts: [GTLRGmail_MessagePart] = payload.parts
                         {
-                            (ticket, maybeMessage, maybeError) in
-                            
-                            if let message = maybeMessage as? GTLRGmail_Message, let payload = message.payload, let parts: [GTLRGmail_MessagePart] = payload.parts
+                            //This is a key/penpal invitation with receiver key info
+                            for thisPart in parts where thisPart.mimeType == PostCardProps.keyMimeType || thisPart.mimeType == PostCardProps.senderKeyMimeType
                             {
-                                //This is a key/penpal invitation with receiver key info
-                                for thisPart in parts where thisPart.mimeType == PostCardProps.keyMimeType || thisPart.mimeType == PostCardProps.senderKeyMimeType
+                                //Download the attachment
+                                if let messageBody = thisPart.body, let attachmentId = messageBody.attachmentId
                                 {
-                                    //Download the attachment
-                                    if let messageBody = thisPart.body, let attachmentId = messageBody.attachmentId
+                                    let attachmentQuery = GTLRGmailQuery_UsersMessagesAttachmentsGet.query(withUserId: self.gmailUserId, messageId: messageIdentifier, identifier: attachmentId)
+                                    GmailProps.service.executeQuery(attachmentQuery, completionHandler:
                                     {
-                                        let attachmentQuery = GTLRGmailQuery_UsersMessagesAttachmentsGet.query(withUserId: self.gmailUserId, messageId: messageIdentifier, identifier: attachmentId)
-                                        GmailProps.service.executeQuery(attachmentQuery, completionHandler:
+                                        (ticket, maybeAttachment, maybeError) in
+                                        
+                                        //Process the attachments
+                                        if let attachment = maybeAttachment as? GTLRGmail_MessagePartBody
+                                        {
+                                            if thisPart.mimeType == PostCardProps.keyMimeType
+                                            {
+                                                self.processPenPalKeyAttachment(attachment, forMessage: message, hasReceiverKey: true)
+                                            }
+                                            else if thisPart.mimeType == PostCardProps.senderKeyMimeType
+                                            {
+                                                self.processPenPalKeyAttachment(attachment, forMessage: message, hasReceiverKey: false)
+                                            }
+                                        }
+                                    })
+                                }
+                            }
+                            
+                            if let headers: [GTLRGmail_MessagePartHeader] = payload.headers
+                            {
+                                var sender = ""
+                                for header in headers where header.name == "From"
+                                {
+                                    if let headerValue = header.value
+                                    {
+                                        sender = headerValue
+                                    }
+                                }
+                                
+                                if !sender.isEmpty
+                                {
+                                    //This is a postcard message/attachment
+                                    for thisPart in parts where thisPart.mimeType == PostCardProps.postcardMimeType
+                                    {
+                                        //Download the attachment that is a Postcard
+                                        if let messageBody = thisPart.body, let attachmentId = messageBody.attachmentId
+                                        {
+                                            let attachmentQuery = GTLRGmailQuery_UsersMessagesAttachmentsGet.query(withUserId: self.gmailUserId, messageId: messageIdentifier, identifier: attachmentId)
+                                            GmailProps.service.executeQuery(attachmentQuery, completionHandler:
                                             {
                                                 (ticket, maybeAttachment, maybeError) in
                                                 
                                                 if let attachment = maybeAttachment as? GTLRGmail_MessagePartBody
                                                 {
-                                                    if thisPart.mimeType == PostCardProps.keyMimeType
+                                                    //Do we have this person saved as a PenPal?
+                                                    if let thisPenPal = PenPalController.sharedInstance.fetchPenPal(sender)
                                                     {
-                                                        self.processPenPalKeyAttachment(attachment, forMessage: message, hasReceiverKey: true)
-                                                    }
-                                                    else if thisPart.mimeType == PostCardProps.senderKeyMimeType
-                                                    {
-                                                        self.processPenPalKeyAttachment(attachment, forMessage: message, hasReceiverKey: false)
-                                                    }
-                                                }
-                                        })
-                                    }
-                                }
-                                
-                                if let headers: [GTLRGmail_MessagePartHeader] = payload.headers
-                                {
-                                    var sender = ""
-                                    for header in headers where header.name == "From"
-                                    {
-                                        if let headerValue = header.value
-                                        {
-                                            sender = headerValue
-                                        }
-                                    }
-                                    
-                                    if !sender.isEmpty
-                                    {
-                                        //This is a postcard message/attachment
-                                        for thisPart in parts where thisPart.mimeType == PostCardProps.postcardMimeType
-                                        {
-                                            //Download the attachment that is a Postcard
-                                            if let messageBody = thisPart.body, let attachmentId = messageBody.attachmentId
-                                            {
-                                                let attachmentQuery = GTLRGmailQuery_UsersMessagesAttachmentsGet.query(withUserId: self.gmailUserId, messageId: messageIdentifier, identifier: attachmentId)
-                                                GmailProps.service.executeQuery(attachmentQuery, completionHandler:
-                                                    {
-                                                        (ticket, maybeAttachment, maybeError) in
+                                                        let attachmentString = attachment.data
                                                         
-                                                        if let attachment = maybeAttachment as? GTLRGmail_MessagePartBody
+                                                        //Decode - GTLBase64
+                                                        if let postcardData = self.stringDecodedToData(attachmentString!)
                                                         {
-                                                            //Do we have this person saved as a PenPal?
-                                                            if let thisPenPal = PenPalController.sharedInstance.fetchPenPal(sender)
+                                                            //CoreData
+                                                            if let entity = NSEntityDescription.entity(forEntityName: "Postcard", in: self.managedObjectContext!)
                                                             {
-                                                                let attachmentString = attachment.data
+                                                                //Create New Postcard Record
+                                                                let newCard = Postcard(entity: entity, insertInto: self.managedObjectContext)
                                                                 
-                                                                //Decode - GTLBase64
-                                                                if let postcardData = self.stringDecodedToData(attachmentString!)
+                                                                newCard.owner = GlobalVars.currentUser
+                                                                newCard.from = thisPenPal
+                                                                newCard.cipherText = postcardData as NSData?
+                                                                newCard.identifier = messageMeta.identifier
+                                                                
+                                                                for dateHeader in headers where dateHeader.name == "Date"
                                                                 {
-                                                                    //CoreData
-                                                                    if let entity = NSEntityDescription.entity(forEntityName: "Postcard", in: self.managedObjectContext!)
+                                                                    let formatter = DateFormatter()
+                                                                    formatter.locale = Locale(identifier: "en_US_POSIX")
+                                                                    formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
+                                                                    //Wed, 15 Feb 2017 20:48:50 -0500
+                                                                    if let headerDate = dateHeader.value
                                                                     {
-                                                                        //Create New Postcard Record
-                                                                        let newCard = Postcard(entity: entity, insertInto: self.managedObjectContext)
-                                                                        
-                                                                        newCard.owner = GlobalVars.currentUser
-                                                                        newCard.from = thisPenPal
-                                                                        newCard.cipherText = postcardData as NSData?
-                                                                        newCard.identifier = messageMeta.identifier
-                                                                        
-                                                                        for dateHeader in headers where dateHeader.name == "Date"
+                                                                        if let receivedDate = formatter.date(from: headerDate)
                                                                         {
-                                                                            let formatter = DateFormatter()
-                                                                            formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
-                                                                            if let headerDate = dateHeader.value, let receivedDate = formatter.date(from: headerDate)
-                                                                            {
-                                                                                newCard.receivedDate = receivedDate as NSDate?
-                                                                            }
-                                                                        }
-                                                                        
-                                                                        //Save this Postcard to core data
-                                                                        do
-                                                                        {
-                                                                            try newCard.managedObjectContext?.save()
-                                                                        }
-                                                                        catch
-                                                                        {
-                                                                            let saveError = error as NSError
-                                                                            print("\(saveError)")
+                                                                            newCard.receivedDate = receivedDate as NSDate?
                                                                         }
                                                                     }
                                                                 }
-                                                                else
+                                                                
+                                                                //Save this Postcard to core data
+                                                                do
                                                                 {
-                                                                    print("Failed to decode the message from \(sender).\n")
+                                                                    try newCard.managedObjectContext?.save()
+                                                                    
+                                                                    self.updateLabels(forMessage: message)
+                                                                }
+                                                                catch
+                                                                {
+                                                                    let saveError = error as NSError
+                                                                    print("\(saveError.localizedDescription)")
                                                                 }
                                                             }
-                                                            else
-                                                            {
-                                                                print("A message could not be decrypted because it is not from a known contact \(sender)")
-                                                            }
                                                         }
-                                                })
-                                            }
+                                                        else
+                                                        {
+                                                            print("Failed to decode the message from \(sender).\n")
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        print("A message could not be decrypted because it is not from a known contact \(sender)")
+                                                    }
+                                                }
+                                            })
                                         }
                                     }
                                 }
                             }
+                        }
                     })
                 }
             }
@@ -377,7 +498,7 @@ class MailController: NSObject
         catch
         {
             let saveError = error as NSError
-            print("\(saveError)")
+            print("\(saveError.localizedDescription)")
         }
     }
     
@@ -399,7 +520,7 @@ class MailController: NSObject
         catch
         {
             let saveError = error as NSError
-            print("\(saveError)")
+            print("\(saveError.localizedDescription)")
         }
     }
     
@@ -463,7 +584,7 @@ class MailController: NSObject
             {
                 //Could not fetch this Penpal from core data
                 let fetchError = error as NSError
-                print(fetchError)
+                print(fetchError.localizedDescription)
                 
                 return nil
             }
@@ -524,7 +645,7 @@ class MailController: NSObject
                                 print("Unable to get public keys from key attachment")
                                 return
                             }
-                            compare(recipientKey: timestampedKeys.recipientPublicKey, andTimestamp: timestampedKeys.recipientKeyTimestamp, withStoredKey: recipientStoredKey, andTimestamp: recipientStoredDate, forPenPal: thisPenPal)
+                            compare(recipientKey: timestampedKeys.recipientPublicKey, andTimestamp: timestampedKeys.recipientKeyTimestamp, withStoredKey: recipientStoredKey, andTimestamp: recipientStoredDate, forPenPal: thisPenPal, andMessageId: message.identifier ?? "")
                             
                             guard let thisPenPalKey = thisPenPal.key
                                 else
@@ -543,7 +664,7 @@ class MailController: NSObject
                                 catch
                                 {
                                     let saveError = error as NSError
-                                    print("\(saveError), \(saveError.userInfo)")
+                                    print("\(saveError.localizedDescription), \(saveError.userInfo)")
                                 }
                                 
                                 return
@@ -557,7 +678,7 @@ class MailController: NSObject
                                 return
                             }
                             
-                            compare(senderKey: timestampedKeys.senderPublicKey, andTimestamp: timestampedKeys.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal)
+                            compare(senderKey: timestampedKeys.senderPublicKey, andTimestamp: timestampedKeys.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal, andMessageId: message.identifier ?? "")
                         }
                         else
                         {
@@ -585,7 +706,7 @@ class MailController: NSObject
                                 catch
                                 {
                                     let saveError = error as NSError
-                                    print("\(saveError), \(saveError.userInfo)")
+                                    print("\(saveError.localizedDescription)")
                                 }
                                 
                                 return
@@ -599,7 +720,7 @@ class MailController: NSObject
                                 return
                             }
                             
-                            compare(senderKey: timestampedKey.senderPublicKey, andTimestamp: timestampedKey.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal)
+                            compare(senderKey: timestampedKey.senderPublicKey, andTimestamp: timestampedKey.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal, andMessageId: message.identifier ?? "")
                         }
                     }
                         //If not check for a key and create a new PenPal
@@ -623,7 +744,7 @@ class MailController: NSObject
                             catch
                             {
                                 let saveError = error as NSError
-                                print("\(saveError), \(saveError.userInfo)")
+                                print("\(saveError.localizedDescription)")
                             }
                         }
                     }
@@ -632,7 +753,7 @@ class MailController: NSObject
         }
     }
     
-    func compare(recipientKey: Data, andTimestamp timestamp: Int64, withStoredKey recipientStoredKey: Data, andTimestamp storedTimestamp: NSDate, forPenPal thisPenPal: PenPal)
+    func compare(recipientKey: Data, andTimestamp timestamp: Int64, withStoredKey recipientStoredKey: Data, andTimestamp storedTimestamp: NSDate, forPenPal thisPenPal: PenPal, andMessageId messageId: String)
     {
         guard recipientKey == recipientStoredKey
             else
@@ -642,19 +763,19 @@ class MailController: NSObject
             if recipientStoredTimestamp > timestamp
             {
                 //Key in the message is older than what the user is currently using
-                alertReceivedOutdatedRecipientKey(from: thisPenPal)
+                alertReceivedOutdatedRecipientKey(from: thisPenPal, withMessageId: messageId)
             }
             else if recipientStoredTimestamp < timestamp
             {
                 //Key in the message is newer than what we are currently using
-                alertReceivedNewerRecipientKey(from: thisPenPal)
+                alertReceivedNewerRecipientKey(from: thisPenPal, withMessageId: messageId)
             }
             
             return
         }
     }
     
-    func compare(senderKey: Data, andTimestamp timestamp: Int64, withStoredKey senderStoredKey: NSData, andTimestamp storedTimestamp: NSDate, forPenPal thisPenPal: PenPal)
+    func compare(senderKey: Data, andTimestamp timestamp: Int64, withStoredKey senderStoredKey: NSData, andTimestamp storedTimestamp: NSDate, forPenPal thisPenPal: PenPal, andMessageId messageId: String)
     {
         //Check to see if the sender's key we received matches what we have stored
         if senderKey == senderStoredKey as Data
@@ -668,12 +789,12 @@ class MailController: NSObject
             if currentSenderKeyTimestamp > timestamp
             {
                 //received key is older
-                alertReceivedOutdatedSenderKey(from: thisPenPal)
+                alertReceivedOutdatedSenderKey(from: thisPenPal, withMessageId: messageId)
             }
             else if currentSenderKeyTimestamp < timestamp
             {
                 //received key is newer
-                alertReceivedNewerSenderKey(senderPublicKey: senderKey, senderKeyTimestamp: timestamp, from: thisPenPal)
+                alertReceivedNewerSenderKey(senderPublicKey: senderKey, senderKeyTimestamp: timestamp, from: thisPenPal, withMessageId: messageId)
             }
         }
     }
@@ -682,15 +803,19 @@ class MailController: NSObject
     
     
     ///TODO: Approve and localize strings for translation
-    func alertReceivedOutdatedSenderKey(from penPal: PenPal)
+    func alertReceivedOutdatedSenderKey(from penPal: PenPal, withMessageId messageId: String)
     {
         let oldKeyAlert = NSAlert()
         oldKeyAlert.messageText = "This email cannot be read. It was encrypted using older settings for: \(penPal.email)"
         oldKeyAlert.informativeText = "You should let this contact know that they sent you a message using a previous version of their encryption settings."
         oldKeyAlert.runModal()
+        
+        trashGmailMessage(withId: messageId) { (asDeleted) in
+            //Deleted Gmail Message with old key
+        }
     }
     
-    func alertReceivedNewerSenderKey(senderPublicKey: Data, senderKeyTimestamp: Int64, from penPal: PenPal)
+    func alertReceivedNewerSenderKey(senderPublicKey: Data, senderKeyTimestamp: Int64, from penPal: PenPal, withMessageId messageId: String)
     {
         let newKeyAlert = NSAlert()
         newKeyAlert.messageText = "Accept PenPal's new encryption settings?"
@@ -713,16 +838,23 @@ class MailController: NSObject
             catch
             {
                 let saveError = error as NSError
-                print("\(saveError), \(saveError.userInfo)")
+                print("\(saveError.localizedDescription)")
                 showAlert("Warning: We could not save this contact's new encryption settings.\n")
             }
         }
+        else if response == NSAlertFirstButtonReturn
+        {
+            //User has chosen to ignore contact's new key, let's delete it so the user does not keep getting these alerts
+            trashGmailMessage(withId: messageId, completion: { (wasDeleted) in
+                //Deleted message with new contact key
+            })
+        }
     }
     
-    func alertReceivedOutdatedRecipientKey(from penPal: PenPal)
+    func alertReceivedOutdatedRecipientKey(from penPal: PenPal, withMessageId messageId: String)
     {
         let oldKeyAlert = NSAlert()
-        oldKeyAlert.messageText = "\(penPal.email) used an older version of your security settings. Send new settings to this contact?"
+        oldKeyAlert.messageText = "\(penPal.email?.description) used an older version of your security settings. Send new settings to this contact?"
         oldKeyAlert.informativeText = "Cannot decrypt this message as it was encrypted using your old settings. Do you want to send them a new invitation to be your PenPal? You will not be able to read any new messages they send until they have your new information. Choose 'No' if you have a previous installation of Postcard and you are going to import those settings."
         oldKeyAlert.addButton(withTitle: "No")
         oldKeyAlert.addButton(withTitle: "Yes")
@@ -732,6 +864,11 @@ class MailController: NSObject
         {
             //User wants to send new key to contact
             KeyController.sharedInstance.sendKey(toPenPal: penPal)
+            
+            //Delete the message as we will be unable to read it
+            trashGmailMessage(withId: messageId, completion: { (wasDeleted) in
+                //Deleted message
+            })
         }
         else
         {
@@ -740,10 +877,10 @@ class MailController: NSObject
         }
     }
     
-    func alertReceivedNewerRecipientKey(from penPal: PenPal)
+    func alertReceivedNewerRecipientKey(from penPal: PenPal, withMessageId messageId: String)
     {
         let newKeyAlert = NSAlert()
-        newKeyAlert.messageText = "\(penPal.email) used an older version of your security settings. Do you want to import these settings to this device?"
+        newKeyAlert.messageText = "\(penPal.email?.description) used a newer version of your security settings. Do you want to import these settings to this device?"
         newKeyAlert.informativeText = "You received a message with newer encryption settings than what this installation of Postcard is using. This may be because you installed postcard on a different device. Do you want to import the newer settings from the other installation? Choose 'No' if you want to keep these settings."
         newKeyAlert.addButton(withTitle: "No")
         newKeyAlert.addButton(withTitle: "Yes")
@@ -753,6 +890,14 @@ class MailController: NSObject
         {
             //User wants to import settings from other machine
             ///Show instructions for importing settings here?
+        }
+        else if response == NSAlertFirstButtonReturn
+        {
+            //User selected No
+            //Delete this message as we will be unable to read it
+            trashGmailMessage(withId: messageId, completion: { (wasDeleted) in
+                //Attempted to delete message from Gmail
+            })
         }
     }
     
@@ -772,7 +917,7 @@ class MailController: NSObject
         catch
         {
             let fetchError = error as NSError
-            print(fetchError)
+            print(fetchError.localizedDescription)
         }
         
         return false
@@ -802,10 +947,7 @@ class MailController: NSObject
                             GmailProps.service.executeQuery(sendGmailQuery, completionHandler:
                                 {
                                     (ticket, maybeResponse, maybeError) in
-                                    
-                                    print("\nSent an email to: \(thisRecipient)")
-                                    print("send email response: \(maybeResponse)")
-                                    print("send email error: \(maybeError)")
+
                                     if let response = maybeResponse as? GTLRGmail_Message, let labelIds = response.labelIds
                                     {
                                         print(labelIds.description)
@@ -852,17 +994,18 @@ class MailController: NSObject
         }
         
         //Show user what went wrong
-        if recipientEmails.isEmpty
-        {
-            errorMessage = errorMessage + localizedSendErrorNoValidEmails
-        }
         if !notaPalEmails.isEmpty
         {
-            errorMessage = errorMessage + "\n" + String(format: localizedSendErrorNoKey, notaPalEmails.joined(separator: ","))
+            errorMessage = String(format: localizedSendErrorNoKey, notaPalEmails.joined(separator: ","))
         }
         if !notaContact.isEmpty
         {
             errorMessage = errorMessage + "\n" + String(format: localizedSendErrorNoKey, notaContact.joined(separator: ","))
+        }
+        
+        if recipientEmails.isEmpty && notaContact.isEmpty && notaPalEmails.isEmpty
+        {
+            errorMessage = localizedSendErrorNoValidEmails
         }
         
         if errorMessage.isEmpty

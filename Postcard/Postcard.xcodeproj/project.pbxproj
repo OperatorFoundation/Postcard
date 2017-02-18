@@ -46,6 +46,18 @@
 		B4BFDD2C1E4AA1B700455232 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BFDD261E4AA1B700455232 /* User+CoreDataProperties.swift */; };
 		B4BFDD2D1E4AA1B700455232 /* Postcard+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BFDD271E4AA1B700455232 /* Postcard+CoreDataClass.swift */; };
 		B4BFDD2E1E4AA1B700455232 /* Postcard+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BFDD281E4AA1B700455232 /* Postcard+CoreDataProperties.swift */; };
+		B4DA48681E57A53A00BB95FE /* PenPalsView.strings in Resources */ = {isa = PBXBuildFile; fileRef = B4DA486A1E57A53A00BB95FE /* PenPalsView.strings */; };
+		B4DA486D1E57A53B00BB95FE /* MessageView.strings in Resources */ = {isa = PBXBuildFile; fileRef = B4DA486F1E57A53B00BB95FE /* MessageView.strings */; };
+		B4DA48721E57A53B00BB95FE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B4DA48741E57A53B00BB95FE /* InfoPlist.strings */; };
+		B4DA48771E57A53C00BB95FE /* PopUpMessages.strings in Resources */ = {isa = PBXBuildFile; fileRef = B4DA48791E57A53C00BB95FE /* PopUpMessages.strings */; };
+		B4DA487C1E57A53C00BB95FE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B4DA487E1E57A53C00BB95FE /* InfoPlist.strings */; };
+		B4DA48811E57A53D00BB95FE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B4DA48831E57A53D00BB95FE /* InfoPlist.strings */; };
+		B4DA48861E57A53D00BB95FE /* MenuView.strings in Resources */ = {isa = PBXBuildFile; fileRef = B4DA48881E57A53D00BB95FE /* MenuView.strings */; };
+		B4DA488B1E57A53E00BB95FE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B4DA488D1E57A53E00BB95FE /* Localizable.strings */; };
+		B4DA48901E57A53F00BB95FE /* MailController.strings in Resources */ = {isa = PBXBuildFile; fileRef = B4DA48921E57A53F00BB95FE /* MailController.strings */; };
+		B4DA48951E57A53F00BB95FE /* ComposeView.strings in Resources */ = {isa = PBXBuildFile; fileRef = B4DA48971E57A53F00BB95FE /* ComposeView.strings */; };
+		B4DA489A1E57B06000BB95FE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B4DA489C1E57B06000BB95FE /* Localizable.strings */; };
+		B4DA489F1E57DD4700BB95FE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B4DA48A11E57DD4700BB95FE /* Localizable.strings */; };
 		B4EDBB4E1CEF6BC50094853F /* ComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EDBB4D1CEF6BC50094853F /* ComposeViewController.swift */; };
 		B4EDBB501CEF74D80094853F /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */; };
 		B4EDBB521CEF7C040094853F /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EDBB511CEF7C040094853F /* MainWindowController.swift */; };
@@ -183,6 +195,18 @@
 		B4BFDD261E4AA1B700455232 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "User+CoreDataProperties.swift"; path = "DataModels/User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B4BFDD271E4AA1B700455232 /* Postcard+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Postcard+CoreDataClass.swift"; path = "DataModels/Postcard+CoreDataClass.swift"; sourceTree = "<group>"; };
 		B4BFDD281E4AA1B700455232 /* Postcard+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Postcard+CoreDataProperties.swift"; path = "DataModels/Postcard+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B4DA48691E57A53A00BB95FE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/PenPalsView.strings; sourceTree = "<group>"; };
+		B4DA486E1E57A53B00BB95FE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/MessageView.strings; sourceTree = "<group>"; };
+		B4DA48731E57A53B00BB95FE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B4DA48781E57A53C00BB95FE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/PopUpMessages.strings; sourceTree = "<group>"; };
+		B4DA487D1E57A53C00BB95FE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B4DA48821E57A53D00BB95FE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B4DA48871E57A53D00BB95FE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/MenuView.strings; sourceTree = "<group>"; };
+		B4DA488C1E57A53E00BB95FE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B4DA48911E57A53F00BB95FE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/MailController.strings; sourceTree = "<group>"; };
+		B4DA48961E57A53F00BB95FE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/ComposeView.strings; sourceTree = "<group>"; };
+		B4DA489B1E57B06000BB95FE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B4DA48A01E57DD4700BB95FE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B4DC05D01E4E57F800F6B279 /* Postcard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Postcard.entitlements; sourceTree = "<group>"; };
 		B4EDBB4D1CEF6BC50094853F /* ComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComposeViewController.swift; path = Controllers/ViewControllers/ComposeViewController.swift; sourceTree = "<group>"; };
 		B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeViewController.swift; path = Controllers/ViewControllers/WelcomeViewController.swift; sourceTree = "<group>"; };
@@ -265,6 +289,8 @@
 		461891BF1CC17B9A009C577D /* PostcardTests */ = {
 			isa = PBXGroup;
 			children = (
+				B4DA489C1E57B06000BB95FE /* Localizable.strings */,
+				B4DA48741E57A53B00BB95FE /* InfoPlist.strings */,
 				461891C01CC17B9A009C577D /* PostcardTests.swift */,
 				461891C21CC17B9A009C577D /* Info.plist */,
 			);
@@ -274,6 +300,8 @@
 		461891CA1CC17B9A009C577D /* PostcardUITests */ = {
 			isa = PBXGroup;
 			children = (
+				B4DA48A11E57DD4700BB95FE /* Localizable.strings */,
+				B4DA487E1E57A53C00BB95FE /* InfoPlist.strings */,
 				461891CB1CC17B9A009C577D /* PostcardUITests.swift */,
 				461891CD1CC17B9A009C577D /* Info.plist */,
 			);
@@ -331,6 +359,14 @@
 		B4238F5D1CD2C4C50054E7EF /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
+				B4DA48971E57A53F00BB95FE /* ComposeView.strings */,
+				B4DA48921E57A53F00BB95FE /* MailController.strings */,
+				B4DA488D1E57A53E00BB95FE /* Localizable.strings */,
+				B4DA48881E57A53D00BB95FE /* MenuView.strings */,
+				B4DA48831E57A53D00BB95FE /* InfoPlist.strings */,
+				B4DA48791E57A53C00BB95FE /* PopUpMessages.strings */,
+				B4DA486F1E57A53B00BB95FE /* MessageView.strings */,
+				B4DA486A1E57A53A00BB95FE /* PenPalsView.strings */,
 				461891B71CC17B9A009C577D /* Info.plist */,
 				B4238F601CD2DF630054E7EF /* Postcard-Bridging-Header.h */,
 				B4238F5B1CD2C11C0054E7EF /* Constants.swift */,
@@ -594,10 +630,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				463E68531D0B43E600F70845 /* SignPainter.otf in Resources */,
+				B4DA48771E57A53C00BB95FE /* PopUpMessages.strings in Resources */,
+				B4DA488B1E57A53E00BB95FE /* Localizable.strings in Resources */,
+				B4DA48861E57A53D00BB95FE /* MenuView.strings in Resources */,
 				461891B31CC17B9A009C577D /* Assets.xcassets in Resources */,
+				B4DA48901E57A53F00BB95FE /* MailController.strings in Resources */,
 				461891B61CC17B9A009C577D /* Main.storyboard in Resources */,
 				B4056FD11CC99B3A00D81301 /* GTMOAuth2Window.xib in Resources */,
+				B4DA486D1E57A53B00BB95FE /* MessageView.strings in Resources */,
 				466FC5FD1D021BA100B8AABB /* Proxima Nova Font Free in Resources */,
+				B4DA48951E57A53F00BB95FE /* ComposeView.strings in Resources */,
+				B4DA48811E57A53D00BB95FE /* InfoPlist.strings in Resources */,
+				B4DA48681E57A53A00BB95FE /* PenPalsView.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -605,6 +649,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4DA48721E57A53B00BB95FE /* InfoPlist.strings in Resources */,
+				B4DA489A1E57B06000BB95FE /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -612,6 +658,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4DA487C1E57A53C00BB95FE /* InfoPlist.strings in Resources */,
+				B4DA489F1E57DD4700BB95FE /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -835,6 +883,102 @@
 				B4316C9B1D527F83000138D0 /* es */,
 			);
 			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		B4DA486A1E57A53A00BB95FE /* PenPalsView.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B4DA48691E57A53A00BB95FE /* es */,
+			);
+			name = PenPalsView.strings;
+			sourceTree = "<group>";
+		};
+		B4DA486F1E57A53B00BB95FE /* MessageView.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B4DA486E1E57A53B00BB95FE /* es */,
+			);
+			name = MessageView.strings;
+			sourceTree = "<group>";
+		};
+		B4DA48741E57A53B00BB95FE /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B4DA48731E57A53B00BB95FE /* es */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		B4DA48791E57A53C00BB95FE /* PopUpMessages.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B4DA48781E57A53C00BB95FE /* es */,
+			);
+			name = PopUpMessages.strings;
+			sourceTree = "<group>";
+		};
+		B4DA487E1E57A53C00BB95FE /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B4DA487D1E57A53C00BB95FE /* es */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		B4DA48831E57A53D00BB95FE /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B4DA48821E57A53D00BB95FE /* es */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		B4DA48881E57A53D00BB95FE /* MenuView.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B4DA48871E57A53D00BB95FE /* es */,
+			);
+			name = MenuView.strings;
+			sourceTree = "<group>";
+		};
+		B4DA488D1E57A53E00BB95FE /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B4DA488C1E57A53E00BB95FE /* es */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		B4DA48921E57A53F00BB95FE /* MailController.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B4DA48911E57A53F00BB95FE /* es */,
+			);
+			name = MailController.strings;
+			sourceTree = "<group>";
+		};
+		B4DA48971E57A53F00BB95FE /* ComposeView.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B4DA48961E57A53F00BB95FE /* es */,
+			);
+			name = ComposeView.strings;
+			sourceTree = "<group>";
+		};
+		B4DA489C1E57B06000BB95FE /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B4DA489B1E57B06000BB95FE /* es */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		B4DA48A11E57DD4700BB95FE /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B4DA48A01E57DD4700BB95FE /* es */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

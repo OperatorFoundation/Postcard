@@ -1,0 +1,6 @@
+/* For accepting an invite from another user and sending them your key. This will add the sender as a secure contact with whom you can exchange encrypted 'Postcards'. */
+"BUTTON-TITLE-Add" = "AGREGAR";
+
+/* For sending your key to a contact who has not already sent you theirs, inviting them to be your penpal. (they may or may not already be using this software) */
+"BUTTON-TITLE-Invite" = "INVITAR";
+

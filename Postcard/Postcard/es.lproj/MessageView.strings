@@ -1,0 +1,6 @@
+/* For deleting the email you are reading */
+"BUTTON-TITLE-Delete" = "BORRAR";
+
+/* For replying to the email you are reading. */
+"BUTTON-TITLE-Reply" = "RESPONDER";
+

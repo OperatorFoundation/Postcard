@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="18v-wx-w6s">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="18v-wx-w6s">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
@@ -449,9 +449,11 @@
                                 <rect key="frame" x="0.0" y="0.0" width="1070" height="640"/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="welcomeBG" id="73K-Pv-PgL"/>
                             </imageView>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wn7-Kz-a9E">
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Wn7-Kz-a9E">
                                 <rect key="frame" x="440" y="20" width="191" height="53"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="53" id="3bD-6O-lqs"/>
+                                </constraints>
                                 <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="btn_google_signin_light_normal_web-1" imagePosition="only" alignment="center" enabled="NO" imageScaling="proportionallyDown" inset="2" id="qRg-3b-xLt">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -460,32 +462,8 @@
                                     <action selector="googleSignInTap:" target="FrX-f0-5La" id="Kgl-Fi-jGF"/>
                                 </connections>
                             </button>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6mm-b5-h8Y">
-                                <rect key="frame" x="355" y="84" width="361" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Let's get started. Please sign-in with your google account. " id="abi-vz-brP">
-                                    <font key="font" size="13" name="ProximaNova-Bold"/>
-                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <customView autoresizesSubviews="NO" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PFr-Hj-Wr6">
-                                <rect key="frame" x="85" y="157" width="666" height="67"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <subviews>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gyH-Gb-MvV">
-                                        <rect key="frame" x="6" y="20" width="655" height="27"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="An end-to-end encrypted email client designed for you with love and pixels" id="htw-WI-VT2">
-                                            <font key="font" size="18" name="ProximaNova-Bold"/>
-                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                        </textFieldCell>
-                                    </textField>
-                                </subviews>
-                            </customView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WZl-v2-qHO">
-                                <rect key="frame" x="71" y="479" width="310" height="77"/>
+                                <rect key="frame" x="83" y="470" width="541" height="77"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Welcome to" id="5yW-UI-7j0">
                                     <font key="font" size="85" name="SignPainter-HouseScript"/>
@@ -493,12 +471,39 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6mm-b5-h8Y">
+                                <rect key="frame" x="351" y="81" width="369" height="21"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Let's get started. Please sign-in with your google account." id="abi-vz-brP">
+                                    <font key="font" size="14" name="ProximaNova-Bold"/>
+                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <customView autoresizesSubviews="NO" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PFr-Hj-Wr6">
+                                <rect key="frame" x="71" y="340" width="878" height="67"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <subviews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gyH-Gb-MvV">
+                                        <rect key="frame" x="6" y="20" width="854" height="27"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="An end-to-end encrypted email client designed for you with love and pixels" id="htw-WI-VT2">
+                                            <font key="font" size="19" name="ProximaNova-Bold"/>
+                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                </subviews>
+                            </customView>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="6mm-b5-h8Y" firstAttribute="centerX" secondItem="KnJ-2N-DXK" secondAttribute="centerX" id="XZ1-v3-gU6"/>
+                            <constraint firstAttribute="bottom" secondItem="Wn7-Kz-a9E" secondAttribute="bottom" constant="20" id="a2i-rb-4XO"/>
+                            <constraint firstItem="Wn7-Kz-a9E" firstAttribute="top" secondItem="6mm-b5-h8Y" secondAttribute="bottom" constant="8" id="dWY-Ul-Wxw"/>
                             <constraint firstItem="KnJ-2N-DXK" firstAttribute="top" secondItem="JQh-jY-bwC" secondAttribute="top" id="fCn-VA-9Ja"/>
                             <constraint firstAttribute="trailing" secondItem="KnJ-2N-DXK" secondAttribute="trailing" id="kMU-Bj-yXc"/>
                             <constraint firstItem="KnJ-2N-DXK" firstAttribute="leading" secondItem="JQh-jY-bwC" secondAttribute="leading" id="mlk-pv-hD8"/>
                             <constraint firstAttribute="bottom" secondItem="KnJ-2N-DXK" secondAttribute="bottom" id="spV-yo-mIN"/>
+                            <constraint firstItem="Wn7-Kz-a9E" firstAttribute="centerX" secondItem="KnJ-2N-DXK" secondAttribute="centerX" id="xJ2-Zj-lL9"/>
                         </constraints>
                     </view>
                     <connections>
@@ -564,6 +569,7 @@
                                 <rect key="frame" x="0.0" y="401" width="54" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="22" id="pfl-1Z-fAh"/>
+                                    <constraint firstAttribute="width" constant="54" id="ykO-ov-g2N"/>
                                 </constraints>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Subject:" drawsBackground="YES" id="RNf-q7-nnv">
                                     <font key="font" size="14" name="ProximaNovaA-Regular"/>
@@ -1281,13 +1287,12 @@
                                             </binding>
                                         </connections>
                                     </textField>
-                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6sF-P3-REH">
-                                        <rect key="frame" x="505" y="12" width="72" height="22"/>
+                                    <button verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6sF-P3-REH">
+                                        <rect key="frame" x="500" y="12" width="77" height="22"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="22" id="dAh-cE-iZP"/>
-                                            <constraint firstAttribute="width" constant="72" id="dpR-3D-3RX"/>
                                         </constraints>
-                                        <buttonCell key="cell" type="bevel" title="REPLY" bezelStyle="regularSquare" image="redButton" imagePosition="overlaps" alignment="center" imageScaling="proportionallyDown" inset="2" id="xaH-wQ-gG5">
+                                        <buttonCell key="cell" type="bevel" title="REPLY" bezelStyle="regularSquare" image="redButton" imagePosition="overlaps" alignment="center" imageScaling="axesIndependently" inset="2" id="xaH-wQ-gG5">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
@@ -1626,6 +1631,6 @@
         <image name="welcomeBG" width="535" height="320"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Ouy-3e-cTq"/>
+        <segue reference="Qt2-ns-Ohj"/>
     </inferredMetricsTieBreakers>
 </document>

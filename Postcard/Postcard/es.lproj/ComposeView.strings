@@ -1,0 +1,12 @@
+/* A prompt for the user to pick a file from a presented list to attach to their email. */
+"Attachment-Prompt" = "Seleccione el archivo que deseé adjuntar.";
+
+/* For attaching a file to an email you are writing. */
+"BUTTON-TITLE-Attachment" = "ADJUNTO";
+
+/* For sending an email. */
+"BUTTON-TITLE-Send" = "ENVIAR";
+
+/* The RE: that is added to the subject line when replying to someone's email. */
+"Reply-Subject-Line-Prefix" = "ASUNTO:";
+
