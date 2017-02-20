@@ -613,14 +613,14 @@
                             <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZqX-NR-IcW">
                                 <rect key="frame" x="0.0" y="41" width="635" height="360"/>
                                 <clipView key="contentView" id="yWJ-5o-YoQ">
-                                    <rect key="frame" x="0.0" y="0.0" width="620" height="360"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="635" height="360"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textView importsGraphics="NO" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" linkDetection="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="fTO-Yo-Dj2">
-                                            <rect key="frame" x="0.0" y="0.0" width="620" height="360"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="635" height="360"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <size key="minSize" width="620" height="360"/>
+                                            <size key="minSize" width="635" height="360"/>
                                             <size key="maxSize" width="635" height="10000000"/>
                                             <attributedString key="textStorage">
                                                 <fragment content=" ">
@@ -640,7 +640,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="qUR-A2-GzA">
-                                    <rect key="frame" x="620" y="0.0" width="15" height="360"/>
+                                    <rect key="frame" x="619" y="0.0" width="16" height="360"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
@@ -1627,8 +1627,8 @@
         <image name="penpal" width="28" height="28"/>
         <image name="penpalWhite" width="28" height="28"/>
         <image name="redButton" width="77" height="24"/>
-        <image name="redButtonLarge" width="126" height="24"/>
-        <image name="welcomeBG" width="535" height="320"/>
+        <image name="redButtonLarge" width="95" height="18"/>
+        <image name="welcomeBG" width="687.5" height="410.5"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Qt2-ns-Ohj"/>

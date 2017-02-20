@@ -272,6 +272,9 @@ class MailController: NSObject
                             //This is a key/penpal invitation with receiver key info
                             for thisPart in parts where thisPart.mimeType == PostCardProps.keyMimeType || thisPart.mimeType == PostCardProps.senderKeyMimeType
                             {
+                                //Label it with our Gmail Label
+                                self.updateLabels(forMessage: message)
+                                
                                 //Download the attachment
                                 if let messageBody = thisPart.body, let attachmentId = messageBody.attachmentId
                                 {
@@ -360,8 +363,6 @@ class MailController: NSObject
                                                                 do
                                                                 {
                                                                     try newCard.managedObjectContext?.save()
-                                                                    
-                                                                    self.updateLabels(forMessage: message)
                                                                 }
                                                                 catch
                                                                 {
@@ -769,6 +770,7 @@ class MailController: NSObject
             {
                 //Key in the message is newer than what we are currently using
                 alertReceivedNewerRecipientKey(from: thisPenPal, withMessageId: messageId)
+                print("recipientKey: \(recipientKey), andTimestamp \(timestamp), recipientStoredKey: \(recipientStoredKey), storedTimestamp: \(storedTimestamp), forPenPal \(thisPenPal), andMessageId \(messageId)")
             }
             
             return
