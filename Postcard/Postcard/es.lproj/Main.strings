@@ -131,7 +131,7 @@
 "R4o-n2-Eq4.title" = "acercar";
 
 /* Class = "NSTextFieldCell"; title = "Subject:"; ObjectID = "RNf-q7-nnv"; */
-"RNf-q7-nnv.title" = "Tema:";
+"RNf-q7-nnv.title" = "Asunto:";
 
 /* Class = "NSMenuItem"; title = "Select All"; ObjectID = "Ruw-6m-B2m"; */
 "Ruw-6m-B2m.title" = "Seleccionar Todo";

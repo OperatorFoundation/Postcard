@@ -1,14 +1,14 @@
 /* For logging out of the program/gmail. *The two spaces before the word are necessary for formatting. */
-"BUTTON-TITLE" = "  Cerrar Sesión";
+"BUTTON-TITLE" = "  Salir";
 
 /* For opening the compose view and starting a new email. */
 "BUTTON-TITLE-Compose" = "REDACTAR";
 
 /* For viewing the emails in your inbox. *The two spaces before the word are necessary for formatting. */
-"BUTTON-TITLE-Inbox" = "  Entrada";
+"BUTTON-TITLE-Inbox" = "  Recibidos";
 
 /* For re-encrypting your inbox messages. *The two spaces before the word are necessary for formatting. */
-"BUTTON-TITLE-Lockdowm" = "  Bloquear";
+"BUTTON-TITLE-Lockdowm" = "  Proteger";
 
 /* For viewing your list of contacts. *The two spaces before the word are necessary for formatting. */
 "BUTTON-TITLE-PenPals" = "  Contactos";

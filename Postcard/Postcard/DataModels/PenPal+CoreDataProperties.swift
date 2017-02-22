@@ -18,7 +18,7 @@ extension PenPal {
     }
 
     @NSManaged public var addedDate: NSDate?
-    @NSManaged public var email: String?
+    @NSManaged public var email: String
     @NSManaged public var key: NSData?
     @NSManaged public var keyTimestamp: NSDate?
     @NSManaged public var name: String?

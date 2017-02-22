@@ -54,8 +54,9 @@ class PenPalsViewController: NSViewController, NSTableViewDelegate
         {
             if let composeVC = segue.destinationController as? ComposeViewController
             {
-                if let thisPenPal = penPalsArrayController.selectedObjects[0] as? PenPal, let email = thisPenPal.email
+                if let thisPenPal = penPalsArrayController.selectedObjects[0] as? PenPal
                 {
+                    let email = thisPenPal.email
                     composeVC.sendTo = email
                 }
             }

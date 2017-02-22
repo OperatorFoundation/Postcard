@@ -76,7 +76,7 @@ let localizedAttachmentPrompt = NSLocalizedString("Attachment-Prompt", tableName
 
 //BRANDON STOP HERE
 
-let localizedReplyStarter = NSLocalizedString("Reply-Subject-Line-Prefix", tableName: "ComposeView", bundle: bundle, value: "RE: ", comment: "The RE: that is added to the subject line when replying to someone's email.")
+let localizedReplyStarter = NSLocalizedString("Reply-Subject-Line-Prefix", tableName: "ComposeView", bundle: bundle, value: "Re: ", comment: "The RE: that is added to the subject line when replying to someone's email.")
 
 let localizedSendTitle = NSLocalizedString("BUTTON-TITLE-Send", tableName: "ComposeView", bundle: bundle, value: "SEND", comment: "For sending an email.")
 

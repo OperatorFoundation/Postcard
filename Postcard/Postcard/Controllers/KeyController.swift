@@ -150,36 +150,33 @@ class KeyController: NSObject
     
     func sendKey(toPenPal penPal: PenPal)
     {
-        if let emailAddress = penPal.email
+        //Send key email to this user
+        let emailAddress = penPal.email
+        let gmailMessage = GTLRGmail_Message()
+        gmailMessage.raw = MailController.sharedInstance.generateKeyMessage(forPenPal: penPal)
+        
+        let sendMessageQuery = GTLRGmailQuery_UsersMessagesSend.query(withObject: gmailMessage, userId: "me", uploadParameters: nil)
+        GmailProps.service.executeQuery(sendMessageQuery, completionHandler:
         {
-            //Send key email to this user
+            (ticket, maybeResponse, maybeError) in
             
-            let gmailMessage = GTLRGmail_Message()
-            gmailMessage.raw = MailController.sharedInstance.generateKeyMessage(forPenPal: penPal)
+            //Update sentKey to "true"
+            penPal.sentKey = true
             
-            let sendMessageQuery = GTLRGmailQuery_UsersMessagesSend.query(withObject: gmailMessage, userId: "me", uploadParameters: nil)
-            GmailProps.service.executeQuery(sendMessageQuery, completionHandler:
+            //Save this PenPal to core data
+            do
             {
-                (ticket, maybeResponse, maybeError) in
+                try penPal.managedObjectContext?.save()
+                print("Sent a key to \(penPal.email).\n")
+            }
+            catch
+            {
+                let saveError = error as NSError
+                print("\(saveError), \(saveError.userInfo)")
                 
-                //Update sentKey to "true"
-                penPal.sentKey = true
-                
-                //Save this PenPal to core data
-                do
-                {
-                    try penPal.managedObjectContext?.save()
-                    print("Sent a key to \(penPal.email).\n")
-                }
-                catch
-                {
-                    let saveError = error as NSError
-                    print("\(saveError), \(saveError.userInfo)")
-                    
-                    self.showAlert(String(format: localizedPenPalStatusError, emailAddress))
-                }
-            })
-        }
+                self.showAlert(String(format: localizedPenPalStatusError, emailAddress))
+            }
+        })
     }
     
     fileprivate func createNewKeyPair() -> Box.KeyPair

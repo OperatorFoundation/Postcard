@@ -177,6 +177,8 @@ class MailController: NSObject
                     }
                     if let _ = maybeResponse, let managedContext = self.managedObjectContext
                     {
+                        print("DELETED EMAIL")
+                        
                         managedContext.delete(thisPostcard)
                         do
                         {
@@ -193,7 +195,7 @@ class MailController: NSObject
     }
     
     //Deletes Gmail Messages only
-    func trashGmailMessage(withId messageId: String, completion: @escaping (_ successful: Bool) -> Void)
+    func trashGmailMessage(withId messageId: String)
     {
         if messageId != ""
         {
@@ -204,12 +206,11 @@ class MailController: NSObject
                 
                 if let error = maybeError
                 {
-                    completion(false)
                     print("ERROR deleting email:\(error.localizedDescription)")
                 }
                 if let _ = maybeResponse
                 {
-                    completion(true)
+                    print("DELETED EMAIL")
                 }
             })
         }
@@ -286,13 +287,20 @@ class MailController: NSObject
                                         //Process the attachments
                                         if let attachment = maybeAttachment as? GTLRGmail_MessagePartBody
                                         {
+                                            var keyCompareSucceeded = false
+                                            
                                             if thisPart.mimeType == PostCardProps.keyMimeType
                                             {
-                                                self.processPenPalKeyAttachment(attachment, forMessage: message, hasReceiverKey: true)
+                                                keyCompareSucceeded = self.processPenPalKeyAttachment(attachment, forMessage: message, hasReceiverKey: true)
                                             }
                                             else if thisPart.mimeType == PostCardProps.senderKeyMimeType
                                             {
-                                                self.processPenPalKeyAttachment(attachment, forMessage: message, hasReceiverKey: false)
+                                                keyCompareSucceeded = self.processPenPalKeyAttachment(attachment, forMessage: message, hasReceiverKey: false)
+                                            }
+                                            
+                                            if !keyCompareSucceeded
+                                            {
+                                                print("Keycompare failed for Message ID \(messageIdentifier): \n" + payload.description + "\n Payload had \(payload.parts!.count) parts: \(payload.parts?.description).")
                                             }
                                         }
                                     })
@@ -401,8 +409,9 @@ class MailController: NSObject
         {
             if let secretKey = keyController.myPrivateKey
             {
-                if let penPal = postcard.from, let penPalKey = penPal.key, let penPalEMail = penPal.email
+                if let penPal = postcard.from, let penPalKey = penPal.key
                 {
+                    let penPalEMail = penPal.email
                     if let cipherText = postcard.cipherText
                     {
                         if let decryptedPostcard = sodium.box.open(nonceAndAuthenticatedCipherText: cipherText as Data, senderPublicKey: penPalKey as Box.PublicKey, recipientSecretKey: secretKey)
@@ -415,8 +424,8 @@ class MailController: NSObject
                             showAlert(String(format: localizedWrongKeyError, penPalEMail))
                             print("\nFailed to decrypt message:\n")
                             print("Sender's Public Key: \(penPalKey)\n")
-                            print("My public key: \(keyController.mySharedKey)")
-                            print("My Secret Key: \(secretKey)\n")
+                            print("My public key: \(keyController.mySharedKey?.description)")
+                            print("My Secret Key: \(secretKey.description)\n")
                         }
                     }
                     else
@@ -597,8 +606,10 @@ class MailController: NSObject
     //MARK: Process Different Message Types
     
     //Check if the downloaded attachment is valid and save the information as a new penpal to core data
-    func processPenPalKeyAttachment(_ attachment: GTLRGmail_MessagePartBody, forMessage message: GTLRGmail_Message, hasReceiverKey: Bool)
+    func processPenPalKeyAttachment(_ attachment: GTLRGmail_MessagePartBody, forMessage message: GTLRGmail_Message, hasReceiverKey: Bool) -> Bool
     {
+        var keyCompareSucceeded = true
+        
         //Check the headers for the message sender
         if let messagePayload = message.payload, let headers: [GTLRGmail_MessagePartHeader] = messagePayload.headers
         {
@@ -612,7 +623,7 @@ class MailController: NSObject
                     guard let decodedAttachment = stringDecodedToData(attachmentDataString!)
                         else
                     {
-                        return
+                        return false
                     }
                     
                     //Check if we have this email address saved as a penpal
@@ -626,7 +637,7 @@ class MailController: NSObject
                         {
                             print("Could not find recipient's stored key")
                             
-                            return
+                            return false
                         }
                         
                         guard let recipientStoredDate = keyController.myKeyTimestamp
@@ -634,7 +645,7 @@ class MailController: NSObject
                         {
                             //This should never happen as KeyController checks for this on init
                             print("Unable to process key attachment as user key has no timestamp")
-                            return
+                            return false
                         }
                         
                         if hasReceiverKey
@@ -644,9 +655,8 @@ class MailController: NSObject
                                 else
                             {
                                 print("Unable to get public keys from key attachment")
-                                return
+                                return false
                             }
-                            compare(recipientKey: timestampedKeys.recipientPublicKey, andTimestamp: timestampedKeys.recipientKeyTimestamp, withStoredKey: recipientStoredKey, andTimestamp: recipientStoredDate, forPenPal: thisPenPal, andMessageId: message.identifier ?? "")
                             
                             guard let thisPenPalKey = thisPenPal.key
                                 else
@@ -668,7 +678,7 @@ class MailController: NSObject
                                     print("\(saveError.localizedDescription), \(saveError.userInfo)")
                                 }
                                 
-                                return
+                                return false
                             }
                             
                             guard let timestamp = thisPenPal.keyTimestamp
@@ -676,10 +686,11 @@ class MailController: NSObject
                             {
                                 print("Unable to find penpal key timestamp.")
                                 
-                                return
+                                return false
                             }
+                            keyCompareSucceeded = compare(recipientKey: timestampedKeys.recipientPublicKey, andTimestamp: timestampedKeys.recipientKeyTimestamp, withStoredKey: recipientStoredKey, andTimestamp: recipientStoredDate, forPenPal: thisPenPal, andMessageId: message.identifier ?? "")
                             
-                            compare(senderKey: timestampedKeys.senderPublicKey, andTimestamp: timestampedKeys.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal, andMessageId: message.identifier ?? "")
+                            keyCompareSucceeded = keyCompareSucceeded && compare(senderKey: timestampedKeys.senderPublicKey, andTimestamp: timestampedKeys.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal, andMessageId: message.identifier ?? "")
                         }
                         else
                         {
@@ -688,7 +699,7 @@ class MailController: NSObject
                                 else
                             {
                                 print("Unable to get public keys from key attachment")
-                                return
+                                return false
                             }
                             
                             guard let thisPenPalKey = thisPenPal.key
@@ -710,7 +721,7 @@ class MailController: NSObject
                                     print("\(saveError.localizedDescription)")
                                 }
                                 
-                                return
+                                return keyCompareSucceeded
                             }
                             
                             guard let timestamp = thisPenPal.keyTimestamp
@@ -718,10 +729,10 @@ class MailController: NSObject
                             {
                                 print("Unable to find penpal key timestamp.")
                                 
-                                return
+                                return keyCompareSucceeded
                             }
                             
-                            compare(senderKey: timestampedKey.senderPublicKey, andTimestamp: timestampedKey.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal, andMessageId: message.identifier ?? "")
+                            keyCompareSucceeded = compare(senderKey: timestampedKey.senderPublicKey, andTimestamp: timestampedKey.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal, andMessageId: message.identifier ?? "")
                         }
                     }
                         //If not check for a key and create a new PenPal
@@ -731,7 +742,7 @@ class MailController: NSObject
                         if let entity = NSEntityDescription.entity(forEntityName: "PenPal", in: self.managedObjectContext!)
                         {
                             let newPal = PenPal(entity: entity, insertInto: self.managedObjectContext)
-                            newPal.email = sender
+                            newPal.email = sender!
                             //                            newPal.key = timestampedKeys.senderPublicKey as NSData?
                             //                            newPal.keyTimestamp = NSDate(timeIntervalSince1970: TimeInterval(timestampedKeys.senderKeyTimestamp))
                             newPal.addedDate = NSDate()
@@ -752,9 +763,11 @@ class MailController: NSObject
                 }
             }
         }
+        
+        return keyCompareSucceeded
     }
     
-    func compare(recipientKey: Data, andTimestamp timestamp: Int64, withStoredKey recipientStoredKey: Data, andTimestamp storedTimestamp: NSDate, forPenPal thisPenPal: PenPal, andMessageId messageId: String)
+    func compare(recipientKey: Data, andTimestamp timestamp: Int64, withStoredKey recipientStoredKey: Data, andTimestamp storedTimestamp: NSDate, forPenPal thisPenPal: PenPal, andMessageId messageId: String) -> Bool
     {
         guard recipientKey == recipientStoredKey
             else
@@ -773,16 +786,19 @@ class MailController: NSObject
                 print("recipientKey: \(recipientKey), andTimestamp \(timestamp), recipientStoredKey: \(recipientStoredKey), storedTimestamp: \(storedTimestamp), forPenPal \(thisPenPal), andMessageId \(messageId)")
             }
             
-            return
+            return false
         }
+        
+        return true
     }
     
-    func compare(senderKey: Data, andTimestamp timestamp: Int64, withStoredKey senderStoredKey: NSData, andTimestamp storedTimestamp: NSDate, forPenPal thisPenPal: PenPal, andMessageId messageId: String)
+    func compare(senderKey: Data, andTimestamp timestamp: Int64, withStoredKey senderStoredKey: NSData, andTimestamp storedTimestamp: NSDate, forPenPal thisPenPal: PenPal, andMessageId messageId: String) -> Bool
     {
         //Check to see if the sender's key we received matches what we have stored
         if senderKey == senderStoredKey as Data
         {
             //print("We have the key for \(sender) and it matches the new one we received. Hooray \n")
+            return true
         }
         else
         {
@@ -798,11 +814,10 @@ class MailController: NSObject
                 //received key is newer
                 alertReceivedNewerSenderKey(senderPublicKey: senderKey, senderKeyTimestamp: timestamp, from: thisPenPal, withMessageId: messageId)
             }
+            
+            return false
         }
     }
-    
-    
-    
     
     ///TODO: Approve and localize strings for translation
     func alertReceivedOutdatedSenderKey(from penPal: PenPal, withMessageId messageId: String)
@@ -812,9 +827,7 @@ class MailController: NSObject
         oldKeyAlert.informativeText = "You should let this contact know that they sent you a message using a previous version of their encryption settings."
         oldKeyAlert.runModal()
         
-        trashGmailMessage(withId: messageId) { (asDeleted) in
-            //Deleted Gmail Message with old key
-        }
+        trashGmailMessage(withId: messageId)
     }
     
     func alertReceivedNewerSenderKey(senderPublicKey: Data, senderKeyTimestamp: Int64, from penPal: PenPal, withMessageId messageId: String)
@@ -847,17 +860,18 @@ class MailController: NSObject
         else if response == NSAlertFirstButtonReturn
         {
             //User has chosen to ignore contact's new key, let's delete it so the user does not keep getting these alerts
-            trashGmailMessage(withId: messageId, completion: { (wasDeleted) in
-                //Deleted message with new contact key
-            })
+            trashGmailMessage(withId: messageId)
         }
     }
     
     func alertReceivedOutdatedRecipientKey(from penPal: PenPal, withMessageId messageId: String)
     {
+        //Delete the message as we will be unable to read it
+        trashGmailMessage(withId: messageId)
+        
         let oldKeyAlert = NSAlert()
-        oldKeyAlert.messageText = "\(penPal.email?.description) used an older version of your security settings. Send new settings to this contact?"
-        oldKeyAlert.informativeText = "Cannot decrypt this message as it was encrypted using your old settings. Do you want to send them a new invitation to be your PenPal? You will not be able to read any new messages they send until they have your new information. Choose 'No' if you have a previous installation of Postcard and you are going to import those settings."
+        oldKeyAlert.messageText = "\(penPal.email) used an older version of your security settings. Send new settings to this contact?"
+        oldKeyAlert.informativeText = "We cannot decrypt a message you received. It was encrypted using your old settings. Do you want to send a new invitation to this contact? You will not be able to read any new messages they send until you do. Choose 'No' if you have a previous installation of Postcard and you are going to import those settings."
         oldKeyAlert.addButton(withTitle: "No")
         oldKeyAlert.addButton(withTitle: "Yes")
         let response = oldKeyAlert.runModal()
@@ -866,11 +880,6 @@ class MailController: NSObject
         {
             //User wants to send new key to contact
             KeyController.sharedInstance.sendKey(toPenPal: penPal)
-            
-            //Delete the message as we will be unable to read it
-            trashGmailMessage(withId: messageId, completion: { (wasDeleted) in
-                //Deleted message
-            })
         }
         else
         {
@@ -882,7 +891,7 @@ class MailController: NSObject
     func alertReceivedNewerRecipientKey(from penPal: PenPal, withMessageId messageId: String)
     {
         let newKeyAlert = NSAlert()
-        newKeyAlert.messageText = "\(penPal.email?.description) used a newer version of your security settings. Do you want to import these settings to this device?"
+        newKeyAlert.messageText = "\(penPal.email) used a newer version of your security settings. Do you want to import these settings to this device?"
         newKeyAlert.informativeText = "You received a message with newer encryption settings than what this installation of Postcard is using. This may be because you installed postcard on a different device. Do you want to import the newer settings from the other installation? Choose 'No' if you want to keep these settings."
         newKeyAlert.addButton(withTitle: "No")
         newKeyAlert.addButton(withTitle: "Yes")
@@ -897,9 +906,7 @@ class MailController: NSObject
         {
             //User selected No
             //Delete this message as we will be unable to read it
-            trashGmailMessage(withId: messageId, completion: { (wasDeleted) in
-                //Attempted to delete message from Gmail
-            })
+            trashGmailMessage(withId: messageId)
         }
     }
     
@@ -1078,11 +1085,10 @@ class MailController: NSObject
     
     func generateMessage(forPenPal penPal: PenPal, subject: String, body: String, maybeAttachments: [URL]?, withKey key: Data) -> String?
     {
-        guard let emailAddress = penPal.email else {
-            return nil
-        }
+        let emailAddress = penPal.email
         
-        guard let key = penPal.key else {
+        guard let key = penPal.key else
+        {
             return nil
         }
         

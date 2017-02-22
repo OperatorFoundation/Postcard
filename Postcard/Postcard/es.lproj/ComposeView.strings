@@ -8,5 +8,5 @@
 "BUTTON-TITLE-Send" = "ENVIAR";
 
 /* The RE: that is added to the subject line when replying to someone's email. */
-"Reply-Subject-Line-Prefix" = "ASUNTO:";
+"Reply-Subject-Line-Prefix" = "Re: ";
 

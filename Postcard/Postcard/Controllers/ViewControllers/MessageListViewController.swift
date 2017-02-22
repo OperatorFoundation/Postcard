@@ -41,7 +41,7 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
     
     @IBAction func rowSelected(_ sender: NSTableView)
     {
-        if let selectedPostcard = postcardsArrayController.selectedObjects[0] as? Postcard
+        if !postcardsArrayController.selectedObjects.isEmpty, let selectedPostcard = postcardsArrayController.selectedObjects[0] as? Postcard
         {
             //Decrypt the postcard on selection
             //TODO: Should this be a callback function?
@@ -55,6 +55,9 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
             if let messageVC: MessageViewController = splitVC.childViewControllers[1] as? MessageViewController
             {
                 messageVC.postcardObjectController.content = selectedPostcard
+                messageVC.headerView.isHidden = false
+//                let newConstraint = NSLayoutConstraint(item: messageVC.contentView, attribute: .top, relatedBy: .equal, toItem: messageVC.headerView, attribute: .bottom, multiplier: 1, constant: 0)
+//                newConstraint.isActive = true
             }
         }
         else
@@ -63,6 +66,9 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
             if let messageVC: MessageViewController = splitVC.childViewControllers[1] as? MessageViewController
             {
                 messageVC.postcardObjectController.content = nil
+                messageVC.headerView.isHidden = true
+//                let newConstraint = NSLayoutConstraint(item: messageVC.contentView, attribute: .top, relatedBy: .equal, toItem: messageVC.headerView, attribute: .top, multiplier: 1, constant: 0)
+//                newConstraint.isActive = true
             }
         }
     }

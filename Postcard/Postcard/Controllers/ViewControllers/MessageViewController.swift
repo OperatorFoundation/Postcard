@@ -17,6 +17,8 @@ class MessageViewController: NSViewController
     @IBOutlet weak var attachmentView: DesignableView!
     @IBOutlet weak var attachmentButton: NSButton!
     @IBOutlet weak var messageContentView: NSView!
+    @IBOutlet weak var headerView: DesignableView!
+    @IBOutlet weak var contentView: DesignableView!
     
     var managedContext = (NSApplication.shared().delegate as! AppDelegate).managedObjectContext
 
@@ -71,8 +73,10 @@ class MessageViewController: NSViewController
             {
                 if let composeVC = segue.destinationController as? ComposeViewController
                 {
-                    if let from = rePostcard.from, let sendTo = from.email, let subject = rePostcard.subject
+                    if let from = rePostcard.from, let subject = rePostcard.subject
                     {
+                        let sendTo = from.email
+                        
                         composeVC.sendTo = sendTo
                         composeVC.reSubject = localizedReplyStarter + subject
                     }

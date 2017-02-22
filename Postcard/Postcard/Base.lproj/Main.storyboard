@@ -449,19 +449,6 @@
                                 <rect key="frame" x="0.0" y="0.0" width="1070" height="640"/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="welcomeBG" id="73K-Pv-PgL"/>
                             </imageView>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Wn7-Kz-a9E">
-                                <rect key="frame" x="440" y="20" width="191" height="53"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="53" id="3bD-6O-lqs"/>
-                                </constraints>
-                                <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="btn_google_signin_light_normal_web-1" imagePosition="only" alignment="center" enabled="NO" imageScaling="proportionallyDown" inset="2" id="qRg-3b-xLt">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="googleSignInTap:" target="FrX-f0-5La" id="Kgl-Fi-jGF"/>
-                                </connections>
-                            </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WZl-v2-qHO">
                                 <rect key="frame" x="83" y="470" width="541" height="77"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -494,6 +481,20 @@
                                     </textField>
                                 </subviews>
                             </customView>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Wn7-Kz-a9E">
+                                <rect key="frame" x="473" y="20" width="125" height="53"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="53" id="3bD-6O-lqs"/>
+                                    <constraint firstAttribute="width" constant="125" id="lp8-qp-th6"/>
+                                </constraints>
+                                <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="googleButton" imagePosition="only" alignment="center" enabled="NO" inset="2" id="qRg-3b-xLt">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="googleSignInTap:" target="FrX-f0-5La" id="Kgl-Fi-jGF"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="6mm-b5-h8Y" firstAttribute="centerX" secondItem="KnJ-2N-DXK" secondAttribute="centerX" id="XZ1-v3-gU6"/>
@@ -613,14 +614,14 @@
                             <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZqX-NR-IcW">
                                 <rect key="frame" x="0.0" y="41" width="635" height="360"/>
                                 <clipView key="contentView" id="yWJ-5o-YoQ">
-                                    <rect key="frame" x="0.0" y="0.0" width="635" height="360"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="620" height="360"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textView importsGraphics="NO" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" linkDetection="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="fTO-Yo-Dj2">
-                                            <rect key="frame" x="0.0" y="0.0" width="635" height="360"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="620" height="360"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <size key="minSize" width="635" height="360"/>
+                                            <size key="minSize" width="620" height="360"/>
                                             <size key="maxSize" width="635" height="10000000"/>
                                             <attributedString key="textStorage">
                                                 <fragment content=" ">
@@ -640,7 +641,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="qUR-A2-GzA">
-                                    <rect key="frame" x="619" y="0.0" width="16" height="360"/>
+                                    <rect key="frame" x="620" y="0.0" width="15" height="360"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
@@ -1156,6 +1157,175 @@
                                     </binding>
                                 </connections>
                             </imageView>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="bTf-Ih-gdx" userLabel="Header" customClass="DesignableView" customModule="Postcard" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="554" width="677" height="86"/>
+                                <subviews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LYV-pa-jXp">
+                                        <rect key="frame" x="71" y="14" width="4" height="19"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="mlX-QB-KB0">
+                                            <font key="font" size="12" name="ProximaNovaA-Regular"/>
+                                            <color key="textColor" red="0.1764705882" green="0.20784313730000001" blue="0.2274509804" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <binding destination="pmd-tL-J5K" name="value" keyPath="selection.subject" id="Srd-IV-Qpa">
+                                                <dictionary key="options">
+                                                    <bool key="NSConditionallySetsHidden" value="YES"/>
+                                                    <bool key="NSRaisesForNotApplicableKeys" value="NO"/>
+                                                </dictionary>
+                                            </binding>
+                                        </connections>
+                                    </textField>
+                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6sF-P3-REH">
+                                        <rect key="frame" x="489" y="12" width="80" height="22"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="22" id="dAh-cE-iZP"/>
+                                            <constraint firstAttribute="width" constant="80" id="huo-PY-tqG"/>
+                                        </constraints>
+                                        <buttonCell key="cell" type="bevel" title="REPLY" bezelStyle="regularSquare" image="redButton" imagePosition="overlaps" alignment="center" imageScaling="axesIndependently" inset="2" id="xaH-wQ-gG5">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <binding destination="pmd-tL-J5K" name="enabled" keyPath="selection.from.email" id="cJl-fX-Ur5">
+                                                <dictionary key="options">
+                                                    <string key="NSValueTransformerName">NSIsNotNil</string>
+                                                </dictionary>
+                                            </binding>
+                                            <segue destination="NgT-Wc-b8b" kind="modal" identifier="Reply To Message" id="pkb-71-Y9W"/>
+                                        </connections>
+                                    </button>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="51u-rg-MY5">
+                                        <rect key="frame" x="495" y="58" width="164" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="160" id="J9r-Pq-8wn"/>
+                                        </constraints>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="cj6-9b-DRk">
+                                            <dateFormatter key="formatter" dateStyle="medium" timeStyle="short" id="UHG-dG-xyd"/>
+                                            <font key="font" size="13" name="ProximaNovaACond-Light"/>
+                                            <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <binding destination="pmd-tL-J5K" name="value" keyPath="selection.receivedDate" id="JkZ-Lr-tHU"/>
+                                        </connections>
+                                    </textField>
+                                    <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="RNK-18-31p">
+                                        <rect key="frame" x="0.0" y="-2" width="86" height="5"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    </box>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hAF-E4-yyR">
+                                        <rect key="frame" x="71" y="37" width="4" height="17"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="17" id="I4f-a4-cwo"/>
+                                        </constraints>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="jnb-2h-PWh">
+                                            <font key="font" size="12" name="ProximaNovaA-Regular"/>
+                                            <color key="textColor" red="0.1764705882" green="0.20784313730000001" blue="0.2274509804" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <binding destination="pmd-tL-J5K" name="value" keyPath="selection.from.email" id="5Rq-yn-3NT">
+                                                <dictionary key="options">
+                                                    <bool key="NSConditionallySetsHidden" value="YES"/>
+                                                    <bool key="NSRaisesForNotApplicableKeys" value="NO"/>
+                                                </dictionary>
+                                            </binding>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oCH-GC-grN">
+                                        <rect key="frame" x="71" y="54" width="4" height="21"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="m98-VY-1BN">
+                                            <font key="font" size="14" name="ProximaNovaA-Bold"/>
+                                            <color key="textColor" red="0.1764705882" green="0.20784313730000001" blue="0.2274509804" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <binding destination="pmd-tL-J5K" name="value" keyPath="selection.from.name" id="44k-Sh-3PF">
+                                                <dictionary key="options">
+                                                    <bool key="NSConditionallySetsHidden" value="YES"/>
+                                                    <bool key="NSRaisesForNotApplicableKeys" value="NO"/>
+                                                </dictionary>
+                                            </binding>
+                                        </connections>
+                                    </textField>
+                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5f0-dr-wCr">
+                                        <rect key="frame" x="577" y="12" width="80" height="22"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="22" id="E18-kw-Noo"/>
+                                            <constraint firstAttribute="width" constant="80" id="H0R-9U-3Fj"/>
+                                        </constraints>
+                                        <buttonCell key="cell" type="bevel" title="DELETE" bezelStyle="rounded" image="orangeButton" imagePosition="overlaps" alignment="center" imageScaling="axesIndependently" inset="2" id="rOj-aE-0OK">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="deleteClick:" target="R8t-QV-JrK" id="fA2-mE-QEX"/>
+                                        </connections>
+                                    </button>
+                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ngJ-FX-ha4" userLabel="Default Image View">
+                                        <rect key="frame" x="8" y="15" width="57" height="57"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="57" id="3Uz-TQ-9w9"/>
+                                            <constraint firstAttribute="width" constant="57" id="jiG-ok-iPR"/>
+                                        </constraints>
+                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="defaultUser" id="sNF-Bj-7ZE"/>
+                                        <connections>
+                                            <binding destination="pmd-tL-J5K" name="hidden" keyPath="selection.from.photo" id="88l-q7-bGm">
+                                                <dictionary key="options">
+                                                    <string key="NSValueTransformerName">NSIsNotNil</string>
+                                                </dictionary>
+                                            </binding>
+                                        </connections>
+                                    </imageView>
+                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="a5g-jP-frf" userLabel="PenPal Image View">
+                                        <rect key="frame" x="8" y="15" width="57" height="57"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="57" id="Hrr-zy-zfB"/>
+                                            <constraint firstAttribute="height" constant="57" id="bQS-Ic-g4v"/>
+                                        </constraints>
+                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="defaultUser" id="3L7-Go-xok"/>
+                                        <connections>
+                                            <binding destination="pmd-tL-J5K" name="value" keyPath="selection.from.photo" id="Dg7-xj-pEi"/>
+                                        </connections>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="ngJ-FX-ha4" firstAttribute="leading" secondItem="bTf-Ih-gdx" secondAttribute="leading" constant="8" id="12Z-cq-NCU"/>
+                                    <constraint firstItem="a5g-jP-frf" firstAttribute="height" secondItem="ngJ-FX-ha4" secondAttribute="height" id="1D8-6S-5fz"/>
+                                    <constraint firstAttribute="bottom" secondItem="5f0-dr-wCr" secondAttribute="bottom" constant="12" id="1L8-OX-AIk"/>
+                                    <constraint firstItem="ngJ-FX-ha4" firstAttribute="centerY" secondItem="bTf-Ih-gdx" secondAttribute="centerY" id="67d-cX-5Tg"/>
+                                    <constraint firstItem="hAF-E4-yyR" firstAttribute="top" secondItem="oCH-GC-grN" secondAttribute="bottom" id="BSs-HF-sX8"/>
+                                    <constraint firstItem="5f0-dr-wCr" firstAttribute="leading" secondItem="6sF-P3-REH" secondAttribute="trailing" constant="8" id="DBc-r0-Gnk"/>
+                                    <constraint firstItem="a5g-jP-frf" firstAttribute="centerX" secondItem="ngJ-FX-ha4" secondAttribute="centerX" id="EIY-1z-wKp"/>
+                                    <constraint firstItem="a5g-jP-frf" firstAttribute="width" secondItem="ngJ-FX-ha4" secondAttribute="width" id="Iax-dE-bgu"/>
+                                    <constraint firstAttribute="height" constant="86" id="LES-8m-CrT"/>
+                                    <constraint firstItem="hAF-E4-yyR" firstAttribute="leading" secondItem="ngJ-FX-ha4" secondAttribute="trailing" constant="8" id="S2C-lc-dRM"/>
+                                    <constraint firstItem="oCH-GC-grN" firstAttribute="top" secondItem="bTf-Ih-gdx" secondAttribute="top" constant="11" id="ZA5-Rg-2uF"/>
+                                    <constraint firstItem="LYV-pa-jXp" firstAttribute="leading" secondItem="ngJ-FX-ha4" secondAttribute="trailing" constant="8" id="a3Y-vO-Dt2"/>
+                                    <constraint firstAttribute="trailing" secondItem="5f0-dr-wCr" secondAttribute="trailing" constant="20" id="alG-VO-gBI"/>
+                                    <constraint firstAttribute="trailing" secondItem="51u-rg-MY5" secondAttribute="trailing" constant="20" id="kT0-1Q-fTE"/>
+                                    <constraint firstAttribute="bottom" secondItem="6sF-P3-REH" secondAttribute="bottom" constant="12" id="mwt-wa-imm"/>
+                                    <constraint firstItem="oCH-GC-grN" firstAttribute="leading" secondItem="ngJ-FX-ha4" secondAttribute="trailing" constant="8" id="qnB-ll-Bif"/>
+                                    <constraint firstItem="51u-rg-MY5" firstAttribute="top" secondItem="bTf-Ih-gdx" secondAttribute="top" constant="8" id="t0k-sF-WzE"/>
+                                    <constraint firstItem="LYV-pa-jXp" firstAttribute="top" secondItem="hAF-E4-yyR" secondAttribute="bottom" constant="4" id="vrw-hi-Ubw"/>
+                                    <constraint firstItem="a5g-jP-frf" firstAttribute="centerY" secondItem="ngJ-FX-ha4" secondAttribute="centerY" id="xGh-Ih-faG"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="viewColor">
+                                        <color key="value" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                        <color key="value" red="0.47843137250000001" green="0.48627450979999998" blue="0.49019607840000001" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                        <real key="value" value="0.5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRounding">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </customView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="pIR-uK-uoV" userLabel="Content View" customClass="DesignableView" customModule="Postcard" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="677" height="554"/>
                                 <subviews>
@@ -1268,182 +1438,8 @@
                                     </binding>
                                 </connections>
                             </customView>
-                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="bTf-Ih-gdx" userLabel="Header" customClass="DesignableView" customModule="Postcard" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="554" width="677" height="86"/>
-                                <subviews>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LYV-pa-jXp">
-                                        <rect key="frame" x="71" y="14" width="4" height="19"/>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="mlX-QB-KB0">
-                                            <font key="font" size="12" name="ProximaNovaA-Regular"/>
-                                            <color key="textColor" red="0.1764705882" green="0.20784313730000001" blue="0.2274509804" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                        </textFieldCell>
-                                        <connections>
-                                            <binding destination="pmd-tL-J5K" name="value" keyPath="selection.subject" id="Srd-IV-Qpa">
-                                                <dictionary key="options">
-                                                    <bool key="NSConditionallySetsHidden" value="YES"/>
-                                                    <bool key="NSRaisesForNotApplicableKeys" value="NO"/>
-                                                </dictionary>
-                                            </binding>
-                                        </connections>
-                                    </textField>
-                                    <button verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6sF-P3-REH">
-                                        <rect key="frame" x="500" y="12" width="77" height="22"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="22" id="dAh-cE-iZP"/>
-                                        </constraints>
-                                        <buttonCell key="cell" type="bevel" title="REPLY" bezelStyle="regularSquare" image="redButton" imagePosition="overlaps" alignment="center" imageScaling="axesIndependently" inset="2" id="xaH-wQ-gG5">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <binding destination="pmd-tL-J5K" name="hidden" keyPath="selection.decrypted" previousBinding="cJl-fX-Ur5" id="gad-dM-B67">
-                                                <dictionary key="options">
-                                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                                </dictionary>
-                                            </binding>
-                                            <binding destination="pmd-tL-J5K" name="enabled" keyPath="selection.from.email" id="cJl-fX-Ur5">
-                                                <dictionary key="options">
-                                                    <string key="NSValueTransformerName">NSIsNotNil</string>
-                                                </dictionary>
-                                            </binding>
-                                            <segue destination="NgT-Wc-b8b" kind="modal" identifier="Reply To Message" id="pkb-71-Y9W"/>
-                                        </connections>
-                                    </button>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="51u-rg-MY5">
-                                        <rect key="frame" x="495" y="58" width="164" height="20"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="160" id="J9r-Pq-8wn"/>
-                                        </constraints>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="cj6-9b-DRk">
-                                            <dateFormatter key="formatter" dateStyle="medium" timeStyle="short" id="UHG-dG-xyd"/>
-                                            <font key="font" size="13" name="ProximaNovaACond-Light"/>
-                                            <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                        </textFieldCell>
-                                        <connections>
-                                            <binding destination="pmd-tL-J5K" name="value" keyPath="selection.receivedDate" id="JkZ-Lr-tHU"/>
-                                        </connections>
-                                    </textField>
-                                    <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="RNK-18-31p">
-                                        <rect key="frame" x="0.0" y="-2" width="86" height="5"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    </box>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hAF-E4-yyR">
-                                        <rect key="frame" x="71" y="37" width="4" height="17"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="17" id="I4f-a4-cwo"/>
-                                        </constraints>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="jnb-2h-PWh">
-                                            <font key="font" size="12" name="ProximaNovaA-Regular"/>
-                                            <color key="textColor" red="0.1764705882" green="0.20784313730000001" blue="0.2274509804" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                        </textFieldCell>
-                                        <connections>
-                                            <binding destination="pmd-tL-J5K" name="value" keyPath="selection.from.email" id="5Rq-yn-3NT">
-                                                <dictionary key="options">
-                                                    <bool key="NSConditionallySetsHidden" value="YES"/>
-                                                    <bool key="NSRaisesForNotApplicableKeys" value="NO"/>
-                                                </dictionary>
-                                            </binding>
-                                        </connections>
-                                    </textField>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oCH-GC-grN">
-                                        <rect key="frame" x="71" y="54" width="4" height="21"/>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="m98-VY-1BN">
-                                            <font key="font" size="14" name="ProximaNovaA-Bold"/>
-                                            <color key="textColor" red="0.1764705882" green="0.20784313730000001" blue="0.2274509804" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                        </textFieldCell>
-                                        <connections>
-                                            <binding destination="pmd-tL-J5K" name="value" keyPath="selection.from.name" id="44k-Sh-3PF">
-                                                <dictionary key="options">
-                                                    <bool key="NSConditionallySetsHidden" value="YES"/>
-                                                    <bool key="NSRaisesForNotApplicableKeys" value="NO"/>
-                                                </dictionary>
-                                            </binding>
-                                        </connections>
-                                    </textField>
-                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5f0-dr-wCr">
-                                        <rect key="frame" x="585" y="12" width="72" height="22"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="22" id="E18-kw-Noo"/>
-                                            <constraint firstAttribute="width" constant="72" id="H0R-9U-3Fj"/>
-                                        </constraints>
-                                        <buttonCell key="cell" type="bevel" title="DELETE" bezelStyle="rounded" image="orangeButton" imagePosition="overlaps" alignment="center" imageScaling="proportionallyDown" inset="2" id="rOj-aE-0OK">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="deleteClick:" target="R8t-QV-JrK" id="fA2-mE-QEX"/>
-                                        </connections>
-                                    </button>
-                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ngJ-FX-ha4" userLabel="Default Image View">
-                                        <rect key="frame" x="8" y="15" width="57" height="57"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="57" id="3Uz-TQ-9w9"/>
-                                            <constraint firstAttribute="width" constant="57" id="jiG-ok-iPR"/>
-                                        </constraints>
-                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="defaultUser" id="sNF-Bj-7ZE"/>
-                                        <connections>
-                                            <binding destination="pmd-tL-J5K" name="hidden" keyPath="selection.from.photo" id="88l-q7-bGm">
-                                                <dictionary key="options">
-                                                    <string key="NSValueTransformerName">NSIsNotNil</string>
-                                                </dictionary>
-                                            </binding>
-                                        </connections>
-                                    </imageView>
-                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="a5g-jP-frf" userLabel="PenPal Image View">
-                                        <rect key="frame" x="8" y="15" width="57" height="57"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="57" id="Hrr-zy-zfB"/>
-                                            <constraint firstAttribute="height" constant="57" id="bQS-Ic-g4v"/>
-                                        </constraints>
-                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="defaultUser" id="3L7-Go-xok"/>
-                                        <connections>
-                                            <binding destination="pmd-tL-J5K" name="value" keyPath="selection.from.photo" id="Dg7-xj-pEi"/>
-                                        </connections>
-                                    </imageView>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstItem="ngJ-FX-ha4" firstAttribute="leading" secondItem="bTf-Ih-gdx" secondAttribute="leading" constant="8" id="12Z-cq-NCU"/>
-                                    <constraint firstItem="a5g-jP-frf" firstAttribute="height" secondItem="ngJ-FX-ha4" secondAttribute="height" id="1D8-6S-5fz"/>
-                                    <constraint firstAttribute="bottom" secondItem="5f0-dr-wCr" secondAttribute="bottom" constant="12" id="1L8-OX-AIk"/>
-                                    <constraint firstItem="ngJ-FX-ha4" firstAttribute="centerY" secondItem="bTf-Ih-gdx" secondAttribute="centerY" id="67d-cX-5Tg"/>
-                                    <constraint firstItem="hAF-E4-yyR" firstAttribute="top" secondItem="oCH-GC-grN" secondAttribute="bottom" id="BSs-HF-sX8"/>
-                                    <constraint firstItem="5f0-dr-wCr" firstAttribute="leading" secondItem="6sF-P3-REH" secondAttribute="trailing" constant="8" id="DBc-r0-Gnk"/>
-                                    <constraint firstItem="a5g-jP-frf" firstAttribute="centerX" secondItem="ngJ-FX-ha4" secondAttribute="centerX" id="EIY-1z-wKp"/>
-                                    <constraint firstItem="a5g-jP-frf" firstAttribute="width" secondItem="ngJ-FX-ha4" secondAttribute="width" id="Iax-dE-bgu"/>
-                                    <constraint firstAttribute="height" constant="86" id="LES-8m-CrT"/>
-                                    <constraint firstItem="hAF-E4-yyR" firstAttribute="leading" secondItem="ngJ-FX-ha4" secondAttribute="trailing" constant="8" id="S2C-lc-dRM"/>
-                                    <constraint firstItem="oCH-GC-grN" firstAttribute="top" secondItem="bTf-Ih-gdx" secondAttribute="top" constant="11" id="ZA5-Rg-2uF"/>
-                                    <constraint firstItem="LYV-pa-jXp" firstAttribute="leading" secondItem="ngJ-FX-ha4" secondAttribute="trailing" constant="8" id="a3Y-vO-Dt2"/>
-                                    <constraint firstAttribute="trailing" secondItem="5f0-dr-wCr" secondAttribute="trailing" constant="20" id="alG-VO-gBI"/>
-                                    <constraint firstAttribute="trailing" secondItem="51u-rg-MY5" secondAttribute="trailing" constant="20" id="kT0-1Q-fTE"/>
-                                    <constraint firstAttribute="bottom" secondItem="6sF-P3-REH" secondAttribute="bottom" constant="12" id="mwt-wa-imm"/>
-                                    <constraint firstItem="oCH-GC-grN" firstAttribute="leading" secondItem="ngJ-FX-ha4" secondAttribute="trailing" constant="8" id="qnB-ll-Bif"/>
-                                    <constraint firstItem="51u-rg-MY5" firstAttribute="top" secondItem="bTf-Ih-gdx" secondAttribute="top" constant="8" id="t0k-sF-WzE"/>
-                                    <constraint firstItem="LYV-pa-jXp" firstAttribute="top" secondItem="hAF-E4-yyR" secondAttribute="bottom" constant="4" id="vrw-hi-Ubw"/>
-                                    <constraint firstItem="a5g-jP-frf" firstAttribute="centerY" secondItem="ngJ-FX-ha4" secondAttribute="centerY" id="xGh-Ih-faG"/>
-                                </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="color" keyPath="viewColor">
-                                        <color key="value" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
-                                        <color key="value" red="0.47843137250000001" green="0.48627450979999998" blue="0.49019607840000001" alpha="1" colorSpace="calibratedRGB"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                        <real key="value" value="0.5"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRounding">
-                                        <real key="value" value="0.0"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                            </customView>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="pIR-uK-uoV" firstAttribute="top" secondItem="bTf-Ih-gdx" secondAttribute="bottom" id="5Nh-G7-fLU"/>
                             <constraint firstItem="HFH-H0-DGu" firstAttribute="centerY" secondItem="MkB-XQ-WuK" secondAttribute="centerY" id="JzN-MG-CJS"/>
                             <constraint firstItem="bTf-Ih-gdx" firstAttribute="top" secondItem="MkB-XQ-WuK" secondAttribute="top" id="K1Y-RV-kFP"/>
                             <constraint firstItem="HFH-H0-DGu" firstAttribute="centerX" secondItem="MkB-XQ-WuK" secondAttribute="centerX" id="MiN-t2-WYD"/>
@@ -1451,6 +1447,7 @@
                             <constraint firstAttribute="trailing" secondItem="bTf-Ih-gdx" secondAttribute="trailing" id="Wam-bA-lGq"/>
                             <constraint firstAttribute="bottom" secondItem="pIR-uK-uoV" secondAttribute="bottom" id="hah-hA-9JN"/>
                             <constraint firstAttribute="trailing" secondItem="pIR-uK-uoV" secondAttribute="trailing" id="jCW-rk-gD2"/>
+                            <constraint firstItem="pIR-uK-uoV" firstAttribute="top" secondItem="bTf-Ih-gdx" secondAttribute="bottom" id="vbU-cg-fpi"/>
                             <constraint firstItem="bTf-Ih-gdx" firstAttribute="leading" secondItem="MkB-XQ-WuK" secondAttribute="leading" id="zuU-Jb-5Uh"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
@@ -1466,7 +1463,9 @@
                         <outlet property="attachmentButton" destination="ZsQ-cs-6Ri" id="H27-AX-zD4"/>
                         <outlet property="attachmentView" destination="vCR-56-T6E" id="HxS-VB-RPe"/>
                         <outlet property="bodyTextView" destination="qz1-Hw-UIC" id="dXs-R9-ZKe"/>
+                        <outlet property="contentView" destination="pIR-uK-uoV" id="hzO-IT-eCx"/>
                         <outlet property="deleteButton" destination="5f0-dr-wCr" id="ytx-IZ-c2L"/>
+                        <outlet property="headerView" destination="bTf-Ih-gdx" id="eOr-Ag-yTe"/>
                         <outlet property="messageContentView" destination="pIR-uK-uoV" id="lEo-Jd-pNd"/>
                         <outlet property="postcardObjectController" destination="pmd-tL-J5K" id="Vt4-KS-UnN"/>
                         <outlet property="replyButton" destination="6sF-P3-REH" id="9fm-YG-07f"/>
@@ -1611,12 +1610,12 @@
     <resources>
         <image name="attachicon" width="130" height="130"/>
         <image name="blueButton" width="77" height="24"/>
-        <image name="btn_google_signin_light_normal_web-1" width="191" height="46"/>
         <image name="composeTop" width="635" height="18"/>
         <image name="defaultUser" width="57" height="57"/>
         <image name="encryptedicon" width="32" height="32"/>
         <image name="exit" width="28" height="28"/>
         <image name="exitWhite" width="28" height="28"/>
+        <image name="googleButton" width="119" height="42"/>
         <image name="inbox" width="28" height="28"/>
         <image name="inboxWhite" width="28" height="28"/>
         <image name="lock" width="28" height="28"/>
@@ -1627,10 +1626,10 @@
         <image name="penpal" width="28" height="28"/>
         <image name="penpalWhite" width="28" height="28"/>
         <image name="redButton" width="77" height="24"/>
-        <image name="redButtonLarge" width="95" height="18"/>
-        <image name="welcomeBG" width="687.5" height="410.5"/>
+        <image name="redButtonLarge" width="126" height="24"/>
+        <image name="welcomeBG" width="535" height="320"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Qt2-ns-Ohj"/>
+        <segue reference="pkb-71-Y9W"/>
     </inferredMetricsTieBreakers>
 </document>
