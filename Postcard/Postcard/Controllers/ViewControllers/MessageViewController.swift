@@ -48,13 +48,11 @@ class MessageViewController: NSViewController
             let predicate = NSPredicate(format: "owner == %@", currentUser)
             postcardObjectController.fetchPredicate = predicate
         }
-        
+
         //TODO: Font setting doesn't work currently
         //Set Default Font
         if let font = NSFont(name: PostcardUI.regularAFont, size: 14)
         {
-//            let attributes = [NSFontAttributeName: font]
-//            bodyTextView.typingAttributes = attributes
             bodyTextView.font = font
             if let textStorage = bodyTextView.textStorage
             {

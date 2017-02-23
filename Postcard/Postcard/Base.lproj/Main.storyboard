@@ -1127,6 +1127,7 @@
                     </view>
                     <connections>
                         <outlet property="postcardsArrayController" destination="YdW-2W-c4E" id="KGm-Zg-QHg"/>
+                        <outlet property="postcardsTableView" destination="oEu-v1-5Hm" id="WX3-sh-GVg"/>
                     </connections>
                 </viewController>
                 <customObject id="2SL-sk-FMS" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -1325,6 +1326,13 @@
                                         <real key="value" value="0.0"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <binding destination="pmd-tL-J5K" name="hidden" keyPath="selection" id="vLI-uZ-e5r">
+                                        <dictionary key="options">
+                                            <string key="NSValueTransformerName">NSIsNotNil</string>
+                                        </dictionary>
+                                    </binding>
+                                </connections>
                             </customView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="pIR-uK-uoV" userLabel="Content View" customClass="DesignableView" customModule="Postcard" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="677" height="554"/>
@@ -1361,7 +1369,7 @@
                                                             <size key="maxSize" width="1000" height="1000"/>
                                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <connections>
-                                                                <binding destination="pmd-tL-J5K" name="attributedString" keyPath="selection.body" id="nny-5d-03Y">
+                                                                <binding destination="pmd-tL-J5K" name="attributedString" keyPath="selection.body" id="Pyb-ac-BIk">
                                                                     <dictionary key="options">
                                                                         <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
                                                                         <bool key="NSConditionallySetsEditable" value="NO"/>

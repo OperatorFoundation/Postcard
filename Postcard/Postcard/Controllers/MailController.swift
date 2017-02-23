@@ -131,30 +131,37 @@ class MailController: NSObject
         }
     }
     
-    func updateLabels(forMessage message: GTLRGmail_Message)
+    func updateLabels(forMessage message: GTLRGmail_Message, withId messageId: String)
     {
-        if ourLabelId != nil, message.identifier != nil
+        if ourLabelId != nil
         {
-            if !(message.labelIds!.contains(ourLabelId!))
+            //Make sure this message doesn't already have our label
+            if message.labelIds != nil
             {
-                //Update the message so that it has a Postcard label
-                let modifyRequestObject = GTLRGmail_ModifyMessageRequest(json: ["addLabelIds": [ourLabelId],
-                                                                                "removeLabelIds": ["INBOX", "UNREAD"]])
-                let updateLabelQuery = GTLRGmailQuery_UsersMessagesModify.query(withObject: modifyRequestObject, userId: self.gmailUserId, identifier: message.identifier!)
-                GmailProps.service.executeQuery(updateLabelQuery, completionHandler:
-                    {
-                        (ticket, maybeResponse, maybeError) in
-                        
-                        if let error = maybeError
-                        {
-                            print("ERROR adding a label to gmail message:\(error.localizedDescription)")
-                        }
-                        else if let _ = maybeResponse
-                        {
-                            print("ADDED POSTCARD LABEL TO GMAIL MESSAGE")
-                        }
-                })
+                if (message.labelIds!.contains(ourLabelId!))
+                {
+                    return
+                }
             }
+            
+            //Update the message so that it has a Postcard label
+            let modifyRequestObject = GTLRGmail_ModifyMessageRequest(json: ["addLabelIds": [ourLabelId],
+                                                                            "removeLabelIds": ["INBOX", "UNREAD"]])
+            let updateLabelQuery = GTLRGmailQuery_UsersMessagesModify.query(withObject: modifyRequestObject, userId: self.gmailUserId, identifier: messageId)
+            GmailProps.service.executeQuery(updateLabelQuery, completionHandler:
+            {
+                (ticket, maybeResponse, maybeError) in
+                
+                if let error = maybeError
+                {
+                    print("ERROR adding a label to gmail message:\(error.localizedDescription)")
+                }
+                else if let _ = maybeResponse
+                {
+                    print("ADDED POSTCARD LABEL TO GMAIL MESSAGE")
+                }
+            })
+            
         }
     }
     
@@ -274,7 +281,7 @@ class MailController: NSObject
                             for thisPart in parts where thisPart.mimeType == PostCardProps.keyMimeType || thisPart.mimeType == PostCardProps.senderKeyMimeType
                             {
                                 //Label it with our Gmail Label
-                                self.updateLabels(forMessage: message)
+                                self.updateLabels(forMessage: message, withId: messageIdentifier)
                                 
                                 //Download the attachment
                                 if let messageBody = thisPart.body, let attachmentId = messageBody.attachmentId
@@ -291,16 +298,16 @@ class MailController: NSObject
                                             
                                             if thisPart.mimeType == PostCardProps.keyMimeType
                                             {
-                                                keyCompareSucceeded = self.processPenPalKeyAttachment(attachment, forMessage: message, hasReceiverKey: true)
+                                                keyCompareSucceeded = self.processPenPalKeyAttachment(attachment, forMessage: message, withID: messageIdentifier, hasReceiverKey: true)
                                             }
                                             else if thisPart.mimeType == PostCardProps.senderKeyMimeType
                                             {
-                                                keyCompareSucceeded = self.processPenPalKeyAttachment(attachment, forMessage: message, hasReceiverKey: false)
+                                                keyCompareSucceeded = self.processPenPalKeyAttachment(attachment, forMessage: message, withID: messageIdentifier, hasReceiverKey: false)
                                             }
                                             
                                             if !keyCompareSucceeded
                                             {
-                                                print("Keycompare failed for Message ID \(messageIdentifier): \n" + payload.description + "\n Payload had \(payload.parts!.count) parts: \(payload.parts?.description).")
+                                                print("\nKeycompare failed for Message ID \(messageIdentifier): \n" + payload.description + "\n Payload had \(payload.parts!.count) parts: \(payload.parts?.description).\n")
                                             }
                                         }
                                     })
@@ -606,7 +613,7 @@ class MailController: NSObject
     //MARK: Process Different Message Types
     
     //Check if the downloaded attachment is valid and save the information as a new penpal to core data
-    func processPenPalKeyAttachment(_ attachment: GTLRGmail_MessagePartBody, forMessage message: GTLRGmail_Message, hasReceiverKey: Bool) -> Bool
+    func processPenPalKeyAttachment(_ attachment: GTLRGmail_MessagePartBody, forMessage message: GTLRGmail_Message, withID messageId: String, hasReceiverKey: Bool) -> Bool
     {
         var keyCompareSucceeded = true
         
@@ -688,9 +695,9 @@ class MailController: NSObject
                                 
                                 return false
                             }
-                            keyCompareSucceeded = compare(recipientKey: timestampedKeys.recipientPublicKey, andTimestamp: timestampedKeys.recipientKeyTimestamp, withStoredKey: recipientStoredKey, andTimestamp: recipientStoredDate, forPenPal: thisPenPal, andMessageId: message.identifier ?? "")
+                            keyCompareSucceeded = compare(recipientKey: timestampedKeys.recipientPublicKey, andTimestamp: timestampedKeys.recipientKeyTimestamp, withStoredKey: recipientStoredKey, andTimestamp: recipientStoredDate, forPenPal: thisPenPal, andMessageId: messageId)
                             
-                            keyCompareSucceeded = keyCompareSucceeded && compare(senderKey: timestampedKeys.senderPublicKey, andTimestamp: timestampedKeys.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal, andMessageId: message.identifier ?? "")
+                            keyCompareSucceeded = keyCompareSucceeded && compare(senderKey: timestampedKeys.senderPublicKey, andTimestamp: timestampedKeys.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal, andMessageId: messageId)
                         }
                         else
                         {
@@ -732,7 +739,7 @@ class MailController: NSObject
                                 return keyCompareSucceeded
                             }
                             
-                            keyCompareSucceeded = compare(senderKey: timestampedKey.senderPublicKey, andTimestamp: timestampedKey.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal, andMessageId: message.identifier ?? "")
+                            keyCompareSucceeded = compare(senderKey: timestampedKey.senderPublicKey, andTimestamp: timestampedKey.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal, andMessageId: messageId)
                         }
                     }
                         //If not check for a key and create a new PenPal
@@ -823,7 +830,7 @@ class MailController: NSObject
     func alertReceivedOutdatedSenderKey(from penPal: PenPal, withMessageId messageId: String)
     {
         let oldKeyAlert = NSAlert()
-        oldKeyAlert.messageText = "This email cannot be read. It was encrypted using older settings for: \(penPal.email)"
+        oldKeyAlert.messageText = "This email cannot be read and will be deleted. It was encrypted using older settings for: \(penPal.email)"
         oldKeyAlert.informativeText = "You should let this contact know that they sent you a message using a previous version of their encryption settings."
         oldKeyAlert.runModal()
         
@@ -834,7 +841,7 @@ class MailController: NSObject
     {
         let newKeyAlert = NSAlert()
         newKeyAlert.messageText = "Accept PenPal's new encryption settings?"
-        newKeyAlert.informativeText = "It looks like \(penPal.email) reset their encryption. Do you want to accept their new settings? You will no longer be able to read their old messages once you do, but you will be able to read the new ones."
+        newKeyAlert.informativeText = "It looks like \(penPal.email) reset their encryption. Do you want to accept their new settings? You will no longer be able to read their old messages once you do, but you will be able to read the new ones. If you do not, this message or invite will be deleted."
         newKeyAlert.addButton(withTitle: "No")
         newKeyAlert.addButton(withTitle: "Yes")
         let response = newKeyAlert.runModal()
@@ -866,12 +873,9 @@ class MailController: NSObject
     
     func alertReceivedOutdatedRecipientKey(from penPal: PenPal, withMessageId messageId: String)
     {
-        //Delete the message as we will be unable to read it
-        trashGmailMessage(withId: messageId)
-        
         let oldKeyAlert = NSAlert()
         oldKeyAlert.messageText = "\(penPal.email) used an older version of your security settings. Send new settings to this contact?"
-        oldKeyAlert.informativeText = "We cannot decrypt a message you received. It was encrypted using your old settings. Do you want to send a new invitation to this contact? You will not be able to read any new messages they send until you do. Choose 'No' if you have a previous installation of Postcard and you are going to import those settings."
+        oldKeyAlert.informativeText = "A message or invitation was received that uses your old settings. You will not be able to read any new messages they send until they have your current settings, however this message or invitation will be deleted as it cannot be read. Choose 'No' if you have a previous installation of Postcard and you are going to import those settings."
         oldKeyAlert.addButton(withTitle: "No")
         oldKeyAlert.addButton(withTitle: "Yes")
         let response = oldKeyAlert.runModal()
@@ -880,6 +884,9 @@ class MailController: NSObject
         {
             //User wants to send new key to contact
             KeyController.sharedInstance.sendKey(toPenPal: penPal)
+            
+            //Delete the message as we will be unable to read it
+            trashGmailMessage(withId: messageId)
         }
         else
         {
@@ -892,7 +899,7 @@ class MailController: NSObject
     {
         let newKeyAlert = NSAlert()
         newKeyAlert.messageText = "\(penPal.email) used a newer version of your security settings. Do you want to import these settings to this device?"
-        newKeyAlert.informativeText = "You received a message with newer encryption settings than what this installation of Postcard is using. This may be because you installed postcard on a different device. Do you want to import the newer settings from the other installation? Choose 'No' if you want to keep these settings."
+        newKeyAlert.informativeText = "You received a message with newer encryption settings than what this installation of Postcard is using. This may be because you installed postcard on a different device. Do you want to import the newer settings from the other installation? Choose 'No' if you want to keep these settings (This message or invitation will be deleted as it cannot be read)."
         newKeyAlert.addButton(withTitle: "No")
         newKeyAlert.addButton(withTitle: "Yes")
         let response = newKeyAlert.runModal()

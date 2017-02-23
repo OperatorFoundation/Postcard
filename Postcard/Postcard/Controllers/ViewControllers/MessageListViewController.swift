@@ -11,6 +11,7 @@ import Cocoa
 class MessageListViewController: NSViewController, NSTableViewDelegate
 {
     @IBOutlet var postcardsArrayController: NSArrayController!
+    @IBOutlet weak var postcardsTableView: NSTableView!
     
     var managedContext = (NSApplication.shared().delegate as! AppDelegate).managedObjectContext
     
@@ -18,18 +19,12 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
     {
         super.viewDidLoad()
         // Do view setup here.
-        
-        let splitVC = parent as! NSSplitViewController
-        if let messageVC: MessageViewController = splitVC.childViewControllers[1] as? MessageViewController, let messageView = messageVC.messageContentView
-        {
-            messageView.isHidden = true
-        }
     }
     
     override func viewWillAppear()
     {
         super.viewWillAppear()
-
+        
         //Make sure that the array controller for bindings is only looking at messages for the correct user
         //TODO: This is not available quickly enough, should we store it in UD?
         if let currentUser = GlobalVars.currentUser
@@ -55,9 +50,9 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
             if let messageVC: MessageViewController = splitVC.childViewControllers[1] as? MessageViewController
             {
                 messageVC.postcardObjectController.content = selectedPostcard
+                
+                //Show Message Header
                 messageVC.headerView.isHidden = false
-//                let newConstraint = NSLayoutConstraint(item: messageVC.contentView, attribute: .top, relatedBy: .equal, toItem: messageVC.headerView, attribute: .bottom, multiplier: 1, constant: 0)
-//                newConstraint.isActive = true
             }
         }
         else
@@ -66,9 +61,9 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
             if let messageVC: MessageViewController = splitVC.childViewControllers[1] as? MessageViewController
             {
                 messageVC.postcardObjectController.content = nil
+                
+                //Hide Message Header
                 messageVC.headerView.isHidden = true
-//                let newConstraint = NSLayoutConstraint(item: messageVC.contentView, attribute: .top, relatedBy: .equal, toItem: messageVC.headerView, attribute: .top, multiplier: 1, constant: 0)
-//                newConstraint.isActive = true
             }
         }
     }
