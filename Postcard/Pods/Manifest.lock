@@ -20,7 +20,6 @@ PODS:
     - GTMSessionFetcher/Core (= 1.1.7)
   - KeychainAccess (3.0.1)
   - MessagePack.swift (2.0.1)
-  - SAMKeychain (1.5.2)
   - Sodium (0.2)
 
 DEPENDENCIES:
@@ -30,7 +29,6 @@ DEPENDENCIES:
   - GTMOAuth2 (~> 1.1.4)
   - KeychainAccess
   - MessagePack.swift (~> 2.0.0)
-  - SAMKeychain
   - Sodium (from `https://github.com/jedisct1/swift-sodium.git`)
 
 EXTERNAL SOURCES:
@@ -50,9 +48,8 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: a1f8ed39e4fe21c68957daed472c7afbcdf29166
   KeychainAccess: 017ea25e313a49eda10bb19b0bb0760fb1edfe1a
   MessagePack.swift: 6fb01448a9a1759ca64a7952683095471e64dbed
-  SAMKeychain: 1865333198217411f35327e8da61b43de79b635b
   Sodium: 7d83a94ede23a9b6a7a18d9f3cfb397db518a178
 
-PODFILE CHECKSUM: 8d54af8d7f3fca31008abd360318a56f77d6c034
+PODFILE CHECKSUM: 5f59964c97a7f48d36e711d30a39b02ff02a20c7
 
 COCOAPODS: 1.1.1

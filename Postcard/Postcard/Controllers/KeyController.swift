@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import SAMKeychain
+import KeychainAccess
 import GoogleAPIClientForREST
 import Sodium
 import MessagePack
@@ -16,6 +16,7 @@ import MessagePack
 let userPublicKeyKey = "userPublicKey"
 let userPrivateKeyKey = "userPrivateKey"
 let userKeyTimestampKey = "userPublicKeyTimestamp"
+let keyService = "org.operatorfoundation.Postcard"
 
 private var _singletonSharedInstance: KeyController! = KeyController()
 class KeyController: NSObject
@@ -30,7 +31,7 @@ class KeyController: NSObject
         return _singletonSharedInstance
     }
     
-    let keyService = "org.operatorfoundation.Postcard"
+    let keychain = Keychain(service: keyService)
     
     var mySharedKey: Data?
     var myPrivateKey: Data?
@@ -46,8 +47,17 @@ class KeyController: NSObject
         if let emailAddress: String = GlobalVars.currentUser?.emailAddress, !emailAddress.isEmpty
         {
             //Check the keychain for the user's keys
-            if let keyData = SAMKeychain.passwordData(forService: keyService, account: emailAddress)
+            
+            do
             {
+                guard let keyData = try keychain.getData(emailAddress)
+                    else
+                {
+                    missingKey = true
+                    print("Couldn't find user's Private Key. A new key pair will be generated.")
+                    return
+                }
+                
                 if let userKeyPack = TimestampedUserKeys.init(keyData: keyData)
                 {
                     myPrivateKey = userKeyPack.userPrivateKey
@@ -55,12 +65,11 @@ class KeyController: NSObject
                     myKeyTimestamp = NSDate(timeIntervalSince1970: TimeInterval(userKeyPack.userKeyTimestamp))
                 }
             }
-            else
+            catch let error
             {
-                missingKey = true
-                print("Couldn't find user's Private Key. A new key pair will be generated.")
+                print("Error retreiving data from keychain: \(error.localizedDescription)")
             }
-            
+
 //            //Check the user for a public key
 //            if let sharedKey = GlobalVars.currentUser?.publicKey
 //            {
@@ -112,7 +121,18 @@ class KeyController: NSObject
         if let userKeyData: Data = userKeyPack.dataValue()
         {
             //Save it to the Keychain
-            SAMKeychain.setPasswordData(userKeyData, forService: keyService, account: email)
+            
+            do
+            {
+                try keychain
+                    .synchronizable(true)
+                    .set(userKeyData, key: email)
+            }
+            catch let error
+            {
+                print("Error saving key data to keychain: \(error.localizedDescription)")
+            }
+            //SAMKeychain.setPasswordData(userKeyData, forService: keyService, account: email)
         }
         
         //Save it to the class vars as well
