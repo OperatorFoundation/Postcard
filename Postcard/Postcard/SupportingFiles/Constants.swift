@@ -74,8 +74,6 @@ let localizedGenericBody = NSLocalizedString("Wrapper-Body-Text", tableName: "Ma
 //ComposeView Strings
 let localizedAttachmentPrompt = NSLocalizedString("Attachment-Prompt", tableName: "ComposeView", bundle: bundle, value: "Select the file you would like to attach.", comment: "A prompt for the user to pick a file from a presented list to attach to their email.")
 
-//BRANDON STOP HERE
-
 let localizedReplyStarter = NSLocalizedString("Reply-Subject-Line-Prefix", tableName: "ComposeView", bundle: bundle, value: "Re: ", comment: "The RE: that is added to the subject line when replying to someone's email.")
 
 let localizedSendTitle = NSLocalizedString("BUTTON-TITLE-Send", tableName: "ComposeView", bundle: bundle, value: "SEND", comment: "For sending an email.")

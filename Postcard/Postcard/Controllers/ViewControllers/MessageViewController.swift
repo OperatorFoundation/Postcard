@@ -48,6 +48,10 @@ class MessageViewController: NSViewController
             let predicate = NSPredicate(format: "owner == %@", currentUser)
             postcardObjectController.fetchPredicate = predicate
         }
+        
+        postcardObjectController.content = nil
+        //Hide Message Header
+        headerView.isHidden = true
 
         //TODO: Font setting doesn't work currently
         //Set Default Font

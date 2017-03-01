@@ -237,9 +237,9 @@ class MailController: NSObject
     func fetchGmailMessagesList()
     {
         //First get messages from the inbox
+        //let userMessagesListQuery = GTLRGmailQuery_UsersHistoryList.query(withUserId: gmailUserId)
         let userMessagesListQuery = GTLRGmailQuery_UsersMessagesList.query(withUserId: gmailUserId)
         userMessagesListQuery.maxResults = 800
-        
         //Search for messages thathave an attachment and the Inbox or Postcard labels
         userMessagesListQuery.q = "has:attachment {label:INBOX label:\(ourLabel)}"
         

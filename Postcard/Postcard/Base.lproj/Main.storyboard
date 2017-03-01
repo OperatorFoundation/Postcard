@@ -614,14 +614,14 @@
                             <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZqX-NR-IcW">
                                 <rect key="frame" x="0.0" y="41" width="635" height="360"/>
                                 <clipView key="contentView" id="yWJ-5o-YoQ">
-                                    <rect key="frame" x="0.0" y="0.0" width="620" height="360"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="635" height="360"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textView importsGraphics="NO" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" linkDetection="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="fTO-Yo-Dj2">
-                                            <rect key="frame" x="0.0" y="0.0" width="620" height="360"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="635" height="360"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <size key="minSize" width="620" height="360"/>
+                                            <size key="minSize" width="635" height="360"/>
                                             <size key="maxSize" width="635" height="10000000"/>
                                             <attributedString key="textStorage">
                                                 <fragment content=" ">
@@ -641,7 +641,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="qUR-A2-GzA">
-                                    <rect key="frame" x="620" y="0.0" width="15" height="360"/>
+                                    <rect key="frame" x="619" y="0.0" width="16" height="360"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
@@ -1177,25 +1177,6 @@
                                             </binding>
                                         </connections>
                                     </textField>
-                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6sF-P3-REH">
-                                        <rect key="frame" x="489" y="12" width="80" height="22"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="22" id="dAh-cE-iZP"/>
-                                            <constraint firstAttribute="width" constant="80" id="huo-PY-tqG"/>
-                                        </constraints>
-                                        <buttonCell key="cell" type="bevel" title="REPLY" bezelStyle="regularSquare" image="redButton" imagePosition="overlaps" alignment="center" imageScaling="axesIndependently" inset="2" id="xaH-wQ-gG5">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <binding destination="pmd-tL-J5K" name="enabled" keyPath="selection.from.email" id="cJl-fX-Ur5">
-                                                <dictionary key="options">
-                                                    <string key="NSValueTransformerName">NSIsNotNil</string>
-                                                </dictionary>
-                                            </binding>
-                                            <segue destination="NgT-Wc-b8b" kind="modal" identifier="Reply To Message" id="pkb-71-Y9W"/>
-                                        </connections>
-                                    </button>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="51u-rg-MY5">
                                         <rect key="frame" x="495" y="58" width="164" height="20"/>
                                         <constraints>
@@ -1258,7 +1239,7 @@
                                         </constraints>
                                         <buttonCell key="cell" type="bevel" title="DELETE" bezelStyle="rounded" image="orangeButton" imagePosition="overlaps" alignment="center" imageScaling="axesIndependently" inset="2" id="rOj-aE-0OK">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
+                                            <font key="font" metaFont="system" size="12"/>
                                         </buttonCell>
                                         <connections>
                                             <action selector="deleteClick:" target="R8t-QV-JrK" id="fA2-mE-QEX"/>
@@ -1290,6 +1271,25 @@
                                             <binding destination="pmd-tL-J5K" name="value" keyPath="selection.from.photo" id="Dg7-xj-pEi"/>
                                         </connections>
                                     </imageView>
+                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6sF-P3-REH">
+                                        <rect key="frame" x="484" y="12" width="85" height="22"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="22" id="dAh-cE-iZP"/>
+                                            <constraint firstAttribute="width" constant="85" id="g9k-XR-DWB"/>
+                                        </constraints>
+                                        <buttonCell key="cell" type="bevel" title="REPLY" bezelStyle="regularSquare" image="redButton" imagePosition="overlaps" alignment="center" imageScaling="axesIndependently" inset="2" id="xaH-wQ-gG5">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system" size="12"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <binding destination="pmd-tL-J5K" name="enabled" keyPath="selection.from.email" id="cJl-fX-Ur5">
+                                                <dictionary key="options">
+                                                    <string key="NSValueTransformerName">NSIsNotNil</string>
+                                                </dictionary>
+                                            </binding>
+                                            <segue destination="NgT-Wc-b8b" kind="modal" identifier="Reply To Message" id="pkb-71-Y9W"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="ngJ-FX-ha4" firstAttribute="leading" secondItem="bTf-Ih-gdx" secondAttribute="leading" constant="8" id="12Z-cq-NCU"/>
@@ -1623,7 +1623,7 @@
         <image name="encryptedicon" width="32" height="32"/>
         <image name="exit" width="28" height="28"/>
         <image name="exitWhite" width="28" height="28"/>
-        <image name="googleButton" width="119" height="42"/>
+        <image name="googleButton" width="119" height="41"/>
         <image name="inbox" width="28" height="28"/>
         <image name="inboxWhite" width="28" height="28"/>
         <image name="lock" width="28" height="28"/>
@@ -1634,8 +1634,8 @@
         <image name="penpal" width="28" height="28"/>
         <image name="penpalWhite" width="28" height="28"/>
         <image name="redButton" width="77" height="24"/>
-        <image name="redButtonLarge" width="126" height="24"/>
-        <image name="welcomeBG" width="535" height="320"/>
+        <image name="redButtonLarge" width="95" height="18"/>
+        <image name="welcomeBG" width="687.5" height="410.5"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="pkb-71-Y9W"/>
