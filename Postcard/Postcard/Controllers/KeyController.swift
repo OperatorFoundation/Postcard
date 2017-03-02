@@ -31,7 +31,8 @@ class KeyController: NSObject
         return _singletonSharedInstance
     }
     
-    let keychain = Keychain(service: keyService)
+    let keychain = Keychain(service: keyService).synchronizable(true)
+    
     
     var mySharedKey: Data?
     var myPrivateKey: Data?
@@ -41,8 +42,6 @@ class KeyController: NSObject
     {
         super.init()
         
-        var missingKey = false
-        
         //If there is a userID available (i.e. email address)
         if let emailAddress: String = GlobalVars.currentUser?.emailAddress, !emailAddress.isEmpty
         {
@@ -51,10 +50,12 @@ class KeyController: NSObject
             do
             {
                 guard let keyData = try keychain.getData(emailAddress)
-                    else
+                else
                 {
-                    missingKey = true
+                    //If we do not already have a key pair make one.
+                    createAndSaveUserKeys(forUserWithEmail: emailAddress)
                     print("Couldn't find user's Private Key. A new key pair will be generated.")
+                    print("GET DATA FROM KEYCHAIN ERROR")
                     return
                 }
                 
@@ -69,34 +70,8 @@ class KeyController: NSObject
             {
                 print("Error retreiving data from keychain: \(error.localizedDescription)")
             }
-
-//            //Check the user for a public key
-//            if let sharedKey = GlobalVars.currentUser?.publicKey
-//            {
-//                mySharedKey = sharedKey as Data
-//            }
-//            else
-//            {
-//                missingKey = true
-//                print("Couldn't find user's Public Key. A new key pair will be generated.")
-//            }
-//            
-//            //Check the user for a key timestamp
-//            if let keyTimestamp = GlobalVars.currentUser?.keyTimestamp
-//            {
-//                myKeyTimestamp = keyTimestamp
-//            }
-//            else
-//            {
-//                missingKey = true
-//                print("Couldn't find user's key timestamp. A new key pair will be generated.")
-//            }
             
-            //If we do not already have a key pair make one.
-            if missingKey
-            {
-                createAndSaveUserKeys(forUserWithEmail: emailAddress)
-            }
+            
         }
         else
         {
@@ -125,14 +100,12 @@ class KeyController: NSObject
             do
             {
                 try keychain
-                    .synchronizable(true)
                     .set(userKeyData, key: email)
             }
             catch let error
             {
                 print("Error saving key data to keychain: \(error.localizedDescription)")
             }
-            //SAMKeychain.setPasswordData(userKeyData, forService: keyService, account: email)
         }
         
         //Save it to the class vars as well

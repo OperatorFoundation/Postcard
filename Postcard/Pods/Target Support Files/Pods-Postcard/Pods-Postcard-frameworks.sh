@@ -91,6 +91,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/GoogleAPIClientForREST/GoogleAPIClientForREST.framework"
   install_framework "$BUILT_PRODUCTS_DIR/KeychainAccess/KeychainAccess.framework"
   install_framework "$BUILT_PRODUCTS_DIR/MessagePack.swift/MessagePack.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/SAMKeychain/SAMKeychain.framework"
   install_framework "$BUILT_PRODUCTS_DIR/Sodium/Sodium.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
@@ -101,5 +102,6 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/GoogleAPIClientForREST/GoogleAPIClientForREST.framework"
   install_framework "$BUILT_PRODUCTS_DIR/KeychainAccess/KeychainAccess.framework"
   install_framework "$BUILT_PRODUCTS_DIR/MessagePack.swift/MessagePack.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/SAMKeychain/SAMKeychain.framework"
   install_framework "$BUILT_PRODUCTS_DIR/Sodium/Sodium.framework"
 fi

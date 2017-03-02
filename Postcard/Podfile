@@ -13,6 +13,7 @@ pod 'GTMAppAuth'
 pod 'Sodium', :git => 'https://github.com/jedisct1/swift-sodium.git'
 pod 'MessagePack.swift', '~> 2.0.0'
 pod 'KeychainAccess'
+pod 'SAMKeychain'
 
 end
 
@@ -28,6 +29,7 @@ pod 'GTMOAuth2', '~> 1.1.4'
 pod 'Sodium', :git => 'https://github.com/jedisct1/swift-sodium.git'
 pod 'MessagePack.swift', '~> 2.0.0'
 pod 'KeychainAccess'
+pod 'SAMKeychain'
 
 end
 
@@ -43,6 +45,7 @@ pod 'GTMOAuth2', '~> 1.1.4'
 pod 'Sodium', :git => 'https://github.com/jedisct1/swift-sodium.git'
 pod 'MessagePack.swift', '~> 2.0.0'
 pod 'KeychainAccess'
+pod 'SAMKeychain'
 
 end
 
