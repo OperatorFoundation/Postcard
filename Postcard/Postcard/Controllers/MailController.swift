@@ -44,6 +44,11 @@ let keyAttachmentSenderPublicKeyTimestampKey = "senderPublicKeyTimestamp"
 let keyAttachmentRecipientPublicKeyKey = "recipientPublicKey"
 let keyAttachmentRecipientPublicKeyTimestamp = "recipientPublicKeyTimestamp"
 
+//Message Keys
+let messageToKey = "to"
+let messageSubjectKey = "subject"
+let messageBodyKey = "body"
+
 //Version Keys
 let versionKey = "version"
 let serializedDataKey = "serializedData"
@@ -459,63 +464,37 @@ class MailController: NSObject
     fileprivate func parseDecryptedMessageAndSave(_ data: Data, saveToPostcard postcard: Postcard)
     {
         //Parse this message into usable parts
-        let messageParser = MCOMessageParser(data: data)
-        
-        //Body
-        if let mainPart = messageParser?.mainPart() as? MCOAbstractMultipart
+        if let postcardMessage = PostcardMessage.init(postcardData: data)
         {
-            let firstPart = mainPart.parts[0]
-            let body = (firstPart as AnyObject).decodedString()
-            postcard.body = body
-        }
-        
-        let subject = messageParser?.header.subject
-        postcard.subject = subject
-        postcard.decrypted = true
-        if let deliveredTo = messageParser?.header.to as? [MCOAddress]
-        {
-            var allToAddresses = ""
-            for thisRecipient in deliveredTo
-            {
-                if let thisAddress = thisRecipient.mailbox
-                {
-                    allToAddresses.append(", \(thisAddress)")
-                }
-            }
+            postcard.body = postcardMessage.body
+            postcard.subject = postcardMessage.subject
+            postcard.decrypted = true
+            postcard.to = postcardMessage.to
             
-            if allToAddresses.isEmpty
+            //Snippet?
+            //Attachment?
+//            let attachments = messageParser?.attachments()
+//            
+//            if (attachments?.isEmpty)!
+//            {
+//                postcard.hasPackage = false
+//            }
+//            else
+//            {
+//                //TODO: ignore key attachments
+//                postcard.hasPackage = true
+//            }
+            
+            //Save these changes to core data
+            do
             {
-                print("Did not find any recipient email addresses in the decrypted message")
+                try postcard.managedObjectContext?.save()
             }
-            else
+            catch
             {
-                postcard.to = allToAddresses
+                let saveError = error as NSError
+                print("\(saveError.localizedDescription)")
             }
-        }
-        
-        //Snippet?
-        //Attachment?
-        let attachments = messageParser?.attachments()
-        
-        if (attachments?.isEmpty)!
-        {
-            postcard.hasPackage = false
-        }
-        else
-        {
-            //TODO: ignore key attachments
-            postcard.hasPackage = true
-        }
-        
-        //Save these changes to core data
-        do
-        {
-            try postcard.managedObjectContext?.save()
-        }
-        catch
-        {
-            let saveError = error as NSError
-            print("\(saveError.localizedDescription)")
         }
     }
     
@@ -949,6 +928,10 @@ class MailController: NSObject
                 //Make sure each recipient is a Gmail Contact (this is already checked in allEmailsAreValid:forRecipients so no error handling here)
                 if let thisPenpal = fetchPenPalForCurrentUser(thisRecipient)
                 {
+                    print("Send email to: \(thisPenpal.email)")
+                    print("Sent Key: \(thisPenpal.sentKey)")
+                    print("PenPal Key: \(thisPenpal.key)")
+                    
                     //Make sure we have a key for each recipient (this is already checked in allEmailsAreValid:forRecipients so no error handling here)
                     if let penPalKey = thisPenpal.key
                     {
@@ -1036,6 +1019,112 @@ class MailController: NSObject
     }
     
     //MARK: Create the message
+    
+    struct PostcardMessage: Packable
+    {
+        var to: String
+        var subject: String
+        var body: String
+        
+        init(to: String, subject: String, body: String)
+        {
+            self.to = to
+            self.subject = subject
+            self.body = body
+        }
+        
+        init?(postcardData: Data)
+        {
+            do
+            {
+                let unpackResult = try unpack(postcardData)
+                let unpackValue: MessagePackValue = unpackResult.value
+                self.init(value: unpackValue)
+            }
+            catch let unpackError as NSError
+            {
+                print("Unpack postcard data error: \(unpackError.localizedDescription)")
+                return nil
+            }
+        }
+        
+        func dataValue() -> Data?
+        {
+            let keyMessagePack = self.messagePackValue()
+            return pack(keyMessagePack)
+        }
+        
+        internal init?(value: MessagePackValue)
+        {
+            guard let keyDictionary = value.dictionaryValue
+                else
+            {
+                print("Postcard Message deserialization error.")
+                return nil
+            }
+            
+            //To
+            guard let toMessagePack = keyDictionary[.string(messageToKey)]
+                else
+            {
+                print("Postcard message deserialization error: unable to unpack 'to' property.")
+                return nil
+            }
+            
+            guard let toString = toMessagePack.stringValue
+                else
+            {
+                print("Postcard message deserialization error: unable to get string value for 'to' property.")
+                return nil
+            }
+            
+            //Subject
+            guard let subjectMessagePack = keyDictionary[.string(messageSubjectKey)]
+                else
+            {
+                print("Postcard message deserialization error: unable to unpack subject property.")
+                return nil
+            }
+            
+            guard let subjectString = subjectMessagePack.stringValue
+                else
+            {
+                print("Postcard message deserialization error: unable to get string value for subject property.")
+                return nil
+            }
+            
+            //Message Body
+            guard let bodyMessagePack = keyDictionary[.string(messageBodyKey)]
+                else
+            {
+                print("Postcard message deserialization error: unable to unpack body property.")
+                return nil
+            }
+            
+            guard let bodyString = bodyMessagePack.stringValue
+                else
+            {
+                print("Postcard message deserialization error: unable to get string value for body property.")
+                return nil
+            }
+            
+            self.to = toString
+            self.subject = subjectString
+            self.body = bodyString
+        }
+        
+        internal func messagePackValue() -> MessagePackValue
+        {
+            let keyDictionary: Dictionary<MessagePackValue, MessagePackValue> = [
+                MessagePackValue(messageToKey): MessagePackValue(self.to),
+                MessagePackValue(messageSubjectKey): MessagePackValue(self.subject),
+                MessagePackValue(messageBodyKey): MessagePackValue(self.body)
+            ]
+            
+            return MessagePackValue(keyDictionary)
+        }
+    }
+    
     //    func generateMessagePackage(maybeAttachments: [NSURL]?) -> NSData
     //    {
     //        if let attachmentURLs = maybeAttachments where !attachmentURLs.isEmpty
@@ -1152,32 +1241,31 @@ class MailController: NSObject
     
     func generateMessagePostcard(sendToEmail to: String, subject: String, body: String, withKey key: Data) -> Data?
     {
-        
         print("\nSending an email to: \(to)\nRecipient's Public Key: \(key)")
         
-        let messageBuilder = MCOMessageBuilder()
-        messageBuilder.header.to = [MCOAddress(mailbox: to)]
-        messageBuilder.header.subject = subject
-        messageBuilder.textBody = body
-        
-        let keyAttachment = MCOAttachment(data: KeyController.sharedInstance.mySharedKey as Data!, filename: "postcard.key")
-        messageBuilder.addAttachment(keyAttachment)
-        
-        if let sodium = Sodium(), let secretKey = KeyController.sharedInstance.myPrivateKey
+        let postcardMessage = PostcardMessage.init(to: to, subject: subject, body: body)
+        if let postcardMessageData = postcardMessage.dataValue()
         {
-            if let encryptedMessageData: Data = sodium.box.seal(message: messageBuilder.data(), recipientPublicKey: key, senderSecretKey: secretKey)
+            if let sodium = Sodium(), let secretKey = KeyController.sharedInstance.myPrivateKey
             {
-                return encryptedMessageData
+                if let encryptedMessageData: Data = sodium.box.seal(message: postcardMessageData, recipientPublicKey: key, senderSecretKey: secretKey)
+                {
+                    return encryptedMessageData
+                }
+                else
+                {
+                    //We are not showing alerts for these because there is nothing the user can do about this
+                    print("We could not encrypt this message.")
+                }
             }
             else
             {
-                //We are not showing alerts for these because there is nothing the user can do about this
-                print("We could not encrypt this message.")
+                print("Couldn't send a Postcard because either sodium blew up, or we couldn't find your secret key DX")
             }
         }
         else
         {
-            print("Couldn't send a Postcard because either sodium blew up, or we couldn't find your secret key DX")
+            print("***Unable to create postcard message data.***")
         }
         
         return nil
@@ -1476,11 +1564,7 @@ class MailController: NSObject
             return nil
         }
         
-        guard let currentUser = GlobalVars.currentUser else {
-            return nil
-        }
-        
-        guard let userKeyTimestamp = currentUser.keyTimestamp else {
+        guard let userKeyTimestamp = KeyController.sharedInstance.myKeyTimestamp else {
             return nil
         }
         
@@ -1506,11 +1590,7 @@ class MailController: NSObject
             return nil
         }
         
-        guard let currentUser = GlobalVars.currentUser else {
-            return nil
-        }
-        
-        guard let userKeyTimestamp = currentUser.keyTimestamp else {
+        guard let userKeyTimestamp = KeyController.sharedInstance.myKeyTimestamp else {
             return nil
         }
         

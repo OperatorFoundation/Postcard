@@ -158,10 +158,14 @@ class PenPalController: NSObject
         penPal.owner = GlobalVars.currentUser
         penPal.email = email
         
+        print("Saving PenPal with email: \(email)")
+        print("PenPal has our key: \(penPal.sentKey)")
+        print("PenPal key: \(penPal.key)")
         //Name
         if let names = connection.names, names.isEmpty == false
         {
             penPal.name = names[0].displayName
+            print("PenPal Name: \(penPal.name)")
         }
         
         //PenPal Image

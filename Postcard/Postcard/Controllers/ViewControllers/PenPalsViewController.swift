@@ -32,7 +32,6 @@ class PenPalsViewController: NSViewController, NSTableViewDelegate
             let emailSortDescriptor = NSSortDescriptor(key: "email", ascending: true, selector: #selector(NSString.localizedStandardCompare(_:)))
             penPalsArrayController.sortDescriptors = [hasKeySortDescriptor, invitedSortDescriptor, nameSortDescriptor, emailSortDescriptor]
         }
-        
         penPalsTableView.target = self
         penPalsTableView.doubleAction = #selector(doubleClickComposeEmail)
     }
@@ -62,8 +61,6 @@ class PenPalsViewController: NSViewController, NSTableViewDelegate
             }
         }
     }
-    
-    
 }
 
 
@@ -129,7 +126,7 @@ class PenPalTableCell: NSTableCellView
             }
         }
     }
-    
+
     //We already have their key, but they don't have ours
     func addAction()
     {

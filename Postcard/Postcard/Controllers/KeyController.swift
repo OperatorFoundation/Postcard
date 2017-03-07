@@ -33,7 +33,6 @@ class KeyController: NSObject
     
     let keychain = Keychain(service: keyService).synchronizable(true)
     
-    
     var mySharedKey: Data?
     var myPrivateKey: Data?
     var myKeyTimestamp: NSDate?
@@ -46,7 +45,6 @@ class KeyController: NSObject
         if let emailAddress: String = GlobalVars.currentUser?.emailAddress, !emailAddress.isEmpty
         {
             //Check the keychain for the user's keys
-            
             do
             {
                 guard let keyData = try keychain.getData(emailAddress)
@@ -54,7 +52,7 @@ class KeyController: NSObject
                 {
                     //If we do not already have a key pair make one.
                     createAndSaveUserKeys(forUserWithEmail: emailAddress)
-                    print("Couldn't find user's Private Key. A new key pair will be generated.")
+                    print("Couldn't find user's Key data. A new key pair will be generated.")
                     print("GET DATA FROM KEYCHAIN ERROR")
                     return
                 }
@@ -62,16 +60,24 @@ class KeyController: NSObject
                 if let userKeyPack = TimestampedUserKeys.init(keyData: keyData)
                 {
                     myPrivateKey = userKeyPack.userPrivateKey
+                    print("Private Key: \(myPrivateKey?.base64EncodedString())")
                     mySharedKey = userKeyPack.userPublicKey
+                    print("Public Key: \(mySharedKey?.base64EncodedString())")
                     myKeyTimestamp = NSDate(timeIntervalSince1970: TimeInterval(userKeyPack.userKeyTimestamp))
+                    print("Key Timestamp: \(myKeyTimestamp)")
+                }
+                else
+                {
+                    //If we do not already have a key pair make one.
+                    createAndSaveUserKeys(forUserWithEmail: emailAddress)
+                    print("Could not unpack user's Key data. A new key pair will be generated.")
+                    return
                 }
             }
             catch let error
             {
                 print("Error retreiving data from keychain: \(error.localizedDescription)")
             }
-            
-            
         }
         else
         {
@@ -126,7 +132,16 @@ class KeyController: NSObject
         //Send key email to this user
         let emailAddress = penPal.email
         let gmailMessage = GTLRGmail_Message()
-        gmailMessage.raw = MailController.sharedInstance.generateKeyMessage(forPenPal: penPal)
+        
+        let rawString = MailController.sharedInstance.generateKeyMessage(forPenPal: penPal)
+        if rawString == ""
+        {
+            return
+        }
+        else
+        {
+            gmailMessage.raw = rawString
+        }
         
         let sendMessageQuery = GTLRGmailQuery_UsersMessagesSend.query(withObject: gmailMessage, userId: "me", uploadParameters: nil)
         GmailProps.service.executeQuery(sendMessageQuery, completionHandler:
