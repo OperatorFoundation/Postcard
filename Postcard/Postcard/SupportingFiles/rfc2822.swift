@@ -29,14 +29,14 @@ func partToRFC2822(part: GTLRGmail_MessagePart) -> String
     if part.body != nil
     {
         result = result + bodyPartHeaders(part: part)
-        result = result + "\n"
+        result = result + "\r\n"
         result = result + bodyPart(part: part)
     }
     else
     {
         let boundary = makeBoundary()
         result = result + multipartHeaders(part: part, boundary: boundary)
-        result = result + "\n"
+        result = result + "\r\n"
         result = result + multipart(multi: part, boundary: boundary)
     }
     
@@ -45,12 +45,15 @@ func partToRFC2822(part: GTLRGmail_MessagePart) -> String
 
 func makeBoundary() -> String
 {
-    return ""
+    let length = 20
+    let bytes = [UInt32](repeating: 0, count: length).map { _ in arc4random() }
+    let data = Data(bytes: bytes, count: length)
+    return GTLREncodeWebSafeBase64(data)!
 }
 
 func headerToRFC2822(header: GTLRGmail_MessagePartHeader) -> String
 {
-    return header.name! + ": " + header.value! + "\n"
+    return header.name! + ": " + header.value! + "\r\n"
 }
 
 func bodyPartHeaders(part: GTLRGmail_MessagePart) -> String
@@ -69,14 +72,14 @@ func bodyPartHeaders(part: GTLRGmail_MessagePart) -> String
     {
         if let mimeType = part.mimeType
         {
-            result = result + "Content-Type: " + mimeType + "; name=" + filename + "\n"
-            result = result + "Content-Disposition: attachment; name=" + filename + "\n"
-            result = result + "Content-Transfer-Encoding: base64\n"
+            result = result + "Content-Type: " + mimeType + "; name=" + filename + "\r\n"
+            result = result + "Content-Disposition: attachment; name=" + filename + "\r\n"
+            result = result + "Content-Transfer-Encoding: base64\r\n"
         }
     }
     else
     {
-        result = result + "Content-Type: text/plain\n"
+        result = result + "Content-Type: text/plain\r\n"
     }
     
     return result
@@ -86,7 +89,7 @@ func multipartHeaders(part: GTLRGmail_MessagePart, boundary: String) -> String
 {
   // Example: Content-Type: multipart/mixed; boundary=001a1142881cd25a87054971dde2
     
-  return "Content-Type: multipart/mixed; boundary=" + boundary + "\n"
+  return "Content-Type: multipart/mixed; boundary=" + boundary + "\r\n"
 }
 
 func bodyPart(part: GTLRGmail_MessagePart) -> String
@@ -98,16 +101,20 @@ func multipart(multi: GTLRGmail_MessagePart, boundary: String) -> String
 {
     var result = ""
     
-    result = result + boundary + "\n"
+    result = result + boundary
     
     for part in multi.parts!
     {
+        result = result + "\r\n"
+        
         result = result + partToRFC2822(part: part)
         
-        result = result + "\n"
+        result = result + "\r\n"
         
-        result = result + boundary + "\n"
+        result = result + "--" + boundary
     }
+
+    result = result + "--\r\n"
     
     return result
 }
