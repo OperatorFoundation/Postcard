@@ -122,6 +122,7 @@ struct PostCardProps
     static let packageMimeType = "application/postcard-package-encrypted"
     static let keyMimeType = "application/postcard-keys"
     static let senderKeyMimeType = "application/postcard-key"
+    static let textMimeType = "text/plain"
 }
 
 struct PostcardUI

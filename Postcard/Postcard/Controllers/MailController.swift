@@ -44,6 +44,10 @@ let keyAttachmentSenderPublicKeyTimestampKey = "senderPublicKeyTimestamp"
 let keyAttachmentRecipientPublicKeyKey = "recipientPublicKey"
 let keyAttachmentRecipientPublicKeyTimestamp = "recipientPublicKeyTimestamp"
 
+let postcardFilename = "Postcard"
+let keyFilename = "Key"
+let packageFilename = "Package"
+
 //Message Keys
 let messageToKey = "to"
 let messageSubjectKey = "subject"
@@ -928,34 +932,44 @@ class MailController: NSObject
                 //Make sure each recipient is a Gmail Contact (this is already checked in allEmailsAreValid:forRecipients so no error handling here)
                 if let thisPenpal = fetchPenPalForCurrentUser(thisRecipient)
                 {
-                    print("Send email to: \(thisPenpal.email)")
-                    print("Sent Key: \(thisPenpal.sentKey)")
-                    print("PenPal Key: \(thisPenpal.key)")
-                    
                     //Make sure we have a key for each recipient (this is already checked in allEmailsAreValid:forRecipients so no error handling here)
                     if let penPalKey = thisPenpal.key
                     {
                         //Send a seperate email to each valid recipient in the list
-                        if let rawMessage = generateMessage(forPenPal: thisPenpal, subject: subject, body: body, maybeAttachments: maybeAttachments, withKey: penPalKey as Data)
+                        if let messagePayload = generateMessage(forPenPal: thisPenpal, subject: subject, body: body, maybeAttachments: maybeAttachments, withKey: penPalKey as Data)
                         {
                             let gmailMessage = GTLRGmail_Message()
-                            gmailMessage.raw = rawMessage
+                            gmailMessage.payload = messagePayload
                             
                             let sendGmailQuery = GTLRGmailQuery_UsersMessagesSend.query(withObject: gmailMessage, userId: gmailUserId, uploadParameters: nil)
                             
                             GmailProps.service.executeQuery(sendGmailQuery, completionHandler:
-                                {
-                                    (ticket, maybeResponse, maybeError) in
+                            {
+                                (ticket, maybeResponse, maybeError) in
 
-                                    if let response = maybeResponse as? GTLRGmail_Message, let labelIds = response.labelIds
+                                print("Attempting to send email to: \(thisPenpal.email)")
+                                
+                                if let response = maybeResponse as? GTLRGmail_Message
+                                {
+                                    print("Send email response: \(response)")
+                                    
+                                    if let labelIds = response.labelIds
                                     {
-                                        print(labelIds.description)
+                                        print("Label ids:\(labelIds.description)")
                                     }
                                     if maybeError == nil
                                     {
+                                        print("Sent Key: \(thisPenpal.sentKey)")
+                                        print("PenPal Key: \(thisPenpal.key)")
+                                        
                                         completion(true)
                                         return
                                     }
+                                    else if let error = maybeError
+                                    {
+                                        print("Error sending email: \(error.localizedDescription)")
+                                    }
+                                }
                             })
                         }
                     }
@@ -1179,7 +1193,7 @@ class MailController: NSObject
     //        }
     //    }
     
-    func generateMessage(forPenPal penPal: PenPal, subject: String, body: String, maybeAttachments: [URL]?, withKey key: Data) -> String?
+    func generateMessage(forPenPal penPal: PenPal, subject: String, body: String, maybeAttachments: [URL]?, withKey key: Data) -> GTLRGmail_MessagePart?
     {
         let emailAddress = penPal.email
         
@@ -1206,37 +1220,122 @@ class MailController: NSObject
         }
     }
     
+//    //Main Wrapper Message This is what the user will see in any email client
+//    func generateMessageMime(forPenPal penPal: PenPal, subject: String, body: String, messageData: Data, maybePackage: Data?) -> String
+//    {
+//        let messageBuilder = MCOMessageBuilder()
+//        messageBuilder.header.to = [MCOAddress(mailbox: penPal.email)]
+//        messageBuilder.header.subject = subject
+//        messageBuilder.textBody = body
+//        
+//        //This is the actual user's message as an attachment to the gmail message
+//        let messageAttachment = MCOAttachment(data: messageData, filename: "Postcard")
+//        messageAttachment?.mimeType = PostCardProps.postcardMimeType
+//        messageBuilder.addAttachment(messageAttachment)
+//        
+//        //Add a key attachment to this message
+//        let keyData = generateKeyAttachment(forPenPal: penPal)
+//        
+//        let keyAttachment = MCOAttachment(data: keyData, filename: "Key")
+//        keyAttachment?.mimeType = PostCardProps.keyMimeType
+//        messageBuilder.addAttachment(keyAttachment)
+//        
+//        
+//        //        if let packageData = maybePackage
+//        //        {
+//        //            if let packageAttachment = MCOAttachment(data: packageData, filename: "Postcard")
+//        //            {
+//        //                packageAttachment.mimeType = PostCardProps.packageMimeType
+//        //                messageBuilder.addAttachment(packageAttachment)
+//        //            }
+//        //        }
+//        
+//        return dataEncodedToString(messageBuilder.data())
+//    }
+    
     //Main Wrapper Message This is what the user will see in any email client
-    func generateMessageMime(forPenPal penPal: PenPal, subject: String, body: String, messageData: Data, maybePackage: Data?) -> String
+    
+    func generateMessageMime(forPenPal penPal: PenPal, subject: String, body: String, messageData: Data, maybePackage: Data?) -> GTLRGmail_MessagePart?
     {
-        let messageBuilder = MCOMessageBuilder()
-        messageBuilder.header.to = [MCOAddress(mailbox: penPal.email)]
-        messageBuilder.header.subject = subject
-        messageBuilder.textBody = body
+        if let keyData = generateKeyAttachment(forPenPal: penPal)
+        {
+            let messageAttach = createMessagePart(messageData: messageData, mimeType: PostCardProps.postcardMimeType, maybeFilename: postcardFilename)
+            let keyAttach = createMessagePart(messageData: keyData, mimeType: PostCardProps.keyMimeType, maybeFilename: keyFilename)
+            var maybePackageAttach: GTLRGmail_MessagePart? = nil
+            
+            if let pack = maybePackage
+            {
+                maybePackageAttach = createMessagePart(messageData: pack, mimeType: PostCardProps.packageMimeType, maybeFilename: packageFilename)
+            }
+            
+            if let bodyPart = createMessagePart(body: body, mimeType: PostCardProps.textMimeType, maybeFilename: nil)
+            {
+                return createMultipart(to: penPal.email, subject: subject, bodyPart: bodyPart, keyAttach: keyAttach, maybeMessageAttach: messageAttach, maybePackageAttach: maybePackageAttach)
+            }
+        }
         
-        //This is the actual user's message as an attachment to the gmail message
-        let messageAttachment = MCOAttachment(data: messageData, filename: "Postcard")
-        messageAttachment?.mimeType = PostCardProps.postcardMimeType
-        messageBuilder.addAttachment(messageAttachment)
+        return nil
+    }
+
+
+    func createMessagePart(messageData: Data, mimeType: String, maybeFilename: String?) -> GTLRGmail_MessagePart
+    {
+        let mainPart = GTLRGmail_MessagePart()
         
-        //Add a key attachment to this message
-        let keyData = generateKeyAttachment(forPenPal: penPal)
+        //Mimetype
+        mainPart.mimeType = mimeType
         
-        let keyAttachment = MCOAttachment(data: keyData, filename: "Key")
-        keyAttachment?.mimeType = PostCardProps.keyMimeType
-        messageBuilder.addAttachment(keyAttachment)
+        //Filename?
+        mainPart.filename = maybeFilename
         
+        //Body
+        let bodyPart = GTLRGmail_MessagePartBody()
+        let bodyPartEncodedString = dataEncodedToString(messageData)
+        bodyPart.data = bodyPartEncodedString
+        mainPart.body = bodyPart
         
-        //        if let packageData = maybePackage
-        //        {
-        //            if let packageAttachment = MCOAttachment(data: packageData, filename: "Postcard")
-        //            {
-        //                packageAttachment.mimeType = PostCardProps.packageMimeType
-        //                messageBuilder.addAttachment(packageAttachment)
-        //            }
-        //        }
+        return mainPart
+    }
+    
+    func createMessagePart(body: String, mimeType: String, maybeFilename: String?) -> GTLRGmail_MessagePart?
+    {
+        if let data = body.data(using: String.Encoding.utf8)
+        {
+            return createMessagePart(messageData: data, mimeType: mimeType, maybeFilename: maybeFilename)
+        }
+        else
+        {
+            return nil
+        }
+    }
+
+    func createMultipart(to: String, subject: String, bodyPart: GTLRGmail_MessagePart, keyAttach: GTLRGmail_MessagePart, maybeMessageAttach: GTLRGmail_MessagePart?, maybePackageAttach: GTLRGmail_MessagePart?) -> GTLRGmail_MessagePart
+    {
+        let mainPart = GTLRGmail_MessagePart()
+        mainPart.mimeType = "multipart/mixed"
+        mainPart.headers=[GTLRGmail_MessagePartHeader(json: ["To": to]), GTLRGmail_MessagePartHeader(json: ["Subject": subject])]
         
-        return dataEncodedToString(messageBuilder.data())
+        var parts = [bodyPart, keyAttach]
+        
+        //Actual Email Body
+        if let messageAttach = maybeMessageAttach
+        {
+            parts.append(messageAttach)
+        }
+        //Actual Email Attachment
+        if let packageAttach = maybePackageAttach
+        {
+            parts.append(packageAttach)
+        }
+
+        mainPart.parts = parts
+        
+        return mainPart
+    }
+    
+    func createMultipart(to: String, subject: String, bodyPart: GTLRGmail_MessagePart, keyAttach: GTLRGmail_MessagePart) -> GTLRGmail_MessagePart
+    {
+        return createMultipart(to: to, subject: subject, bodyPart: bodyPart, keyAttach: keyAttach, maybeMessageAttach: nil, maybePackageAttach: nil)
     }
     
     func generateMessagePostcard(sendToEmail to: String, subject: String, body: String, withKey key: Data) -> Data?
@@ -1271,21 +1370,11 @@ class MailController: NSObject
         return nil
     }
     
-    func generatePostcardAttachment() -> Data
+    func generateKeyMessage(forPenPal penPal: PenPal) -> GTLRGmail_MessagePart?
     {
-        let textBody = localizedInviteFiller
-        return textBody.data(using: String.Encoding.utf8, allowLossyConversion: true)!
-    }
-    
-    func generateKeyMessage(forPenPal penPal: PenPal) -> String
-    {
-        let messageBuilder = MCOMessageBuilder()
-        messageBuilder.header.to = [MCOAddress(mailbox: penPal.email)]
-        messageBuilder.header.subject = localizedInviteSubject
-        messageBuilder.textBody = localizedGenericBody
-        
         //Generate the main Postcard Attachment.
         var attachmentData: Data?
+        
         if (penPal.key != nil) && (penPal.keyTimestamp != nil)
         {
             attachmentData = generateKeyAttachment(forPenPal: penPal)
@@ -1297,26 +1386,32 @@ class MailController: NSObject
         
         if (attachmentData != nil)
         {
-            if let postcardWrapperAttachment = MCOAttachment(data: attachmentData, filename: "Postcard")
+            let keyFilename = "Postcard"
+
+            if (penPal.key != nil) && (penPal.keyTimestamp != nil)
             {
-                if (penPal.key != nil) && (penPal.keyTimestamp != nil)
-                {
-                    postcardWrapperAttachment.mimeType = PostCardProps.keyMimeType
-                }
-                else
-                {
-                    postcardWrapperAttachment.mimeType = PostCardProps.senderKeyMimeType
-                }
+                let keyAttachment = createMessagePart(messageData: attachmentData!, mimeType: PostCardProps.keyMimeType, maybeFilename: keyFilename)
                 
-                messageBuilder.addAttachment(postcardWrapperAttachment)
+                if let messageBody = createMessagePart(body: localizedGenericBody, mimeType: PostCardProps.textMimeType, maybeFilename: nil)
+                {
+                    return createMultipart(to: penPal.email, subject: localizedInviteSubject, bodyPart: messageBody, keyAttach: keyAttachment)
+                }
+            }
+            else
+            {
+                let keyAttachment = createMessagePart(messageData: attachmentData!, mimeType: PostCardProps.senderKeyMimeType, maybeFilename: keyFilename)
+                if let messageBody = createMessagePart(body: localizedGenericBody, mimeType: PostCardProps.textMimeType, maybeFilename: nil)
+                {
+                    return createMultipart(to: penPal.email, subject: localizedInviteSubject, bodyPart: messageBody, keyAttach: keyAttachment)
+                }
             }
         }
         else
         {
             print("Unable to generate key attachment data.")
         }
-        
-        return dataEncodedToString(messageBuilder.data())
+
+        return nil
     }
     
     //MARK: Key Attachments
