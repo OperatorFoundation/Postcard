@@ -28,6 +28,7 @@
 		466FC5FD1D021BA100B8AABB /* Proxima Nova Font Free in Resources */ = {isa = PBXBuildFile; fileRef = 466FC5FC1D021BA100B8AABB /* Proxima Nova Font Free */; };
 		46A6F4AE1CEFB578007C2D17 /* MainContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A6F4AD1CEFB578007C2D17 /* MainContainerViewController.swift */; };
 		46A7D0661E3000D800855A48 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46A7D0651E3000D800855A48 /* WebKit.framework */; };
+		46F64E8C1E777BA6006799B3 /* rfc2822.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F64E8B1E777BA6006799B3 /* rfc2822.swift */; };
 		B4056FD11CC99B3A00D81301 /* GTMOAuth2Window.xib in Resources */ = {isa = PBXBuildFile; fileRef = B4056FD01CC99B3A00D81301 /* GTMOAuth2Window.xib */; };
 		B4238F571CD2A6030054E7EF /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4238F561CD2A6030054E7EF /* SystemConfiguration.framework */; };
 		B4238F591CD2C0100054E7EF /* MailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4238F581CD2C0100054E7EF /* MailController.swift */; };
@@ -107,6 +108,7 @@
 		466FC5FC1D021BA100B8AABB /* Proxima Nova Font Free */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Proxima Nova Font Free"; sourceTree = "<group>"; };
 		46A6F4AD1CEFB578007C2D17 /* MainContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainContainerViewController.swift; path = Controllers/ViewControllers/MainContainerViewController.swift; sourceTree = "<group>"; };
 		46A7D0651E3000D800855A48 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		46F64E8B1E777BA6006799B3 /* rfc2822.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = rfc2822.swift; path = SupportingFiles/rfc2822.swift; sourceTree = "<group>"; };
 		533D8F179720CC3090DF40D0 /* Pods_PostcardUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostcardUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		592EEB916E4DFE6C37933020 /* Pods-PostcardTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostcardTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PostcardTests/Pods-PostcardTests.release.xcconfig"; sourceTree = "<group>"; };
 		A9D48FFD468F001E6AB0DAE2 /* Pods-PostcardTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostcardTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PostcardTests/Pods-PostcardTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 		B4238F5D1CD2C4C50054E7EF /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
+				46F64E8B1E777BA6006799B3 /* rfc2822.swift */,
 				B4DA48971E57A53F00BB95FE /* ComposeView.strings */,
 				B4DA48921E57A53F00BB95FE /* MailController.strings */,
 				B4DA488D1E57A53E00BB95FE /* Localizable.strings */,
@@ -675,6 +678,7 @@
 				461C0A641CE682AF00C5B5A5 /* DesignableView.swift in Sources */,
 				B4EDBB501CEF74D80094853F /* WelcomeViewController.swift in Sources */,
 				B4BFDD291E4AA1B700455232 /* PenPal+CoreDataClass.swift in Sources */,
+				46F64E8C1E777BA6006799B3 /* rfc2822.swift in Sources */,
 				461C0A671CE696E300C5B5A5 /* MainSplitViewController.swift in Sources */,
 				B4BFDD2D1E4AA1B700455232 /* Postcard+CoreDataClass.swift in Sources */,
 				46A6F4AE1CEFB578007C2D17 /* MainContainerViewController.swift in Sources */,

@@ -939,7 +939,8 @@ class MailController: NSObject
                         if let messagePayload = generateMessage(forPenPal: thisPenpal, subject: subject, body: body, maybeAttachments: maybeAttachments, withKey: penPalKey as Data)
                         {
                             let gmailMessage = GTLRGmail_Message()
-                            gmailMessage.payload = messagePayload
+                            let rawMessage = payloadToRaw(payload: messagePayload)
+                            gmailMessage.raw = rawMessage
                             
                             let sendGmailQuery = GTLRGmailQuery_UsersMessagesSend.query(withObject: gmailMessage, userId: gmailUserId, uploadParameters: nil)
                             
@@ -968,6 +969,14 @@ class MailController: NSObject
                                     else if let error = maybeError
                                     {
                                         print("Error sending email: \(error.localizedDescription)")
+                                    }
+                                }
+                                else
+                                {
+                                    print("We did not receive a valid response when attempting to send a message.")
+                                    if let error = maybeError
+                                    {
+                                        print("Send email error: \(error.localizedDescription)")
                                     }
                                 }
                             })
@@ -1299,14 +1308,22 @@ class MailController: NSObject
     
     func createMessagePart(body: String, mimeType: String, maybeFilename: String?) -> GTLRGmail_MessagePart?
     {
-        if let data = body.data(using: String.Encoding.utf8)
-        {
-            return createMessagePart(messageData: data, mimeType: mimeType, maybeFilename: maybeFilename)
-        }
-        else
-        {
-            return nil
-        }
+        let mainPart = GTLRGmail_MessagePart()
+        
+        //Mimetype
+        mainPart.mimeType = mimeType
+        
+        //Filename?
+        mainPart.filename = maybeFilename
+        
+        //Body
+        let bodyPart = GTLRGmail_MessagePartBody()
+        bodyPart.data = body
+        mainPart.body = bodyPart
+        
+        return mainPart
+            
+        //return createMessagePart(messageData: data, mimeType: mimeType, maybeFilename: maybeFilename)
     }
 
     func createMultipart(to: String, subject: String, bodyPart: GTLRGmail_MessagePart, keyAttach: GTLRGmail_MessagePart, maybeMessageAttach: GTLRGmail_MessagePart?, maybePackageAttach: GTLRGmail_MessagePart?) -> GTLRGmail_MessagePart

@@ -11,7 +11,10 @@ import GoogleAPIClientForREST
 
 func payloadToRaw(payload: GTLRGmail_MessagePart) -> String
 {
-    return partToRFC2822(part: payload)
+    let result = partToRFC2822(part: payload)
+    print("Raw message string before encoding: \(result)")
+    return GTLREncodeWebSafeBase64(result.data(using: String.Encoding.utf8))!
+    //return partToRFC2822(part: payload)
 }
 
 func partToRFC2822(part: GTLRGmail_MessagePart) -> String
@@ -22,7 +25,10 @@ func partToRFC2822(part: GTLRGmail_MessagePart) -> String
     {
         for header in headers
         {
-            result = result + headerToRFC2822(header: header)
+            if header.name != nil
+            {
+                result = result + headerToRFC2822(header: header)
+            }
         }
     }
     
@@ -32,24 +38,24 @@ func partToRFC2822(part: GTLRGmail_MessagePart) -> String
         result = result + "\r\n"
         result = result + bodyPart(part: part)
     }
-    else
-    {
-        let boundary = makeBoundary()
-        result = result + multipartHeaders(part: part, boundary: boundary)
-        result = result + "\r\n"
-        result = result + multipart(multi: part, boundary: boundary)
-    }
+//    else
+//    {
+//        let boundary = makeBoundary()
+//        result = result + multipartHeaders(part: part, boundary: boundary)
+//        result = result + "\r\n"
+//        result = result + multipart(multi: part, boundary: boundary)
+//    }
     
     return result
 }
 
-func makeBoundary() -> String
-{
-    let length = 20
-    let bytes = [UInt32](repeating: 0, count: length).map { _ in arc4random() }
-    let data = Data(bytes: bytes, count: length)
-    return GTLREncodeWebSafeBase64(data)!
-}
+//func makeBoundary() -> String
+//{
+//    let length = 20
+//    let bytes = [UInt32](repeating: 0, count: length).map { _ in arc4random() }
+//    let data = Data(bytes: bytes, count: length)
+//    return GTLREncodeWebSafeBase64(data)!
+//}
 
 func headerToRFC2822(header: GTLRGmail_MessagePartHeader) -> String
 {
@@ -94,7 +100,8 @@ func multipartHeaders(part: GTLRGmail_MessagePart, boundary: String) -> String
 
 func bodyPart(part: GTLRGmail_MessagePart) -> String
 {
-    return GTLREncodeWebSafeBase64(part.body?.data?.data(using: String.Encoding.utf8))!
+    return (part.body?.data)!
+    //return GTLREncodeWebSafeBase64(part.body?.data?.data(using: String.Encoding.utf8))!
 }
 
 func multipart(multi: GTLRGmail_MessagePart, boundary: String) -> String
@@ -117,4 +124,5 @@ func multipart(multi: GTLRGmail_MessagePart, boundary: String) -> String
     result = result + "--\r\n"
     
     return result
+    //return GTLREncodeWebSafeBase64(result.data(using: String.Encoding.utf8))!
 }
