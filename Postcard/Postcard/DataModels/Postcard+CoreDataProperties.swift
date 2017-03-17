@@ -28,5 +28,11 @@ extension Postcard {
     @NSManaged public var to: String?
     @NSManaged public var from: PenPal?
     @NSManaged public var owner: User?
-
+    public var abody: String?
+    {
+        get
+        {
+            return "Cool String 😎"
+        }
+    }
 }

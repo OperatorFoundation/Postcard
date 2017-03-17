@@ -133,9 +133,10 @@ class KeyController: NSObject
         let emailAddress = penPal.email
         let gmailMessage = GTLRGmail_Message()
         
-        if let keyPayload = MailController.sharedInstance.generateKeyMessage(forPenPal: penPal)
+        if let keyInvitationEmail = MailController.sharedInstance.generateKeyMessage(forPenPal: penPal)
         {
-            gmailMessage.payload = keyPayload
+            let rawInvite = emailToRaw(email: keyInvitationEmail)
+            gmailMessage.raw = rawInvite
             let sendMessageQuery = GTLRGmailQuery_UsersMessagesSend.query(withObject: gmailMessage, userId: "me", uploadParameters: nil)
             GmailProps.service.executeQuery(sendMessageQuery, completionHandler:
             {

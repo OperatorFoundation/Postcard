@@ -44,10 +44,6 @@ let keyAttachmentSenderPublicKeyTimestampKey = "senderPublicKeyTimestamp"
 let keyAttachmentRecipientPublicKeyKey = "recipientPublicKey"
 let keyAttachmentRecipientPublicKeyTimestamp = "recipientPublicKeyTimestamp"
 
-let postcardFilename = "Postcard"
-let keyFilename = "Key"
-let packageFilename = "Package"
-
 //Message Keys
 let messageToKey = "to"
 let messageSubjectKey = "subject"
@@ -316,7 +312,7 @@ class MailController: NSObject
                                             
                                             if !keyCompareSucceeded
                                             {
-                                                print("\nKeycompare failed for Message ID \(messageIdentifier): \n" + payload.description + "\n Payload had \(payload.parts!.count) parts: \(payload.parts?.description).\n")
+                                                print("\nKeycompare failed for Message ID \(messageIdentifier): \n" + payload.description + "\nPayload had \(payload.parts!.count) parts:\n \(payload.parts?.description).\n")
                                             }
                                         }
                                     })
@@ -354,7 +350,7 @@ class MailController: NSObject
                                                     {
                                                         let attachmentString = attachment.data
                                                         
-                                                        //Decode - GTLBase64
+                                                        //Decode - GTLWebSafeBase64
                                                         if let postcardData = self.stringDecodedToData(attachmentString!)
                                                         {
                                                             //CoreData
@@ -610,11 +606,7 @@ class MailController: NSObject
                     let sender = header.value
                     let attachmentDataString = attachment.data
                     
-                    guard let decodedAttachment = stringDecodedToData(attachmentDataString!)
-                        else
-                    {
-                        return false
-                    }
+                    guard let decodedAttachment = stringDecodedToData(attachmentDataString!) else { return false }
                     
                     //Check if we have this email address saved as a penpal
                     if let thisPenPal = self.fetchPenPalForCurrentUser(sender!)
@@ -626,7 +618,6 @@ class MailController: NSObject
                             else
                         {
                             print("Could not find recipient's stored key")
-                            
                             return false
                         }
                         
@@ -641,7 +632,7 @@ class MailController: NSObject
                         if hasReceiverKey
                         {
                             //Get the public keys from this attachment
-                            guard let timestampedKeys  = dataToPublicKeys(keyData: decodedAttachment)
+                            guard let timestampedKeys = dataToPublicKeys(keyData: decodedAttachment)
                                 else
                             {
                                 print("Unable to get public keys from key attachment")
@@ -685,16 +676,11 @@ class MailController: NSObject
                         else
                         {
                             //Get the public keys from this attachment
-                            guard let timestampedKey = dataToSenderPublicKeys(keyData: decodedAttachment)
-                                else
-                            {
-                                print("Unable to get public keys from key attachment")
-                                return false
-                            }
+                            guard let timestampedKey = dataToSenderPublicKeys(keyData: decodedAttachment) else {
+                                print("Unable to get public key from key attachment")
+                                return false }
                             
-                            guard let thisPenPalKey = thisPenPal.key
-                                else
-                            {
+                            guard let thisPenPalKey = thisPenPal.key else {
                                 print("Unable to find penpal key when procesing key attachment.")
                                 //This Penpal didn't have a key stored, save the received key
                                 thisPenPal.key = timestampedKey.senderPublicKey as NSData?
@@ -711,16 +697,11 @@ class MailController: NSObject
                                     print("\(saveError.localizedDescription)")
                                 }
                                 
-                                return keyCompareSucceeded
-                            }
+                                return keyCompareSucceeded }
                             
-                            guard let timestamp = thisPenPal.keyTimestamp
-                                else
-                            {
+                            guard let timestamp = thisPenPal.keyTimestamp else {
                                 print("Unable to find penpal key timestamp.")
-                                
-                                return keyCompareSucceeded
-                            }
+                                return keyCompareSucceeded }
                             
                             keyCompareSucceeded = compare(senderKey: timestampedKey.senderPublicKey, andTimestamp: timestampedKey.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal, andMessageId: messageId)
                         }
@@ -936,10 +917,10 @@ class MailController: NSObject
                     if let penPalKey = thisPenpal.key
                     {
                         //Send a seperate email to each valid recipient in the list
-                        if let messagePayload = generateMessage(forPenPal: thisPenpal, subject: subject, body: body, maybeAttachments: maybeAttachments, withKey: penPalKey as Data)
+                        if let emailMessage = generateMessage(forPenPal: thisPenpal, subject: subject, body: body, maybeAttachments: maybeAttachments, withKey: penPalKey as Data)
                         {
                             let gmailMessage = GTLRGmail_Message()
-                            let rawMessage = payloadToRaw(payload: messagePayload)
+                            let rawMessage = emailToRaw(email: emailMessage)
                             gmailMessage.raw = rawMessage
                             
                             let sendGmailQuery = GTLRGmailQuery_UsersMessagesSend.query(withObject: gmailMessage, userId: gmailUserId, uploadParameters: nil)
@@ -1202,14 +1183,10 @@ class MailController: NSObject
     //        }
     //    }
     
-    func generateMessage(forPenPal penPal: PenPal, subject: String, body: String, maybeAttachments: [URL]?, withKey key: Data) -> GTLRGmail_MessagePart?
+    func generateMessage(forPenPal penPal: PenPal, subject: String, body: String, maybeAttachments: [URL]?, withKey key: Data) -> EmailMessage?
     {
         let emailAddress = penPal.email
-        
-        guard let key = penPal.key else
-        {
-            return nil
-        }
+        guard let key = penPal.key else { return nil }
         
         //This is the actual User's Message
         if let messageData = generateMessagePostcard(sendToEmail: emailAddress, subject: subject, body: body, withKey: key as Data)
@@ -1218,10 +1195,13 @@ class MailController: NSObject
             //TODO: This will call generateMessagePackage for user's attachments
             let packageData:Data? = nil
             
-            //This is the postcard wrapper email
-            let mimeMessageString = generateMessageMime(forPenPal: penPal, subject: localizedGenericSubject, body: localizedGenericBody, messageData: messageData, maybePackage: packageData)
+            //Key Attachment Data
+            guard let keyAttachmentData = generateKeyAttachment(forPenPal: penPal) else { return nil }
             
-            return mimeMessageString
+            //This is the actual complete email
+            let emailMessage = EmailMessage.init(to: emailAddress, hasPalKey: true, keyData: keyAttachmentData, postcardData: messageData, packageData: packageData)
+            
+            return emailMessage
         }
         else
         {
@@ -1264,97 +1244,6 @@ class MailController: NSObject
     
     //Main Wrapper Message This is what the user will see in any email client
     
-    func generateMessageMime(forPenPal penPal: PenPal, subject: String, body: String, messageData: Data, maybePackage: Data?) -> GTLRGmail_MessagePart?
-    {
-        if let keyData = generateKeyAttachment(forPenPal: penPal)
-        {
-            let messageAttach = createMessagePart(messageData: messageData, mimeType: PostCardProps.postcardMimeType, maybeFilename: postcardFilename)
-            let keyAttach = createMessagePart(messageData: keyData, mimeType: PostCardProps.keyMimeType, maybeFilename: keyFilename)
-            var maybePackageAttach: GTLRGmail_MessagePart? = nil
-            
-            if let pack = maybePackage
-            {
-                maybePackageAttach = createMessagePart(messageData: pack, mimeType: PostCardProps.packageMimeType, maybeFilename: packageFilename)
-            }
-            
-            if let bodyPart = createMessagePart(body: body, mimeType: PostCardProps.textMimeType, maybeFilename: nil)
-            {
-                return createMultipart(to: penPal.email, subject: subject, bodyPart: bodyPart, keyAttach: keyAttach, maybeMessageAttach: messageAttach, maybePackageAttach: maybePackageAttach)
-            }
-        }
-        
-        return nil
-    }
-
-
-    func createMessagePart(messageData: Data, mimeType: String, maybeFilename: String?) -> GTLRGmail_MessagePart
-    {
-        let mainPart = GTLRGmail_MessagePart()
-        
-        //Mimetype
-        mainPart.mimeType = mimeType
-        
-        //Filename?
-        mainPart.filename = maybeFilename
-        
-        //Body
-        let bodyPart = GTLRGmail_MessagePartBody()
-        let bodyPartEncodedString = dataEncodedToString(messageData)
-        bodyPart.data = bodyPartEncodedString
-        mainPart.body = bodyPart
-        
-        return mainPart
-    }
-    
-    func createMessagePart(body: String, mimeType: String, maybeFilename: String?) -> GTLRGmail_MessagePart?
-    {
-        let mainPart = GTLRGmail_MessagePart()
-        
-        //Mimetype
-        mainPart.mimeType = mimeType
-        
-        //Filename?
-        mainPart.filename = maybeFilename
-        
-        //Body
-        let bodyPart = GTLRGmail_MessagePartBody()
-        bodyPart.data = body
-        mainPart.body = bodyPart
-        
-        return mainPart
-            
-        //return createMessagePart(messageData: data, mimeType: mimeType, maybeFilename: maybeFilename)
-    }
-
-    func createMultipart(to: String, subject: String, bodyPart: GTLRGmail_MessagePart, keyAttach: GTLRGmail_MessagePart, maybeMessageAttach: GTLRGmail_MessagePart?, maybePackageAttach: GTLRGmail_MessagePart?) -> GTLRGmail_MessagePart
-    {
-        let mainPart = GTLRGmail_MessagePart()
-        mainPart.mimeType = "multipart/mixed"
-        mainPart.headers=[GTLRGmail_MessagePartHeader(json: ["To": to]), GTLRGmail_MessagePartHeader(json: ["Subject": subject])]
-        
-        var parts = [bodyPart, keyAttach]
-        
-        //Actual Email Body
-        if let messageAttach = maybeMessageAttach
-        {
-            parts.append(messageAttach)
-        }
-        //Actual Email Attachment
-        if let packageAttach = maybePackageAttach
-        {
-            parts.append(packageAttach)
-        }
-
-        mainPart.parts = parts
-        
-        return mainPart
-    }
-    
-    func createMultipart(to: String, subject: String, bodyPart: GTLRGmail_MessagePart, keyAttach: GTLRGmail_MessagePart) -> GTLRGmail_MessagePart
-    {
-        return createMultipart(to: to, subject: subject, bodyPart: bodyPart, keyAttach: keyAttach, maybeMessageAttach: nil, maybePackageAttach: nil)
-    }
-    
     func generateMessagePostcard(sendToEmail to: String, subject: String, body: String, withKey key: Data) -> Data?
     {
         print("\nSending an email to: \(to)\nRecipient's Public Key: \(key)")
@@ -1387,52 +1276,26 @@ class MailController: NSObject
         return nil
     }
     
-    func generateKeyMessage(forPenPal penPal: PenPal) -> GTLRGmail_MessagePart?
+    func generateKeyMessage(forPenPal penPal: PenPal) -> EmailMessage?
     {
-        //Generate the main Postcard Attachment.
-        var attachmentData: Data?
+        //This is the invitation message
+        let emailAddress = penPal.email
         
-        if (penPal.key != nil) && (penPal.keyTimestamp != nil)
+        if penPal.key == nil || penPal.keyTimestamp == nil
         {
-            attachmentData = generateKeyAttachment(forPenPal: penPal)
+            guard let keyAttachmentData = generateSenderPublicKeyAttachment(forPenPal: penPal) else { return nil }
+            let emailMessage = EmailMessage.init(to: emailAddress, hasPalKey: false, keyData: keyAttachmentData, postcardData: nil, packageData: nil)
+            return emailMessage
         }
         else
         {
-            attachmentData = generateSenderPublicKeyAttachment(forPenPal: penPal)
+            guard let keyAttachmentData = generateKeyAttachment(forPenPal: penPal) else { return nil }
+            let emailMessage = EmailMessage.init(to: emailAddress, hasPalKey: true, keyData: keyAttachmentData, postcardData: nil, packageData: nil)
+            return emailMessage
         }
-        
-        if (attachmentData != nil)
-        {
-            let keyFilename = "Postcard"
-
-            if (penPal.key != nil) && (penPal.keyTimestamp != nil)
-            {
-                let keyAttachment = createMessagePart(messageData: attachmentData!, mimeType: PostCardProps.keyMimeType, maybeFilename: keyFilename)
-                
-                if let messageBody = createMessagePart(body: localizedGenericBody, mimeType: PostCardProps.textMimeType, maybeFilename: nil)
-                {
-                    return createMultipart(to: penPal.email, subject: localizedInviteSubject, bodyPart: messageBody, keyAttach: keyAttachment)
-                }
-            }
-            else
-            {
-                let keyAttachment = createMessagePart(messageData: attachmentData!, mimeType: PostCardProps.senderKeyMimeType, maybeFilename: keyFilename)
-                if let messageBody = createMessagePart(body: localizedGenericBody, mimeType: PostCardProps.textMimeType, maybeFilename: nil)
-                {
-                    return createMultipart(to: penPal.email, subject: localizedInviteSubject, bodyPart: messageBody, keyAttach: keyAttachment)
-                }
-            }
-        }
-        else
-        {
-            print("Unable to generate key attachment data.")
-        }
-
-        return nil
     }
     
     //MARK: Key Attachments
-    
     struct VersionedData: Packable
     {
         var version: String
