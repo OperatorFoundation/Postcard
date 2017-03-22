@@ -19,6 +19,7 @@ let userKeyTimestampKey = "userPublicKeyTimestamp"
 let keyService = "org.operatorfoundation.Postcard"
 
 private var _singletonSharedInstance: KeyController! = KeyController()
+
 class KeyController: NSObject
 {
     class var sharedInstance: KeyController
@@ -40,7 +41,7 @@ class KeyController: NSObject
     fileprivate override init()
     {
         super.init()
-        
+
         //If there is a userID available (i.e. email address)
         if let emailAddress: String = GlobalVars.currentUser?.emailAddress, !emailAddress.isEmpty
         {
@@ -120,11 +121,9 @@ class KeyController: NSObject
         myKeyTimestamp = keyTimestamp
     }
     
-    func resetKeys()
+    func deleteInstance()
     {
         _singletonSharedInstance = nil
-        mySharedKey = nil
-        myPrivateKey = nil
     }
     
     func sendKey(toPenPal penPal: PenPal)

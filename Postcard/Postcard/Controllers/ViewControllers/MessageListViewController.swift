@@ -42,7 +42,55 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
             //TODO: Should this be a callback function?
             if selectedPostcard.decrypted == false
             {
-                MailController.sharedInstance.decryptPostcard(selectedPostcard)
+                if GlobalVars.messageCache == nil
+                {
+                    GlobalVars.messageCache = Dictionary <String, PostcardMessage>()
+                }
+                
+                guard let messageID = selectedPostcard.identifier
+                else
+                {
+                    return
+                }
+                
+                if GlobalVars.messageCache![messageID] != nil
+                {
+                    print("Found a message in the cache: \(GlobalVars.messageCache![messageID])")
+                    return
+                }
+
+                if let decryptedMessage = MailController.sharedInstance.decryptPostcard(selectedPostcard)
+                {
+                    selectedPostcard.decrypted = true
+                    selectedPostcard.to = decryptedMessage.to
+                    GlobalVars.messageCache![messageID] = decryptedMessage
+                    
+                    //Attachment?
+                    //            let attachments = messageParser?.attachments()
+                    //
+                    //            if (attachments?.isEmpty)!
+                    //            {
+                    //                postcard.hasPackage = false
+                    //            }
+                    //            else
+                    //            {
+                    //                //TODO: ignore key attachments
+                    //                postcard.hasPackage = true
+                    //            }
+                    
+                    //Save these changes to core data
+                    do
+                    {
+                        try selectedPostcard.managedObjectContext?.save()
+                    }
+                    catch
+                    {
+                        let saveError = error as NSError
+                        print("\(saveError.localizedDescription)")
+                    }
+                    
+                    postcardsTableView.reloadData()
+                }
             }
             
             //Tell the message VC what message to display

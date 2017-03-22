@@ -981,7 +981,7 @@
                                                             <rect key="frame" x="0.0" y="0.0" width="248" height="80"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="LQa-E6-Vuq">
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="LQa-E6-Vuq" userLabel="From Field">
                                                                     <rect key="frame" x="49" y="56" width="130" height="21"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="21" id="VZJ-Gq-sFn"/>
@@ -1014,7 +1014,7 @@
                                                                         </binding>
                                                                     </connections>
                                                                 </imageView>
-                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kfh-Q7-hYv">
+                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kfh-Q7-hYv" userLabel="Received Date Field">
                                                                     <rect key="frame" x="178" y="55" width="64" height="19"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="width" constant="60" id="McD-ow-TwC"/>
@@ -1029,7 +1029,7 @@
                                                                         <binding destination="75a-Fl-exd" name="value" keyPath="objectValue.receivedDate" id="WSI-Mw-VQl"/>
                                                                     </connections>
                                                                 </textField>
-                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="AaP-ka-inf">
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="AaP-ka-inf" userLabel="Snippet Field">
                                                                     <rect key="frame" x="1" y="0.0" width="246" height="35"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="35" id="oTS-11-nlY"/>
@@ -1043,7 +1043,7 @@
                                                                         <binding destination="75a-Fl-exd" name="value" keyPath="objectValue.snippet" id="2Tz-6Z-Swa"/>
                                                                     </connections>
                                                                 </textField>
-                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4uM-R6-uGz">
+                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4uM-R6-uGz" userLabel="Subject Field">
                                                                     <rect key="frame" x="49" y="36" width="4" height="19"/>
                                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="cW7-yk-CRh">
                                                                         <font key="font" size="12" name="ProximaNovaA-Regular"/>
@@ -1051,7 +1051,7 @@
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
                                                                     <connections>
-                                                                        <binding destination="75a-Fl-exd" name="value" keyPath="objectValue.subject" id="6gd-qT-5ki"/>
+                                                                        <binding destination="75a-Fl-exd" name="value" keyPath="objectValue.subject" id="QNA-O4-TI8"/>
                                                                     </connections>
                                                                 </textField>
                                                                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Kbr-L2-PxK" userLabel="Penpal Image View">
@@ -1161,7 +1161,7 @@
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="bTf-Ih-gdx" userLabel="Header" customClass="DesignableView" customModule="Postcard" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="554" width="677" height="86"/>
                                 <subviews>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LYV-pa-jXp">
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LYV-pa-jXp" userLabel="Subject Field">
                                         <rect key="frame" x="71" y="14" width="4" height="19"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="mlX-QB-KB0">
                                             <font key="font" size="12" name="ProximaNovaA-Regular"/>
@@ -1169,7 +1169,7 @@
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                         <connections>
-                                            <binding destination="pmd-tL-J5K" name="value" keyPath="selection.subject" id="Srd-IV-Qpa">
+                                            <binding destination="pmd-tL-J5K" name="value" keyPath="selection.subject" id="Xkb-DO-mYL">
                                                 <dictionary key="options">
                                                     <bool key="NSConditionallySetsHidden" value="YES"/>
                                                     <bool key="NSRaisesForNotApplicableKeys" value="NO"/>
@@ -1177,7 +1177,7 @@
                                             </binding>
                                         </connections>
                                     </textField>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="51u-rg-MY5">
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="51u-rg-MY5" userLabel="Received Date Field">
                                         <rect key="frame" x="495" y="58" width="164" height="20"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="160" id="J9r-Pq-8wn"/>
@@ -1196,7 +1196,7 @@
                                         <rect key="frame" x="0.0" y="-2" width="86" height="5"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     </box>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hAF-E4-yyR">
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hAF-E4-yyR" userLabel="From Email Field">
                                         <rect key="frame" x="71" y="37" width="4" height="17"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="17" id="I4f-a4-cwo"/>
@@ -1215,7 +1215,7 @@
                                             </binding>
                                         </connections>
                                     </textField>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oCH-GC-grN">
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oCH-GC-grN" userLabel="From Name Field">
                                         <rect key="frame" x="71" y="54" width="4" height="21"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="m98-VY-1BN">
                                             <font key="font" size="14" name="ProximaNovaA-Bold"/>
@@ -1239,7 +1239,7 @@
                                         </constraints>
                                         <buttonCell key="cell" type="bevel" title="DELETE" bezelStyle="rounded" image="orangeButton" imagePosition="overlaps" alignment="center" imageScaling="axesIndependently" inset="2" id="rOj-aE-0OK">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system" size="12"/>
+                                            <font key="font" metaFont="cellTitle"/>
                                         </buttonCell>
                                         <connections>
                                             <action selector="deleteClick:" target="R8t-QV-JrK" id="fA2-mE-QEX"/>
@@ -1279,7 +1279,7 @@
                                         </constraints>
                                         <buttonCell key="cell" type="bevel" title="REPLY" bezelStyle="regularSquare" image="redButton" imagePosition="overlaps" alignment="center" imageScaling="axesIndependently" inset="2" id="xaH-wQ-gG5">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system" size="12"/>
+                                            <font key="font" metaFont="cellTitle"/>
                                         </buttonCell>
                                         <connections>
                                             <binding destination="pmd-tL-J5K" name="enabled" keyPath="selection.from.email" id="cJl-fX-Ur5">
@@ -1369,7 +1369,7 @@
                                                             <size key="maxSize" width="1000" height="1000"/>
                                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <connections>
-                                                                <binding destination="pmd-tL-J5K" name="attributedString" keyPath="selection.body" id="Pyb-ac-BIk">
+                                                                <binding destination="pmd-tL-J5K" name="attributedString" keyPath="selection.body" id="UWp-aE-gj3">
                                                                     <dictionary key="options">
                                                                         <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
                                                                         <bool key="NSConditionallySetsEditable" value="NO"/>
@@ -1500,7 +1500,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="135" height="640"/>
                                 <subviews>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3uy-UB-uf2">
-                                        <rect key="frame" x="18" y="515" width="100" height="32"/>
+                                        <rect key="frame" x="18" y="521" width="100" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="100" id="TYi-id-5bv"/>
                                             <constraint firstAttribute="height" constant="32" id="fVs-j5-MR3"/>
@@ -1514,7 +1514,7 @@
                                         </connections>
                                     </button>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uHz-bO-bug">
-                                        <rect key="frame" x="18" y="555" width="100" height="32"/>
+                                        <rect key="frame" x="18" y="561" width="100" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="32" id="9aY-rP-gkT"/>
                                             <constraint firstAttribute="width" constant="100" id="fHk-Og-uBe"/>
@@ -1528,7 +1528,7 @@
                                         </connections>
                                     </button>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="e9Q-Sn-DW8">
-                                        <rect key="frame" x="18" y="435" width="100" height="32"/>
+                                        <rect key="frame" x="18" y="441" width="100" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="32" id="2bW-Xr-g0O"/>
                                             <constraint firstAttribute="width" constant="100" id="qdl-27-g5q"/>
@@ -1542,7 +1542,7 @@
                                         </connections>
                                     </button>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KDH-XD-tyj">
-                                        <rect key="frame" x="5" y="604" width="126" height="24"/>
+                                        <rect key="frame" x="20" y="610" width="95" height="18"/>
                                         <buttonCell key="cell" type="bevel" title="COMPOSE" bezelStyle="regularSquare" image="redButtonLarge" imagePosition="overlaps" alignment="center" inset="2" id="yHo-lj-eWW">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system" size="14"/>
@@ -1553,7 +1553,7 @@
                                         </connections>
                                     </button>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Glh-Pi-vD9">
-                                        <rect key="frame" x="18" y="475" width="100" height="32"/>
+                                        <rect key="frame" x="18" y="481" width="100" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="32" id="FbJ-V2-nqk"/>
                                             <constraint firstAttribute="width" constant="100" id="ias-bt-Gcf"/>

@@ -57,6 +57,111 @@ let ourLabel = "Postcard"
 var ourLabelId: String?
 var inboxLabelId: String?
 
+struct PostcardMessage: Packable
+{
+    var to: String
+    var subject: String
+    var body: String
+    
+    init(to: String, subject: String, body: String)
+    {
+        self.to = to
+        self.subject = subject
+        self.body = body
+    }
+    
+    init?(postcardData: Data)
+    {
+        do
+        {
+            let unpackResult = try unpack(postcardData)
+            let unpackValue: MessagePackValue = unpackResult.value
+            self.init(value: unpackValue)
+        }
+        catch let unpackError as NSError
+        {
+            print("Unpack postcard data error: \(unpackError.localizedDescription)")
+            return nil
+        }
+    }
+    
+    func dataValue() -> Data?
+    {
+        let keyMessagePack = self.messagePackValue()
+        return pack(keyMessagePack)
+    }
+    
+    internal init?(value: MessagePackValue)
+    {
+        guard let keyDictionary = value.dictionaryValue
+            else
+        {
+            print("Postcard Message deserialization error.")
+            return nil
+        }
+        
+        //To
+        guard let toMessagePack = keyDictionary[.string(messageToKey)]
+            else
+        {
+            print("Postcard message deserialization error: unable to unpack 'to' property.")
+            return nil
+        }
+        
+        guard let toString = toMessagePack.stringValue
+            else
+        {
+            print("Postcard message deserialization error: unable to get string value for 'to' property.")
+            return nil
+        }
+        
+        //Subject
+        guard let subjectMessagePack = keyDictionary[.string(messageSubjectKey)]
+            else
+        {
+            print("Postcard message deserialization error: unable to unpack subject property.")
+            return nil
+        }
+        
+        guard let subjectString = subjectMessagePack.stringValue
+            else
+        {
+            print("Postcard message deserialization error: unable to get string value for subject property.")
+            return nil
+        }
+        
+        //Message Body
+        guard let bodyMessagePack = keyDictionary[.string(messageBodyKey)]
+            else
+        {
+            print("Postcard message deserialization error: unable to unpack body property.")
+            return nil
+        }
+        
+        guard let bodyString = bodyMessagePack.stringValue
+            else
+        {
+            print("Postcard message deserialization error: unable to get string value for body property.")
+            return nil
+        }
+        
+        self.to = toString
+        self.subject = subjectString
+        self.body = bodyString
+    }
+    
+    internal func messagePackValue() -> MessagePackValue
+    {
+        let keyDictionary: Dictionary<MessagePackValue, MessagePackValue> = [
+            MessagePackValue(messageToKey): MessagePackValue(self.to),
+            MessagePackValue(messageSubjectKey): MessagePackValue(self.subject),
+            MessagePackValue(messageBodyKey): MessagePackValue(self.body)
+        ]
+        
+        return MessagePackValue(keyDictionary)
+    }
+}
+
 class MailController: NSObject
 {
     static let sharedInstance = MailController()
@@ -413,7 +518,7 @@ class MailController: NSObject
         }
     }
     
-    func decryptPostcard(_ postcard: Postcard)
+    func decryptPostcard(_ postcard: Postcard) -> PostcardMessage?
     {
         //Decrypt - Sodium
         let keyController = KeyController.sharedInstance
@@ -428,8 +533,11 @@ class MailController: NSObject
                     {
                         if let decryptedPostcard = sodium.box.open(nonceAndAuthenticatedCipherText: cipherText as Data, senderPublicKey: penPalKey as Box.PublicKey, recipientSecretKey: secretKey)
                         {
-                            //Parse this message
-                            self.parseDecryptedMessageAndSave(decryptedPostcard, saveToPostcard: postcard)
+                            //Parse this message into usable parts
+                            if let postcardMessage = PostcardMessage.init(postcardData: decryptedPostcard)
+                            {
+                                return postcardMessage
+                            }
                         }
                         else
                         {
@@ -459,76 +567,36 @@ class MailController: NSObject
         {
             print("\nUnable to decrypt message: could not initialize Sodium. That's weird.\n")
         }
-    }
-    
-    fileprivate func parseDecryptedMessageAndSave(_ data: Data, saveToPostcard postcard: Postcard)
-    {
-        //Parse this message into usable parts
-        if let postcardMessage = PostcardMessage.init(postcardData: data)
-        {
-            postcard.body = postcardMessage.body
-            postcard.subject = postcardMessage.subject
-            postcard.decrypted = true
-            postcard.to = postcardMessage.to
-            
-            //Snippet?
-            //Attachment?
-//            let attachments = messageParser?.attachments()
-//            
-//            if (attachments?.isEmpty)!
-//            {
-//                postcard.hasPackage = false
-//            }
-//            else
-//            {
-//                //TODO: ignore key attachments
-//                postcard.hasPackage = true
-//            }
-            
-            //Save these changes to core data
-            do
-            {
-                try postcard.managedObjectContext?.save()
-            }
-            catch
-            {
-                let saveError = error as NSError
-                print("\(saveError.localizedDescription)")
-            }
-        }
-    }
-    
-    func removeDecryptedPostcardData(_ postcard: Postcard)
-    {
-        //Remove all sensitive data
-        postcard.body = nil
-        postcard.subject = nil
-        postcard.snippet = nil
-        postcard.to = nil
-        postcard.hasPackage = false
-        postcard.decrypted = false
         
-        //Save these changes to core data
-        do
-        {
-            try postcard.managedObjectContext?.save()
-        }
-        catch
-        {
-            let saveError = error as NSError
-            print("\(saveError.localizedDescription)")
-        }
+        return nil
     }
     
     func removeAllDecryptionForUser(_ lockdownUser: User)
     {
+        //Empty the message cache
+        GlobalVars.messageCache = nil
+        
         if let postcards = lockdownUser.postcard
         {
             for maybeCard in postcards
             {
                 if let card = maybeCard as? Postcard
                 {
-                    removeDecryptedPostcardData(card)
+                    //Remove all sensitive data
+                    card.to = nil
+                    card.hasPackage = false
+                    card.decrypted = false
+                    
+                    //Save these changes to core data
+                    do
+                    {
+                        try card.managedObjectContext?.save()
+                    }
+                    catch
+                    {
+                        let saveError = error as NSError
+                        print("\(saveError.localizedDescription)")
+                    }
                 }
                 else
                 {
@@ -1024,110 +1092,6 @@ class MailController: NSObject
     
     //MARK: Create the message
     
-    struct PostcardMessage: Packable
-    {
-        var to: String
-        var subject: String
-        var body: String
-        
-        init(to: String, subject: String, body: String)
-        {
-            self.to = to
-            self.subject = subject
-            self.body = body
-        }
-        
-        init?(postcardData: Data)
-        {
-            do
-            {
-                let unpackResult = try unpack(postcardData)
-                let unpackValue: MessagePackValue = unpackResult.value
-                self.init(value: unpackValue)
-            }
-            catch let unpackError as NSError
-            {
-                print("Unpack postcard data error: \(unpackError.localizedDescription)")
-                return nil
-            }
-        }
-        
-        func dataValue() -> Data?
-        {
-            let keyMessagePack = self.messagePackValue()
-            return pack(keyMessagePack)
-        }
-        
-        internal init?(value: MessagePackValue)
-        {
-            guard let keyDictionary = value.dictionaryValue
-                else
-            {
-                print("Postcard Message deserialization error.")
-                return nil
-            }
-            
-            //To
-            guard let toMessagePack = keyDictionary[.string(messageToKey)]
-                else
-            {
-                print("Postcard message deserialization error: unable to unpack 'to' property.")
-                return nil
-            }
-            
-            guard let toString = toMessagePack.stringValue
-                else
-            {
-                print("Postcard message deserialization error: unable to get string value for 'to' property.")
-                return nil
-            }
-            
-            //Subject
-            guard let subjectMessagePack = keyDictionary[.string(messageSubjectKey)]
-                else
-            {
-                print("Postcard message deserialization error: unable to unpack subject property.")
-                return nil
-            }
-            
-            guard let subjectString = subjectMessagePack.stringValue
-                else
-            {
-                print("Postcard message deserialization error: unable to get string value for subject property.")
-                return nil
-            }
-            
-            //Message Body
-            guard let bodyMessagePack = keyDictionary[.string(messageBodyKey)]
-                else
-            {
-                print("Postcard message deserialization error: unable to unpack body property.")
-                return nil
-            }
-            
-            guard let bodyString = bodyMessagePack.stringValue
-                else
-            {
-                print("Postcard message deserialization error: unable to get string value for body property.")
-                return nil
-            }
-            
-            self.to = toString
-            self.subject = subjectString
-            self.body = bodyString
-        }
-        
-        internal func messagePackValue() -> MessagePackValue
-        {
-            let keyDictionary: Dictionary<MessagePackValue, MessagePackValue> = [
-                MessagePackValue(messageToKey): MessagePackValue(self.to),
-                MessagePackValue(messageSubjectKey): MessagePackValue(self.subject),
-                MessagePackValue(messageBodyKey): MessagePackValue(self.body)
-            ]
-            
-            return MessagePackValue(keyDictionary)
-        }
-    }
     
     //    func generateMessagePackage(maybeAttachments: [NSURL]?) -> NSData
     //    {
@@ -1503,7 +1467,7 @@ class MailController: NSObject
             guard let senderTimestampMessagePack = keyDictionary[.string(keyAttachmentSenderPublicKeyTimestampKey)]
                 else
             {
-                print("TimestampedPublicKeys deserialization error.")
+                print("TimestampedPublicKeys deserialization error: Unable to deserialize the Timestamp MessagePack.")
                 return nil
             }
             

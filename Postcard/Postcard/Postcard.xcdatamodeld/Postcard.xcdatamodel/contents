@@ -17,14 +17,12 @@
         </uniquenessConstraints>
     </entity>
     <entity name="Postcard" representedClassName=".Postcard" syncable="YES">
-        <attribute name="body" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="cipherText" attributeType="Binary" syncable="YES"/>
         <attribute name="decrypted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="hasPackage" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="identifier" attributeType="String" syncable="YES"/>
         <attribute name="receivedDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="snippet" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="subject" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="to" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="from" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PenPal" inverseName="messages" inverseEntity="PenPal" syncable="YES"/>
         <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="postcard" inverseEntity="User" syncable="YES"/>
@@ -37,10 +35,8 @@
     <entity name="User" representedClassName=".User" syncable="YES">
         <attribute name="emailAddress" attributeType="String" syncable="YES"/>
         <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="keyTimestamp" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="peopleSyncToken" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="publicKey" optional="YES" attributeType="Binary" syncable="YES"/>
         <relationship name="pal" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PenPal" inverseName="owner" inverseEntity="PenPal" syncable="YES"/>
         <relationship name="postcard" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Postcard" inverseName="owner" inverseEntity="Postcard" syncable="YES"/>
         <uniquenessConstraints>
@@ -51,7 +47,7 @@
     </entity>
     <elements>
         <element name="PenPal" positionX="-63" positionY="-18" width="128" height="180"/>
-        <element name="Postcard" positionX="-54" positionY="18" width="128" height="210"/>
-        <element name="User" positionX="-63" positionY="72" width="128" height="165"/>
+        <element name="Postcard" positionX="-54" positionY="18" width="128" height="180"/>
+        <element name="User" positionX="-63" positionY="72" width="128" height="135"/>
     </elements>
 </model>

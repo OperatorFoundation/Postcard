@@ -230,13 +230,15 @@ class MenuViewController: NSViewController, NSUserActivityDelegate
         
         //And Close Main Postcard Window
         self.view.window?.close()
+        
+        KeyController.sharedInstance.deleteInstance()
     }
     
     @IBAction func logoutClick(_ sender: NSButton)
     {
         //Remove current User from Constants
         GlobalVars.currentUser = nil
-        KeyController.sharedInstance.resetKeys()
+        KeyController.sharedInstance.deleteInstance()
         
         //Remove google Auth Token
         GTMOAuth2WindowController.removeAuthFromKeychain(forName: GmailProps.kKeychainItemName)

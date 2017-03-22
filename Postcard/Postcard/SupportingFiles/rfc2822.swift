@@ -162,7 +162,7 @@ func createRFC2822Attachment(contentType: String, filename: String, content: Dat
     result = result + "\r\n"
     
     //Attachment content
-    if let body = GTLREncodeWebSafeBase64(content)
+    if let body = GTLREncodeBase64(content)
     {
         result = result + body
     }

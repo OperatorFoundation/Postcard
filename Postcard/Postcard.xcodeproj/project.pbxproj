@@ -35,8 +35,6 @@
 		B4238F5C1CD2C11C0054E7EF /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4238F5B1CD2C11C0054E7EF /* Constants.swift */; };
 		B4238F5F1CD2DF050054E7EF /* KeyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4238F5E1CD2DF050054E7EF /* KeyController.swift */; };
 		B430D5EB1CF7C31D0025365E /* WelcomeWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B430D5EA1CF7C31D0025365E /* WelcomeWindowController.swift */; };
-		B430FC8D1CF8A22900205015 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AB1CC17B9A009C577D /* AppDelegate.swift */; };
-		B430FC8E1CF8A23200205015 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AB1CC17B9A009C577D /* AppDelegate.swift */; };
 		B460CCE91D41805D00507EFD /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = B460CCE81D41805D00507EFD /* Globals.swift */; };
 		B486A0771E2F2ECB009664A2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4238F541CD2A24D0054E7EF /* Security.framework */; };
 		B48A273E1D08B4B8007BBB27 /* LockedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */; };
@@ -700,7 +698,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B430FC8D1CF8A22900205015 /* AppDelegate.swift in Sources */,
 				461891C11CC17B9A009C577D /* PostcardTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -710,7 +707,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				461891CC1CC17B9A009C577D /* PostcardUITests.swift in Sources */,
-				B430FC8E1CF8A23200205015 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

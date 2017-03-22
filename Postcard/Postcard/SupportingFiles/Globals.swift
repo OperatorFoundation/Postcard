@@ -12,4 +12,6 @@ struct GlobalVars
 {
     static var currentUser: User?
     static var userActivity: NSUserActivity?
+    
+    static var messageCache: Dictionary <String, PostcardMessage>?
 }

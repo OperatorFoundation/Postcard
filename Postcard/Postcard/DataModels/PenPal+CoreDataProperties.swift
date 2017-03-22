@@ -2,18 +2,19 @@
 //  PenPal+CoreDataProperties.swift
 //  Postcard
 //
-//  Created by Adelita Schule on 2/7/17.
+//  Created by Adelita Schule on 3/20/17.
 //  Copyright © 2017 operatorfoundation.org. All rights reserved.
-//  This file was automatically generated and should not be edited.
 //
 
 import Foundation
 import CoreData
 
 
-extension PenPal {
+extension PenPal
+{
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<PenPal> {
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<PenPal>
+    {
         return NSFetchRequest<PenPal>(entityName: "PenPal");
     }
 

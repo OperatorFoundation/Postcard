@@ -2,9 +2,8 @@
 //  User+CoreDataProperties.swift
 //  Postcard
 //
-//  Created by Adelita Schule on 2/7/17.
+//  Created by Adelita Schule on 3/20/17.
 //  Copyright © 2017 operatorfoundation.org. All rights reserved.
-//  This file was automatically generated and should not be edited.
 //
 
 import Foundation
@@ -19,10 +18,8 @@ extension User {
 
     @NSManaged public var emailAddress: String?
     @NSManaged public var firstName: String?
-    @NSManaged public var keyTimestamp: NSDate?
     @NSManaged public var lastName: String?
     @NSManaged public var peopleSyncToken: String?
-    @NSManaged public var publicKey: NSData?
     @NSManaged public var pal: NSSet?
     @NSManaged public var postcard: NSSet?
 

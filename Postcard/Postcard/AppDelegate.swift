@@ -19,7 +19,19 @@ class AppDelegate: NSObject, NSApplicationDelegate
     let keyHandoffNotificationName = "PostcardKeyHandoffNotification"
     
     //MARK: Application Lifecycle
+    func applicationDidFinishLaunching(_ aNotification: Notification)
+    {
+        //Listen for sleep
+        NSWorkspace.shared().notificationCenter.addObserver(self, selector: #selector(willSleep), name: NSNotification.Name.NSWorkspaceWillSleep, object: nil)
+    }
     
+    func willSleep()
+    {
+        print("😴")
+        
+        GlobalVars.messageCache = nil
+        KeyController.sharedInstance.deleteInstance()
+    }
     
     //UserActivity Delegate
     func application(_ application: NSApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool
@@ -180,7 +192,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplicationTerminateReply
     {
         // Save changes in the application's managed object context before the application terminates.
-        
         if !managedObjectContext.commitEditing()
         {
             NSLog("\(NSStringFromClass(type(of: self))) unable to commit editing to terminate")
