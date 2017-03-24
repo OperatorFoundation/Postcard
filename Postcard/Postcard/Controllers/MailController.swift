@@ -373,148 +373,182 @@ class MailController: NSObject
     {
         for messageMeta in messages
         {
-            if let messageIdentifier = messageMeta.identifier
+            guard let messageIdentifier = messageMeta.identifier
+                else {return}
+            
+            guard messageAlreadySaved(messageIdentifier) == false
+            else
             {
-                if messageAlreadySaved(messageIdentifier) == false
+                print("Will not save message, it has already been saved.")
+                return
+            }
+            
+            let userMessagesQuery = GTLRGmailQuery_UsersMessagesGet.query(withUserId: gmailUserId, identifier: messageIdentifier)
+            userMessagesQuery.fields = "payload"
+            
+            //Get full messages
+            GmailProps.service.executeQuery(userMessagesQuery, completionHandler:
+            {
+                (ticket, maybeMessage, maybeError) in
+                
+                if let message = maybeMessage as? GTLRGmail_Message, let payload = message.payload, let parts: [GTLRGmail_MessagePart] = payload.parts
                 {
-                    let userMessagesQuery = GTLRGmailQuery_UsersMessagesGet.query(withUserId: gmailUserId, identifier: messageIdentifier)
-                    userMessagesQuery.fields = "payload"
+                    var senderKey: NSData?
                     
-                    //Get full messages
-                    GmailProps.service.executeQuery(userMessagesQuery, completionHandler:
+                    //This is a key/penpal invitation with receiver key info
+                    for thisPart in parts where thisPart.mimeType == PostCardProps.keyMimeType || thisPart.mimeType == PostCardProps.senderKeyMimeType
                     {
-                        (ticket, maybeMessage, maybeError) in
+                        //Label it with our Gmail Label
+                        self.updateLabels(forMessage: message, withId: messageIdentifier)
                         
-                        if let message = maybeMessage as? GTLRGmail_Message, let payload = message.payload, let parts: [GTLRGmail_MessagePart] = payload.parts
+                        if let messageBody = thisPart.body, let attachmentId = messageBody.attachmentId
                         {
-                            //This is a key/penpal invitation with receiver key info
-                            for thisPart in parts where thisPart.mimeType == PostCardProps.keyMimeType || thisPart.mimeType == PostCardProps.senderKeyMimeType
-                            {
-                                //Label it with our Gmail Label
-                                self.updateLabels(forMessage: message, withId: messageIdentifier)
-                                
-                                //Download the attachment
-                                if let messageBody = thisPart.body, let attachmentId = messageBody.attachmentId
+                            let attachmentQuery = GTLRGmailQuery_UsersMessagesAttachmentsGet.query(withUserId: self.gmailUserId, messageId: messageIdentifier, identifier: attachmentId)
+                            
+                            //Download the attachment
+                            GmailProps.service.executeQuery(attachmentQuery, completionHandler:
                                 {
-                                    let attachmentQuery = GTLRGmailQuery_UsersMessagesAttachmentsGet.query(withUserId: self.gmailUserId, messageId: messageIdentifier, identifier: attachmentId)
-                                    GmailProps.service.executeQuery(attachmentQuery, completionHandler:
+                                    (ticket, maybeAttachment, maybeError) in
+                                    
+                                    //Process the attachments
+                                    if let attachment = maybeAttachment as? GTLRGmail_MessagePartBody
                                     {
-                                        (ticket, maybeAttachment, maybeError) in
+                                        var keyCompareSucceeded = false
                                         
-                                        //Process the attachments
-                                        if let attachment = maybeAttachment as? GTLRGmail_MessagePartBody
+                                        if thisPart.mimeType == PostCardProps.keyMimeType
                                         {
-                                            var keyCompareSucceeded = false
+                                            let parsedKey = self.processPenPalKeyAttachment(attachment, forMessage: message, withID: messageIdentifier, hasReceiverKey: true)
+                                            keyCompareSucceeded = parsedKey.keysMatch
                                             
-                                            if thisPart.mimeType == PostCardProps.keyMimeType
+                                            if keyCompareSucceeded
                                             {
-                                                keyCompareSucceeded = self.processPenPalKeyAttachment(attachment, forMessage: message, withID: messageIdentifier, hasReceiverKey: true)
+                                                senderKey = parsedKey.senderKey
                                             }
-                                            else if thisPart.mimeType == PostCardProps.senderKeyMimeType
-                                            {
-                                                keyCompareSucceeded = self.processPenPalKeyAttachment(attachment, forMessage: message, withID: messageIdentifier, hasReceiverKey: false)
-                                            }
-                                            
-                                            if !keyCompareSucceeded
+                                            else
                                             {
                                                 print("\nKeycompare failed for Message ID \(messageIdentifier): \n" + payload.description + "\nPayload had \(payload.parts!.count) parts:\n \(payload.parts?.description).\n")
                                             }
                                         }
-                                    })
-                                }
-                            }
-                            
-                            if let headers: [GTLRGmail_MessagePartHeader] = payload.headers
-                            {
-                                var sender = ""
-                                for header in headers where header.name == "From"
-                                {
-                                    if let headerValue = header.value
-                                    {
-                                        sender = headerValue
-                                    }
-                                }
-                                
-                                if !sender.isEmpty
-                                {
-                                    //This is a postcard message/attachment
-                                    for thisPart in parts where thisPart.mimeType == PostCardProps.postcardMimeType
-                                    {
-                                        //Download the attachment that is a Postcard
-                                        if let messageBody = thisPart.body, let attachmentId = messageBody.attachmentId
+                                        else if thisPart.mimeType == PostCardProps.senderKeyMimeType
                                         {
-                                            let attachmentQuery = GTLRGmailQuery_UsersMessagesAttachmentsGet.query(withUserId: self.gmailUserId, messageId: messageIdentifier, identifier: attachmentId)
-                                            GmailProps.service.executeQuery(attachmentQuery, completionHandler:
+                                            let parsedKey = self.processPenPalKeyAttachment(attachment, forMessage: message, withID: messageIdentifier, hasReceiverKey: false)
+                                            keyCompareSucceeded = parsedKey.keysMatch
+                                            
+                                            if keyCompareSucceeded
                                             {
-                                                (ticket, maybeAttachment, maybeError) in
-                                                
-                                                if let attachment = maybeAttachment as? GTLRGmail_MessagePartBody
-                                                {
-                                                    //Do we have this person saved as a PenPal?
-                                                    if let thisPenPal = PenPalController.sharedInstance.fetchPenPal(sender)
-                                                    {
-                                                        let attachmentString = attachment.data
-                                                        
-                                                        //Decode - GTLWebSafeBase64
-                                                        if let postcardData = self.stringDecodedToData(attachmentString!)
-                                                        {
-                                                            //CoreData
-                                                            if let entity = NSEntityDescription.entity(forEntityName: "Postcard", in: self.managedObjectContext!)
-                                                            {
-                                                                //Create New Postcard Record
-                                                                let newCard = Postcard(entity: entity, insertInto: self.managedObjectContext)
-                                                                
-                                                                newCard.owner = GlobalVars.currentUser
-                                                                newCard.from = thisPenPal
-                                                                newCard.cipherText = postcardData as NSData?
-                                                                newCard.identifier = messageMeta.identifier
-                                                                
-                                                                for dateHeader in headers where dateHeader.name == "Date"
-                                                                {
-                                                                    let formatter = DateFormatter()
-                                                                    formatter.locale = Locale(identifier: "en_US_POSIX")
-                                                                    formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
-                                                                    //Wed, 15 Feb 2017 20:48:50 -0500
-                                                                    if let headerDate = dateHeader.value
-                                                                    {
-                                                                        if let receivedDate = formatter.date(from: headerDate)
-                                                                        {
-                                                                            newCard.receivedDate = receivedDate as NSDate?
-                                                                        }
-                                                                    }
-                                                                }
-                                                                
-                                                                //Save this Postcard to core data
-                                                                do
-                                                                {
-                                                                    try newCard.managedObjectContext?.save()
-                                                                }
-                                                                catch
-                                                                {
-                                                                    let saveError = error as NSError
-                                                                    print("\(saveError.localizedDescription)")
-                                                                }
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            print("Failed to decode the message from \(sender).\n")
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        print("A message could not be decrypted because it is not from a known contact \(sender)")
-                                                    }
-                                                }
-                                            })
+                                                senderKey = parsedKey.senderKey
+                                            }
+                                            else
+                                            {
+                                                print("\nKeycompare failed for Message ID \(messageIdentifier): \n" + payload.description + "\nPayload had \(payload.parts!.count) parts:\n \(payload.parts?.description).\n")
+                                            }
                                         }
                                     }
-                                }
-                            }
+                                    else
+                                    {
+                                        print("Unable to process message attachment, attachment was an invalid type")
+                                    }
+                            })
                         }
-                    })
+                        else
+                        {
+                            print("Invalid message part")
+                        }
+                    }
+                    
+                    guard let headers: [GTLRGmail_MessagePartHeader] = payload.headers
+                        else {return}
+                    
+                    var sender = ""
+                    for header in headers where header.name == "From"
+                    {
+                        if let headerValue = header.value
+                        {
+                            sender = headerValue
+                        }
+                    }
+                    
+                    guard !sender.isEmpty
+                        else {return}
+                    
+                    //This is a postcard message/attachment
+                    for thisPart in parts where thisPart.mimeType == PostCardProps.postcardMimeType
+                    {
+                        guard let messageBody = thisPart.body, let attachmentId = messageBody.attachmentId
+                            else {return}
+                        
+                        let attachmentQuery = GTLRGmailQuery_UsersMessagesAttachmentsGet.query(withUserId: self.gmailUserId, messageId: messageIdentifier, identifier: attachmentId)
+                        
+                        //Download the attachment that is a Postcard
+                        GmailProps.service.executeQuery(attachmentQuery, completionHandler:
+                            {
+                                (ticket, maybeAttachment, maybeError) in
+                                
+                                if let attachment = maybeAttachment as? GTLRGmail_MessagePartBody
+                                {
+                                    //Do we have this person saved as a PenPal?
+                                    if let thisPenPal = PenPalController.sharedInstance.fetchPenPal(sender)
+                                    {
+                                        let attachmentString = attachment.data
+                                        
+                                        //Decode - GTLWebSafeBase64
+                                        if let postcardData = self.stringDecodedToData(attachmentString!)
+                                        {
+                                            //Create New Postcard Record
+                                            guard let entity = NSEntityDescription.entity(forEntityName: "Postcard", in: self.managedObjectContext!)
+                                                else {return}
+                                            
+                                            let newCard = Postcard(entity: entity, insertInto: self.managedObjectContext)
+                                            newCard.owner = GlobalVars.currentUser
+                                            newCard.from = thisPenPal
+                                            newCard.cipherText = postcardData as NSData?
+                                            newCard.identifier = messageMeta.identifier
+                                            
+                                            if senderKey != nil
+                                            {
+                                                newCard.senderKey = senderKey
+                                            }
+                                            
+                                            for dateHeader in headers where dateHeader.name == "Date"
+                                            {
+                                                let formatter = DateFormatter()
+                                                formatter.locale = Locale(identifier: "en_US_POSIX")
+                                                formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
+                                                //Wed, 15 Feb 2017 20:48:50 -0500
+                                                if let headerDate = dateHeader.value
+                                                {
+                                                    if let receivedDate = formatter.date(from: headerDate)
+                                                    {
+                                                        newCard.receivedDate = receivedDate as NSDate?
+                                                    }
+                                                }
+                                            }
+                                            
+                                            //Save this Postcard to core data
+                                            do
+                                            {
+                                                try newCard.managedObjectContext?.save()
+                                            }
+                                            catch
+                                            {
+                                                let saveError = error as NSError
+                                                print("Unable to save a new postcard: \(saveError.localizedDescription)")
+                                            }
+                                        }
+                                        else
+                                        {
+                                            print("Unable to decode postcard data")
+                                        }
+                                    }
+                                    else
+                                    {
+                                        print("A message was not saved because it is not from a known contact \(sender)")
+                                    }
+                                }
+                        })
+                    }
                 }
-            }
+            })
         }
     }
     
@@ -522,53 +556,58 @@ class MailController: NSObject
     {
         //Decrypt - Sodium
         let keyController = KeyController.sharedInstance
-        if let sodium = Sodium()
-        {
-            if let secretKey = keyController.myPrivateKey
-            {
-                if let penPal = postcard.from, let penPalKey = penPal.key
-                {
-                    let penPalEMail = penPal.email
-                    if let cipherText = postcard.cipherText
-                    {
-                        if let decryptedPostcard = sodium.box.open(nonceAndAuthenticatedCipherText: cipherText as Data, senderPublicKey: penPalKey as Box.PublicKey, recipientSecretKey: secretKey)
-                        {
-                            //Parse this message into usable parts
-                            if let postcardMessage = PostcardMessage.init(postcardData: decryptedPostcard)
-                            {
-                                return postcardMessage
-                            }
-                        }
-                        else
-                        {
-                            showAlert(String(format: localizedWrongKeyError, penPalEMail))
-                            print("\nFailed to decrypt message:\n")
-                            print("Sender's Public Key: \(penPalKey)\n")
-                            print("My public key: \(keyController.mySharedKey?.description)")
-                            print("My Secret Key: \(secretKey.description)\n")
-                        }
-                    }
-                    else
-                    {
-                        showAlert(String(format: localizedMissingCipherError, penPalEMail))
-                    }
-                }
-                else
-                {
-                    showAlert(localizedMissingPalKeyError)
-                }
-            }
+        guard let sodium = Sodium()
             else
-            {
-                showAlert(localizedMissingKeyError)
-            }
-        }
-        else
         {
             print("\nUnable to decrypt message: could not initialize Sodium. That's weird.\n")
+            return nil
         }
         
-        return nil
+        guard let secretKey = keyController.myPrivateKey
+            else
+        {
+            showAlert(localizedMissingKeyError)
+            return nil
+        }
+        
+        guard let penPal = postcard.from
+            else
+        {
+            showAlert(localizedMissingPalKeyError)
+            return nil
+        }
+        
+        guard let penPalKey = postcard.senderKey
+            else
+        {
+            return nil
+        }
+        
+        let penPalEMail = penPal.email
+        
+        guard let cipherText = postcard.cipherText
+            else
+        {
+            showAlert(String(format: localizedMissingCipherError, penPalEMail))
+            return nil
+        }
+        
+        guard let decryptedPostcard = sodium.box.open(nonceAndAuthenticatedCipherText: cipherText as Data, senderPublicKey: penPalKey as Box.PublicKey, recipientSecretKey: secretKey)
+            else
+        {
+            showAlert(String(format: localizedWrongKeyError, penPalEMail))
+            print("\nFailed to decrypt message from \(penPalEMail)\n")
+            return nil
+        }
+        
+        //Parse this message into usable parts
+        guard let postcardMessage = PostcardMessage.init(postcardData: decryptedPostcard)
+            else
+        {
+            return nil
+        }
+        
+        return postcardMessage
     }
     
     func removeAllDecryptionForUser(_ lockdownUser: User)
@@ -608,7 +647,6 @@ class MailController: NSObject
         {
             print("Could not find postcards to re-encrypt for this user.")
         }
-        
     }
     
     func dataEncodedToString(_ data: Data) -> String
@@ -660,150 +698,202 @@ class MailController: NSObject
     //MARK: Process Different Message Types
     
     //Check if the downloaded attachment is valid and save the information as a new penpal to core data
-    func processPenPalKeyAttachment(_ attachment: GTLRGmail_MessagePartBody, forMessage message: GTLRGmail_Message, withID messageId: String, hasReceiverKey: Bool) -> Bool
+    func processPenPalKeyAttachment(_ attachment: GTLRGmail_MessagePartBody, forMessage message: GTLRGmail_Message, withID messageId: String, hasReceiverKey: Bool) -> (keysMatch: Bool, senderKey: NSData?)
     {
         var keyCompareSucceeded = true
         
         //Check the headers for the message sender
-        if let messagePayload = message.payload, let headers: [GTLRGmail_MessagePartHeader] = messagePayload.headers
+        guard let messagePayload = message.payload, let headers: [GTLRGmail_MessagePartHeader] = messagePayload.headers
+            else {return (false, nil)}
+
+        for header in headers
         {
-            for header in headers
+            if header.name == "From"
             {
-                if header.name == "From"
+                let sender = header.value
+                let attachmentDataString = attachment.data
+                
+                guard let decodedAttachment = stringDecodedToData(attachmentDataString!)
+                    else { return (false, nil) }
+                
+                //Check if we have this email address saved as a penpal
+                if let thisPenPal = self.fetchPenPalForCurrentUser(sender!)
                 {
-                    let sender = header.value
-                    let attachmentDataString = attachment.data
+                    //Check to see if the copy of our key we received matches what we have stored
+                    let keyController = KeyController.sharedInstance
                     
-                    guard let decodedAttachment = stringDecodedToData(attachmentDataString!) else { return false }
-                    
-                    //Check if we have this email address saved as a penpal
-                    if let thisPenPal = self.fetchPenPalForCurrentUser(sender!)
-                    {
-                        //Check to see if the copy of our key we received matches what we have stored
-                        let keyController = KeyController.sharedInstance
-                        
-                        guard let recipientStoredKey = keyController.mySharedKey
-                            else
-                        {
-                            print("Could not find recipient's stored key")
-                            return false
-                        }
-                        
-                        guard let recipientStoredDate = keyController.myKeyTimestamp
-                            else
-                        {
-                            //This should never happen as KeyController checks for this on init
-                            print("Unable to process key attachment as user key has no timestamp")
-                            return false
-                        }
-                        
-                        if hasReceiverKey
-                        {
-                            //Get the public keys from this attachment
-                            guard let timestampedKeys = dataToPublicKeys(keyData: decodedAttachment)
-                                else
-                            {
-                                print("Unable to get public keys from key attachment")
-                                return false
-                            }
-                            
-                            guard let thisPenPalKey = thisPenPal.key
-                                else
-                            {
-                                print("Unable to find penpal key when procesing key attachment.")
-                                
-                                //This Penpal didn't have a key stored, save the received key
-                                thisPenPal.key = timestampedKeys.senderPublicKey as NSData?
-                                thisPenPal.keyTimestamp = NSDate(timeIntervalSince1970: TimeInterval(timestampedKeys.senderKeyTimestamp))
-                                
-                                //Save this PenPal to core data
-                                do
-                                {
-                                    try thisPenPal.managedObjectContext?.save()
-                                }
-                                catch
-                                {
-                                    let saveError = error as NSError
-                                    print("\(saveError.localizedDescription), \(saveError.userInfo)")
-                                }
-                                
-                                return false
-                            }
-                            
-                            guard let timestamp = thisPenPal.keyTimestamp
-                                else
-                            {
-                                print("Unable to find penpal key timestamp.")
-                                
-                                return false
-                            }
-                            keyCompareSucceeded = compare(recipientKey: timestampedKeys.recipientPublicKey, andTimestamp: timestampedKeys.recipientKeyTimestamp, withStoredKey: recipientStoredKey, andTimestamp: recipientStoredDate, forPenPal: thisPenPal, andMessageId: messageId)
-                            
-                            keyCompareSucceeded = keyCompareSucceeded && compare(senderKey: timestampedKeys.senderPublicKey, andTimestamp: timestampedKeys.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal, andMessageId: messageId)
-                        }
+                    guard let recipientStoredKey = keyController.mySharedKey
                         else
-                        {
-                            //Get the public keys from this attachment
-                            guard let timestampedKey = dataToSenderPublicKeys(keyData: decodedAttachment) else {
-                                print("Unable to get public key from key attachment")
-                                return false }
-                            
-                            guard let thisPenPalKey = thisPenPal.key else {
-                                print("Unable to find penpal key when procesing key attachment.")
-                                //This Penpal didn't have a key stored, save the received key
-                                thisPenPal.key = timestampedKey.senderPublicKey as NSData?
-                                thisPenPal.keyTimestamp = NSDate(timeIntervalSince1970: TimeInterval(timestampedKey.senderKeyTimestamp))
-                                
-                                //Save this PenPal to core data
-                                do
-                                {
-                                    try thisPenPal.managedObjectContext?.save()
-                                }
-                                catch
-                                {
-                                    let saveError = error as NSError
-                                    print("\(saveError.localizedDescription)")
-                                }
-                                
-                                return keyCompareSucceeded }
-                            
-                            guard let timestamp = thisPenPal.keyTimestamp else {
-                                print("Unable to find penpal key timestamp.")
-                                return keyCompareSucceeded }
-                            
-                            keyCompareSucceeded = compare(senderKey: timestampedKey.senderPublicKey, andTimestamp: timestampedKey.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal, andMessageId: messageId)
-                        }
-                    }
-                        //If not check for a key and create a new PenPal
-                    else if sender != ""
                     {
-                        //Create New PenPal Record
-                        if let entity = NSEntityDescription.entity(forEntityName: "PenPal", in: self.managedObjectContext!)
+                        print("Could not find recipient's stored key")
+                        return (false, nil)
+                    }
+                    
+                    guard let recipientStoredDate = keyController.myKeyTimestamp
+                        else
+                    {
+                        //This should never happen as KeyController checks for this on init
+                        print("Unable to process key attachment as user key has no timestamp")
+                        return (false, nil)
+                    }
+                    
+                    if hasReceiverKey
+                    {
+                        //Get the public keys from this attachment
+                        guard let timestampedKeys = dataToPublicKeys(keyData: decodedAttachment)
+                            else
                         {
-                            let newPal = PenPal(entity: entity, insertInto: self.managedObjectContext)
-                            newPal.email = sender!
-                            //                            newPal.key = timestampedKeys.senderPublicKey as NSData?
-                            //                            newPal.keyTimestamp = NSDate(timeIntervalSince1970: TimeInterval(timestampedKeys.senderKeyTimestamp))
-                            newPal.addedDate = NSDate()
-                            newPal.owner = GlobalVars.currentUser
+                            print("Unable to get public keys from key attachment")
+                            return (false, nil)
+                        }
+                        
+                        guard let thisPenPalKey = thisPenPal.key
+                            else
+                        {
+                            print("Unable to find penpal key when procesing key attachment.")
+                            
+                            //This Penpal didn't have a key stored, save the received key
+                            thisPenPal.key = timestampedKeys.senderPublicKey as NSData?
+                            thisPenPal.keyTimestamp = NSDate(timeIntervalSince1970: TimeInterval(timestampedKeys.senderKeyTimestamp))
                             
                             //Save this PenPal to core data
                             do
                             {
-                                try newPal.managedObjectContext?.save()
+                                try thisPenPal.managedObjectContext?.save()
+                            }
+                            catch
+                            {
+                                let saveError = error as NSError
+                                print("\(saveError.localizedDescription), \(saveError.userInfo)")
+                            }
+                            
+                            return (false, nil)
+                        }
+                        
+                        guard let timestamp = thisPenPal.keyTimestamp
+                            else
+                        {
+                            print("Unable to find penpal key timestamp.")
+                            
+                            return (false, nil)
+                        }
+                        keyCompareSucceeded = compare(recipientKey: timestampedKeys.recipientPublicKey, andTimestamp: timestampedKeys.recipientKeyTimestamp, withStoredKey: recipientStoredKey, andTimestamp: recipientStoredDate, forPenPal: thisPenPal, andMessageId: messageId)
+                        
+                        keyCompareSucceeded = keyCompareSucceeded && compare(senderKey: timestampedKeys.senderPublicKey, andTimestamp: timestampedKeys.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal, andMessageId: messageId)
+                        
+                        return (keyCompareSucceeded, timestampedKeys.senderPublicKey as NSData?)
+                    }
+                    else
+                    {
+                        //Get the public keys from this attachment
+                        guard let timestampedKey = dataToSenderPublicKeys(keyData: decodedAttachment)
+                            else
+                        {
+                            print("Unable to get public key from key attachment")
+                            return (false, nil)
+                        }
+                        
+                        guard let thisPenPalKey = thisPenPal.key
+                            else
+                        {
+                            print("Unable to find penpal key when procesing key attachment.")
+                            //This Penpal didn't have a key stored, save the received key
+                            thisPenPal.key = timestampedKey.senderPublicKey as NSData?
+                            thisPenPal.keyTimestamp = NSDate(timeIntervalSince1970: TimeInterval(timestampedKey.senderKeyTimestamp))
+                            
+                            //Save this PenPal to core data
+                            do
+                            {
+                                try thisPenPal.managedObjectContext?.save()
                             }
                             catch
                             {
                                 let saveError = error as NSError
                                 print("\(saveError.localizedDescription)")
                             }
+                            
+                            return (keyCompareSucceeded, timestampedKey.senderPublicKey as NSData?)
                         }
+                        
+                        guard let timestamp = thisPenPal.keyTimestamp
+                            else
+                        {
+                            print("Unable to find penpal key timestamp.")
+                            return (keyCompareSucceeded, timestampedKey.senderPublicKey as NSData?)
+                        }
+                        
+                        keyCompareSucceeded = compare(senderKey: timestampedKey.senderPublicKey, andTimestamp: timestampedKey.senderKeyTimestamp, withStoredKey: thisPenPalKey, andTimestamp: timestamp, forPenPal: thisPenPal, andMessageId: messageId)
+                        
+                        return (keyCompareSucceeded, timestampedKey.senderPublicKey as NSData?)
+                    }
+                }
+                    //If not check for a key and create a new PenPal
+                else if sender != ""
+                {
+                    //Create New PenPal Record
+                    guard let entity = NSEntityDescription.entity(forEntityName: "PenPal", in: self.managedObjectContext!)
+                        else {return (false, nil)}
+                    
+                    let newPal = PenPal(entity: entity, insertInto: self.managedObjectContext)
+                    newPal.email = sender!
+                    newPal.addedDate = NSDate()
+                    newPal.owner = GlobalVars.currentUser
+                    
+                    if hasReceiverKey
+                    {
+                        //Get the public keys from this attachment
+                        guard let timestampedKeys = dataToPublicKeys(keyData: decodedAttachment)
+                            else
+                        {
+                            print("Unable to get public keys from key attachment")
+                            return (false, nil)
+                        }
+                        
+                        guard let palKey = timestampedKeys.senderPublicKey as NSData?
+                            else {return (false, nil)}
+                        newPal.key = palKey
+                        
+                        let palKeyTimestamp = NSDate(timeIntervalSince1970: TimeInterval(timestampedKeys.senderKeyTimestamp))
+                        newPal.keyTimestamp = palKeyTimestamp
+                        
+                        return (true, palKey)
+                    }
+                    else
+                    {
+                        //Get the public keys from this attachment
+                        guard let timestampedKey = dataToSenderPublicKeys(keyData: decodedAttachment)
+                            else
+                        {
+                            print("Unable to get public key from key attachment")
+                            return (false, nil)
+                        }
+                        
+                        guard let palKey = timestampedKey.senderPublicKey as NSData?
+                            else {return (false, nil)}
+                        
+                        newPal.key = palKey
+                        
+                        let palKeyTimestamp = NSDate(timeIntervalSince1970: TimeInterval(timestampedKey.senderKeyTimestamp))
+                        newPal.keyTimestamp = palKeyTimestamp
+                        
+                        //Save this PenPal to core data
+                        do
+                        {
+                            try newPal.managedObjectContext?.save()
+                        }
+                        catch
+                        {
+                            let saveError = error as NSError
+                            print("\(saveError.localizedDescription)")
+                        }
+                        
+                        return (true, palKey)
                     }
                 }
             }
         }
         
-        return keyCompareSucceeded
+        return (false, nil)
     }
     
     func compare(recipientKey: Data, andTimestamp timestamp: Int64, withStoredKey recipientStoredKey: Data, andTimestamp storedTimestamp: NSDate, forPenPal thisPenPal: PenPal, andMessageId messageId: String) -> Bool

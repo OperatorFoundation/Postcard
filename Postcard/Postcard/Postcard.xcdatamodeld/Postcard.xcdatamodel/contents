@@ -22,6 +22,7 @@
         <attribute name="hasPackage" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="identifier" attributeType="String" syncable="YES"/>
         <attribute name="receivedDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="senderKey" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="snippet" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="to" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="from" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PenPal" inverseName="messages" inverseEntity="PenPal" syncable="YES"/>
@@ -47,7 +48,7 @@
     </entity>
     <elements>
         <element name="PenPal" positionX="-63" positionY="-18" width="128" height="180"/>
-        <element name="Postcard" positionX="-54" positionY="18" width="128" height="180"/>
+        <element name="Postcard" positionX="-54" positionY="18" width="128" height="195"/>
         <element name="User" positionX="-63" positionY="72" width="128" height="135"/>
     </elements>
 </model>

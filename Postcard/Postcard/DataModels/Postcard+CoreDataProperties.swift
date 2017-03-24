@@ -2,7 +2,7 @@
 //  Postcard+CoreDataProperties.swift
 //  Postcard
 //
-//  Created by Adelita Schule on 3/20/17.
+//  Created by Adelita Schule on 3/22/17.
 //  Copyright © 2017 operatorfoundation.org. All rights reserved.
 //
 
@@ -23,9 +23,11 @@ extension Postcard {
     @NSManaged public var receivedDate: NSDate?
     @NSManaged public var snippet: String?
     @NSManaged public var to: String?
+    @NSManaged public var senderKey: NSData?
     @NSManaged public var from: PenPal?
     @NSManaged public var owner: User?
-    
+
+    //These are properties thatwe never want saved in core data, but that are part of the Postcard object
     public var subject: String?
         {
         get
@@ -92,6 +94,7 @@ extension Postcard {
         }
     }
     
+    //This is required for Cocoa bindings to respond to changes in body and subject properties
     override public class func keyPathsForValuesAffectingValue(forKey key: String) -> Set<String>
     {
         if key == "subject" || key == "body"
@@ -103,6 +106,4 @@ extension Postcard {
             return super.keyPathsForValuesAffectingValue(forKey: key)
         }
     }
-
-
 }
