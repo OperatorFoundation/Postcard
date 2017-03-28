@@ -494,45 +494,45 @@ class MailController: NSObject
                                         //Decode - GTLWebSafeBase64
                                         if let postcardData = self.stringDecodedToData(attachmentString!)
                                         {
-                                            //Create New Postcard Record
-                                            guard let entity = NSEntityDescription.entity(forEntityName: "Postcard", in: self.managedObjectContext!)
-                                                else {return}
                                             
-                                            let newCard = Postcard(entity: entity, insertInto: self.managedObjectContext)
-                                            newCard.owner = GlobalVars.currentUser
-                                            newCard.from = thisPenPal
-                                            newCard.cipherText = postcardData as NSData?
-                                            newCard.identifier = messageMeta.identifier
                                             
                                             if senderKey != nil
                                             {
+                                                //Create New Postcard Record
+                                                guard let entity = NSEntityDescription.entity(forEntityName: "Postcard", in: self.managedObjectContext!)
+                                                    else {return}
+                                                
+                                                let newCard = Postcard(entity: entity, insertInto: self.managedObjectContext)
+                                                newCard.owner = GlobalVars.currentUser
+                                                newCard.from = thisPenPal
+                                                newCard.cipherText = postcardData as NSData?
+                                                newCard.identifier = messageMeta.identifier
                                                 newCard.senderKey = senderKey
-                                            }
-                                            
-                                            for dateHeader in headers where dateHeader.name == "Date"
-                                            {
-                                                let formatter = DateFormatter()
-                                                formatter.locale = Locale(identifier: "en_US_POSIX")
-                                                formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
-                                                //Wed, 15 Feb 2017 20:48:50 -0500
-                                                if let headerDate = dateHeader.value
+                                                for dateHeader in headers where dateHeader.name == "Date"
                                                 {
-                                                    if let receivedDate = formatter.date(from: headerDate)
+                                                    let formatter = DateFormatter()
+                                                    formatter.locale = Locale(identifier: "en_US_POSIX")
+                                                    formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
+                                                    //Wed, 15 Feb 2017 20:48:50 -0500
+                                                    if let headerDate = dateHeader.value
                                                     {
-                                                        newCard.receivedDate = receivedDate as NSDate?
+                                                        if let receivedDate = formatter.date(from: headerDate)
+                                                        {
+                                                            newCard.receivedDate = receivedDate as NSDate?
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            
-                                            //Save this Postcard to core data
-                                            do
-                                            {
-                                                try newCard.managedObjectContext?.save()
-                                            }
-                                            catch
-                                            {
-                                                let saveError = error as NSError
-                                                print("Unable to save a new postcard: \(saveError.localizedDescription)")
+                                                
+                                                //Save this Postcard to core data
+                                                do
+                                                {
+                                                    try newCard.managedObjectContext?.save()
+                                                }
+                                                catch
+                                                {
+                                                    let saveError = error as NSError
+                                                    print("Unable to save a new postcard: \(saveError.localizedDescription)")
+                                                }
                                             }
                                         }
                                         else
@@ -767,7 +767,7 @@ class MailController: NSObject
                                 print("\(saveError.localizedDescription), \(saveError.userInfo)")
                             }
                             
-                            return (false, nil)
+                            return (true, timestampedKeys.senderPublicKey as NSData?)
                         }
                         
                         guard let timestamp = thisPenPal.keyTimestamp
@@ -952,18 +952,18 @@ class MailController: NSObject
     func alertReceivedOutdatedSenderKey(from penPal: PenPal, withMessageId messageId: String)
     {
         let oldKeyAlert = NSAlert()
-        oldKeyAlert.messageText = "This email cannot be read and will be deleted. It was encrypted using older settings for: \(penPal.email)"
+        oldKeyAlert.messageText = "This email cannot be read. It was encrypted using older settings for: \(penPal.email)"
         oldKeyAlert.informativeText = "You should let this contact know that they sent you a message using a previous version of their encryption settings."
         oldKeyAlert.runModal()
         
-        trashGmailMessage(withId: messageId)
+        //trashGmailMessage(withId: messageId)
     }
     
     func alertReceivedNewerSenderKey(senderPublicKey: Data, senderKeyTimestamp: Int64, from penPal: PenPal, withMessageId messageId: String)
     {
         let newKeyAlert = NSAlert()
         newKeyAlert.messageText = "Accept PenPal's new encryption settings?"
-        newKeyAlert.informativeText = "It looks like \(penPal.email) reset their encryption. Do you want to accept their new settings? You will no longer be able to read their old messages once you do, but you will be able to read the new ones. If you do not, this message or invite will be deleted."
+        newKeyAlert.informativeText = "It looks like \(penPal.email) reset their encryption. Do you want to accept their new settings? If you do not, this message or invite will be deleted."
         newKeyAlert.addButton(withTitle: "No")
         newKeyAlert.addButton(withTitle: "Yes")
         let response = newKeyAlert.runModal()
@@ -989,7 +989,7 @@ class MailController: NSObject
         else if response == NSAlertFirstButtonReturn
         {
             //User has chosen to ignore contact's new key, let's delete it so the user does not keep getting these alerts
-            trashGmailMessage(withId: messageId)
+            //trashGmailMessage(withId: messageId)
         }
     }
     
@@ -1699,10 +1699,13 @@ class MailController: NSObject
     //MARK: Helper Methods
     func showAlert(_ message: String)
     {
-        let alert = NSAlert()
-        alert.messageText = message
-        alert.addButton(withTitle: localizedOKButtonTitle)
-        alert.runModal()
+        DispatchQueue.main.async
+        {
+            let alert = NSAlert()
+            alert.messageText = message
+            alert.addButton(withTitle: localizedOKButtonTitle)
+            alert.runModal()
+        }
     }
     
     //💌//

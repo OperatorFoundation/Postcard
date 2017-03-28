@@ -61,11 +61,8 @@ class KeyController: NSObject
                 if let userKeyPack = TimestampedUserKeys.init(keyData: keyData)
                 {
                     myPrivateKey = userKeyPack.userPrivateKey
-                    print("Private Key: \(myPrivateKey?.base64EncodedString())")
                     mySharedKey = userKeyPack.userPublicKey
-                    print("Public Key: \(mySharedKey?.base64EncodedString())")
                     myKeyTimestamp = NSDate(timeIntervalSince1970: TimeInterval(userKeyPack.userKeyTimestamp))
-                    print("Key Timestamp: \(myKeyTimestamp)")
                 }
                 else
                 {

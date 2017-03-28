@@ -49,7 +49,6 @@ struct EmailMessage
 func emailToRaw(email: EmailMessage) -> String
 {
     let result = multipartToRFC2822(email: email)
-    print("Raw message string before encoding: \(result)")
     return GTLREncodeWebSafeBase64(result.data(using: String.Encoding.utf8))!
 }
 

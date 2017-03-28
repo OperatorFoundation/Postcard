@@ -38,6 +38,7 @@
 		B460CCE91D41805D00507EFD /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = B460CCE81D41805D00507EFD /* Globals.swift */; };
 		B486A0771E2F2ECB009664A2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4238F541CD2A24D0054E7EF /* Security.framework */; };
 		B48A273E1D08B4B8007BBB27 /* LockedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */; };
+		B4921FB01E8AE81C00C1F1F3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B4921FAF1E8AE81C00C1F1F3 /* GoogleService-Info.plist */; };
 		B4BFDD291E4AA1B700455232 /* PenPal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BFDD231E4AA1B700455232 /* PenPal+CoreDataClass.swift */; };
 		B4BFDD2A1E4AA1B700455232 /* PenPal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BFDD241E4AA1B700455232 /* PenPal+CoreDataProperties.swift */; };
 		B4BFDD2B1E4AA1B700455232 /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BFDD251E4AA1B700455232 /* User+CoreDataClass.swift */; };
@@ -124,6 +125,7 @@
 		B4572D7F1E2F09890072813D /* Sodium.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sodium.framework; sourceTree = "<group>"; };
 		B460CCE81D41805D00507EFD /* Globals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Globals.swift; path = SupportingFiles/Globals.swift; sourceTree = "<group>"; };
 		B48A273D1D08B4B8007BBB27 /* LockedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LockedViewController.swift; path = Controllers/ViewControllers/LockedViewController.swift; sourceTree = "<group>"; };
+		B4921FAF1E8AE81C00C1F1F3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B4BFDD231E4AA1B700455232 /* PenPal+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PenPal+CoreDataClass.swift"; path = "DataModels/PenPal+CoreDataClass.swift"; sourceTree = "<group>"; };
 		B4BFDD241E4AA1B700455232 /* PenPal+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PenPal+CoreDataProperties.swift"; path = "DataModels/PenPal+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B4BFDD251E4AA1B700455232 /* User+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "User+CoreDataClass.swift"; path = "DataModels/User+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -287,6 +289,7 @@
 				B4DA486F1E57A53B00BB95FE /* MessageView.strings */,
 				B4DA486A1E57A53A00BB95FE /* PenPalsView.strings */,
 				461891B71CC17B9A009C577D /* Info.plist */,
+				B4921FAF1E8AE81C00C1F1F3 /* GoogleService-Info.plist */,
 				B4238F601CD2DF630054E7EF /* Postcard-Bridging-Header.h */,
 				B4238F5B1CD2C11C0054E7EF /* Constants.swift */,
 				B460CCE81D41805D00507EFD /* Globals.swift */,
@@ -498,6 +501,7 @@
 				B4DA48951E57A53F00BB95FE /* ComposeView.strings in Resources */,
 				B4DA48811E57A53D00BB95FE /* InfoPlist.strings in Resources */,
 				B4DA48681E57A53A00BB95FE /* PenPalsView.strings in Resources */,
+				B4921FB01E8AE81C00C1F1F3 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
