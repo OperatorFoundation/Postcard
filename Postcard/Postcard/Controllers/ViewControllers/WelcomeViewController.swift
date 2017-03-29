@@ -7,7 +7,8 @@
 //
 
 import Cocoa
-import GTMOAuth2
+import GTMAppAuth
+import AppAuth
 //import GoogleAPIClient
 
 class WelcomeViewController: NSViewController
@@ -16,8 +17,10 @@ class WelcomeViewController: NSViewController
     @IBOutlet weak var descriptionView: NSView!
     @IBOutlet weak var googleLoginButton: NSButton!
     
+    let appDelegate = NSApplication.shared().delegate as! AppDelegate
+    
     var userGoogleName: String?
-    var googleAuthWindowController: GTMOAuth2WindowController?
+    var authorization: GTMAppAuthFetcherAuthorization?
 
     override func viewDidLoad()
     {
@@ -25,62 +28,23 @@ class WelcomeViewController: NSViewController
         
         //The description label should be at the same angle as the Big "Postcard"
         descriptionView.rotate(byDegrees: 11.0)
+        
+        //Load Google Authorization State
+        loadState()
     }
     
-    func isAuthorized() -> Bool
+    override func viewDidAppear()
     {
-        //Initialize GMail API Service
-        if let auth = GTMOAuth2WindowController.authForGoogleFromKeychain(forName: GmailProps.kKeychainItemName , clientID: GmailProps.kClientID, clientSecret: nil)
+        if isAuthorized()
         {
-            GmailProps.service.authorizer = auth
-            GmailProps.servicePeople.authorizer = auth
-        }
-        
-        //TODO: This goes inside the keychain check
-        //Ensure Gmail API service is authorized and perform API calls (fetch postcards)
-        if let authorizer = GmailProps.service.authorizer, let canAuth = authorizer.canAuthorize, canAuth
-        {
+            //Present Home View
+            mainWindowController.showWindow(self)
             
-            if (GlobalVars.currentUser?.emailAddress) != nil
-            {
-                fetchGoodies()
-            }
-            else
-            {
-                if let currentEmailAddress: String = authorizer.userEmail
-                {
-                    //Check if a user entity already exists
-                    if let existingUser = fetchUserFromCoreData(currentEmailAddress)
-                    {
-                        GlobalVars.currentUser = existingUser
-                        self.fetchGoodies()
-                    }
-                    else
-                    {
-                        //Create a new user
-                        if let authWindowController = googleAuthWindowController, let name = authWindowController.signIn.userProfile["name"] as? String
-                        {
-                            if createUser(currentEmailAddress, firstName: name) != nil
-                            {
-                                self.fetchGoodies()
-                            }
-                        }
-                        else
-                        {
-                            if createUser(currentEmailAddress) != nil
-                            {
-                                self.fetchGoodies()
-                            }
-                        }
-                    }
-                }
-            }
-            
-            return true
+            view.window?.close()
         }
         else
         {
-            return false
+            googleLoginButton.isEnabled = true
         }
     }
     
@@ -89,7 +53,6 @@ class WelcomeViewController: NSViewController
         //Check if a user entity already exists
         //Get this User Entity
         let fetchRequest: NSFetchRequest<User> = User.fetchRequest()
-        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let managedObjectContext = appDelegate.managedObjectContext
         fetchRequest.predicate = NSPredicate(format: "emailAddress == %@", userEmail)
         do
@@ -121,7 +84,6 @@ class WelcomeViewController: NSViewController
     
     func createUser(_ userEmail: String, firstName: String?) -> User?
     {
-        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let managedObjectContext = appDelegate.managedObjectContext
         
         if let userEntity = NSEntityDescription.entity(forEntityName: "User", in: managedObjectContext)
@@ -155,20 +117,6 @@ class WelcomeViewController: NSViewController
         PenPalController.sharedInstance.getGoogleContacts()
     }
     
-    override func viewDidAppear()
-    {
-        if isAuthorized()
-        {
-            //Present Home View
-            mainWindowController.showWindow(self)
-            
-            view.window?.close()
-        }
-        else
-        {
-            googleLoginButton.isEnabled = true
-        }
-    }
     
     lazy var mainWindowController: MainWindowController =
     {
@@ -181,53 +129,135 @@ class WelcomeViewController: NSViewController
     
     @IBAction func googleSignInTap(_ sender: AnyObject)
     {
-        _ = createAuthController()
+        buildAuthenticationRequest()
     }
     
-    //MARK: OAuth2 Methods
-    
-    //Creates the Auth Controller for authorizing access to Gmail
-    fileprivate func createAuthController() -> GTMOAuth2WindowController
+    //MARK: Google App Auth Methods
+    func isAuthorized() -> Bool
     {
-        let scopeString = GmailProps.scopes.joined(separator: " ")
-        let controller = GTMOAuth2WindowController(scope: scopeString, clientID: GmailProps.kClientID, clientSecret: nil, keychainItemName: GmailProps.kKeychainItemName, resourceBundle: nil)
-        controller?.signIn.shouldFetchGoogleUserProfile = true
-        controller?.signInSheetModal(for: NSApplication.shared().mainWindow, completionHandler:
+        //Ensure Gmail API service is authorized and perform API calls (fetch postcards)
+        if let authorizer = GmailProps.service.authorizer, let canAuth = authorizer.canAuthorize, canAuth
         {
-            (auth: GTMOAuth2Authentication?, error: Error?) -> Void in
-            
-            if auth != nil
+            if (GlobalVars.currentUser?.emailAddress) != nil
             {
-                self.finishedWithAuth(controller!, authResult: auth!, error: error)
+                fetchGoodies()
             }
-        })
-        
-        return controller!
+            else
+            {
+                if let currentEmailAddress: String = authorizer.userEmail
+                {
+                    //Check if a user entity already exists
+                    if let existingUser = fetchUserFromCoreData(currentEmailAddress)
+                    {
+                        GlobalVars.currentUser = existingUser
+                        self.fetchGoodies()
+                    }
+                    else
+                    {
+                        //Create a new user
+                        if createUser(currentEmailAddress) != nil
+                        {
+                            self.fetchGoodies()
+                        }
+                        
+//                        if let authWindowController = googleAuthWindowController, let name = authWindowController.signIn.userProfile["name"] as? String
+//                        {
+//                            if createUser(currentEmailAddress, firstName: name) != nil
+//                            {
+//                                self.fetchGoodies()
+//                            }
+//                        }
+//                        else
+//                        {
+//                            if createUser(currentEmailAddress) != nil
+//                            {
+//                                self.fetchGoodies()
+//                            }
+//                        }
+                    }
+                }
+            }
+            
+            return true
+        }
+        else
+        {
+            return false
+        }
     }
     
-    //Handle completion of authorization process and update the Gmail API with the new credentials
-    func finishedWithAuth(_ authWindowController: GTMOAuth2WindowController, authResult: GTMOAuth2Authentication, error: Error?)
+    func buildAuthenticationRequest()
     {
-        googleAuthWindowController = authWindowController
-        
-        if let error: Error = error
+        if let redirectURL = URL(string: GmailProps.kRedirectURI)
         {
-            GmailProps.service.authorizer = nil
-            showAlert(localizedAuthErrorPrompt + error.localizedDescription)
-            return
-        }
-        
-        GmailProps.service.authorizer = authResult
-        GmailProps.servicePeople.authorizer = authResult
-        authWindowController.dismissController(self)
-        
-        if isAuthorized()
-        {
-            //Present Home View
-            mainWindowController.showWindow(self)
+            //Convenience method to configure GTMAppAuth with the OAuth endpoints for Google.
+            let configuration = GTMAppAuthFetcherAuthorization.configurationForGoogle()
             
-            view.window?.close()
+            // builds authentication request
+            let request = OIDAuthorizationRequest(configuration: configuration, clientId: GmailProps.kClientID, clientSecret: nil, scopes: GmailProps.scopes, redirectURL: redirectURL, responseType: OIDResponseTypeCode, additionalParameters: nil)
+            
+            // performs authentication request
+            appDelegate.currentAuthorizationFlow = OIDAuthState.authState(byPresenting: request, callback:
+            {
+                (maybeAuthState, maybeError) in
+                
+                if let authState = maybeAuthState
+                {
+                    let authorization = GTMAppAuthFetcherAuthorization(authState: authState)
+                    self.setAuthorization(auth: authorization)
+                    
+                    print("Got authorization tokens. Access token: \(authState.lastTokenResponse?.accessToken)")
+                    
+                    if self.isAuthorized()
+                    {
+                        //Present Home View
+                        self.mainWindowController.showWindow(self)
+                        
+                        self.view.window?.close()
+                    }
+                }
+                else if let error = maybeError
+                {
+                    print("Authorization Error: \(error.localizedDescription)")
+                }
+                else
+                {
+                    print("Unknown Authorization Error")
+                }
+            })
         }
+    }
+
+    func saveState()
+    {
+        if self.authorization != nil
+        {
+            let canAuth = self.authorization!.canAuthorize()
+            if canAuth
+            {
+                GTMAppAuthFetcherAuthorization.save(self.authorization!, toKeychainForName: GmailProps.kKeychainItemName)
+            }
+            else
+            {
+                GTMAppAuthFetcherAuthorization.removeFromKeychain(forName: GmailProps.kKeychainItemName)
+            }
+        }
+    }
+    
+    func loadState()
+    {
+        if let authorization = GTMAppAuthFetcherAuthorization.init(fromKeychainForName: GmailProps.kKeychainItemName)
+        {
+            setAuthorization(auth: authorization)
+        }
+    }
+    
+    func setAuthorization(auth: GTMAppAuthFetcherAuthorization)
+    {
+        self.authorization = auth
+        GmailProps.service.authorizer = auth
+        GmailProps.servicePeople.authorizer = auth
+        saveState()
     }
     
     //MARK: Helper Methods

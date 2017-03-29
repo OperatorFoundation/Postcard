@@ -8,12 +8,15 @@
 
 import Cocoa
 import CoreData
-import GTMOAuth2
+import AppAuth
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
 {
     @IBOutlet weak var postcardWindow: NSWindow!
+    
+    //Google App Auth: you need to have a way for your UIApplicationDelegate to continue the authorization flow session from the incoming redirect URI
+    var currentAuthorizationFlow: OIDAuthorizationFlowSession?
     
     //Notification Keys
     let keyHandoffNotificationName = "PostcardKeyHandoffNotification"
@@ -23,6 +26,10 @@ class AppDelegate: NSObject, NSApplicationDelegate
     {
         //Listen for sleep
         NSWorkspace.shared().notificationCenter.addObserver(self, selector: #selector(willSleep), name: NSNotification.Name.NSWorkspaceWillSleep, object: nil)
+        
+        // Register for GetURL events.
+        let appleEventManager = NSAppleEventManager.shared()
+        appleEventManager.setEventHandler(self, andSelector: #selector(handleGetURLEvent), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
     }
     
     func willSleep()
@@ -33,18 +40,21 @@ class AppDelegate: NSObject, NSApplicationDelegate
         KeyController.sharedInstance.deleteInstance()
     }
     
-    //UserActivity Delegate
-    func application(_ application: NSApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool
+    //MARK: Google Authorization
+    
+    func handleGetURLEvent(event: NSAppleEventDescriptor, withReplyEvent replyEvent: NSAppleEventDescriptor)
     {
-        if let userInfo = userActivity.userInfo
+        // Sends the URL to the current authorization flow (if any) which will process it if it relates to an authorization response.
+        if currentAuthorizationFlow != nil
         {
-            print("Received a payload via handoff: \(userInfo)")
-            
-            //Post handoff notification to listeners
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: keyHandoffNotificationName) , object: userInfo)
+            if let urlString = event.paramDescriptor(forKeyword: keyDirectObject)?.stringValue
+            {
+                if let url = URL(string: urlString)
+                {
+                    currentAuthorizationFlow?.resumeAuthorizationFlow(with: url)
+                }
+            }
         }
-        
-        return true
     }
     
     //MARK: Helper Methods

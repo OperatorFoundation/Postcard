@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import GTMOAuth2
+import GTMAppAuth
 
 enum SelectedMode
 {
@@ -241,7 +241,7 @@ class MenuViewController: NSViewController, NSUserActivityDelegate
         KeyController.sharedInstance.deleteInstance()
         
         //Remove google Auth Token
-        GTMOAuth2WindowController.removeAuthFromKeychain(forName: GmailProps.kKeychainItemName)
+        GTMAppAuthFetcherAuthorization.removeFromKeychain(forName: GmailProps.kKeychainItemName)
 
         //Present Welcome View
         welcomeWindowController.showWindow(sender)
