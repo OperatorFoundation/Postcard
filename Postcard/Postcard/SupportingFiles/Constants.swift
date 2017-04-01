@@ -7,8 +7,9 @@
 //
 
 import Foundation
-//import GoogleAPIClient
 import GoogleAPIClientForREST
+import GTMAppAuth
+import AppAuth
 
 /*
  Font Names
@@ -42,7 +43,7 @@ let keyHandoffNotificationName = "PostcardKeyHandoffNotification"
 let localizedOKButtonTitle = NSLocalizedString("OK-Button-Title", tableName: "PopUpMessages", bundle: bundle, value: "OK", comment: "Button to dismiss pop-up windows.")
 let localizedCancelButtonTitle = NSLocalizedString("Cancel-Button-Title", tableName: "PopUpMessages", bundle: bundle, value: "Cancel", comment: "Button to dismiss pop-up windows.")
 
-let localizedWrongKeyError = NSLocalizedString("ERROR-Decryption-Wrong-Key", tableName: "PopUpMessages", bundle: bundle, value: "We were unable to decrypt a message from %@. It looks like they reinstalled Postcard, ask them to invite you again.", comment: "A message could not be decrypted, possibly because we have the wrong key for the sender.")
+let localizedWrongKeyError = NSLocalizedString("ERROR-Decryption-Wrong-Key", tableName: "PopUpMessages", bundle: bundle, value: "We were unable to decrypt a message from %@. It looks like your or their security settings were reset.", comment: "A message could not be decrypted, possibly because we have the wrong key for the sender or the recipient.")
 
 let localizedMissingCipherError = NSLocalizedString("ERROR-Decryption-No-Cipher-Text", tableName: "PopUpMessages", bundle: bundle, value: "We could not decrypt a postcard from %@. The email is not properly encrypted.", comment: "A message from *email* could not be decrypted because the cipher text was not found.")
 
@@ -111,7 +112,7 @@ struct GmailProps
     
     /*If modifying these scopes, delete your previously saved credentials by resetting the iOS simulator or uninstalling the app.*/
     static let clientID = "313251347973-cpo986nne3t21bus5499b4kt1kb8thrm"
-    static let scopes = [kGTLRAuthScopeGmailMailGoogleCom, kGTLRAuthScopePeopleContactsReadonly]
+    static let scopes = [kGTLRAuthScopeGmailMailGoogleCom, kGTLRAuthScopePeopleContactsReadonly, kGTLRAuthScopePeopleUserinfoProfile, "email"]
     static let kKeychainItemName = "Gmail API"
     static let kClientID = "\(clientID).apps.googleusercontent.com"
     static let kRedirectURI = "com.googleusercontent.apps.\(clientID):/oauthredirect"

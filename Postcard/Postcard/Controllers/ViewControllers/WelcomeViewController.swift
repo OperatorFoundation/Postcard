@@ -72,7 +72,7 @@ class WelcomeViewController: NSViewController
         {
             //Could not fetch this Penpal from core data
             let fetchError = error as NSError
-            print(fetchError)
+            print("Could not fetch user from core data:\(fetchError)")
             return nil
         }
     }
@@ -136,48 +136,72 @@ class WelcomeViewController: NSViewController
     func isAuthorized() -> Bool
     {
         //Ensure Gmail API service is authorized and perform API calls (fetch postcards)
-        if let authorizer = GmailProps.service.authorizer, let canAuth = authorizer.canAuthorize, canAuth
+        if let authorizer = self.authorization
         {
-            if (GlobalVars.currentUser?.emailAddress) != nil
+            let canAuth = authorizer.canAuthorize()
+            if canAuth
             {
-                fetchGoodies()
-            }
-            else
-            {
-                if let currentEmailAddress: String = authorizer.userEmail
+                if (GlobalVars.currentUser?.emailAddress) != nil
                 {
-                    //Check if a user entity already exists
-                    if let existingUser = fetchUserFromCoreData(currentEmailAddress)
+                    fetchGoodies()
+                }
+                else
+                {
+                    let service = GTMSessionFetcherService()
+                    service.authorizer = authorizer
+                    let userInfoEndpoint = "https://www.googleapis.com/oauth2/v3/userinfo"
+                    let fetcher = service.fetcher(withURLString: userInfoEndpoint)
+                    fetcher.beginFetch(completionHandler:
                     {
-                        GlobalVars.currentUser = existingUser
-                        self.fetchGoodies()
-                    }
-                    else
-                    {
-                        //Create a new user
-                        if createUser(currentEmailAddress) != nil
+                        (maybeData, maybeError) in
+                        
+                        if let error = maybeError
                         {
+                            print("User Info Call Error: \(error.localizedDescription)")
+                        }
+                        else if let data = maybeData
+                        {
+                            if let json = try? JSONSerialization.jsonObject(with: data, options: [])
+                            {
+                                print("json: \(json)")
+                            }
+                        }
+                    })
+                    if let currentEmailAddress: String = authorizer.userEmail
+                    {
+                        //Check if a user entity already exists
+                        if let existingUser = fetchUserFromCoreData(currentEmailAddress)
+                        {
+                            GlobalVars.currentUser = existingUser
                             self.fetchGoodies()
                         }
-                        
-//                        if let authWindowController = googleAuthWindowController, let name = authWindowController.signIn.userProfile["name"] as? String
-//                        {
-//                            if createUser(currentEmailAddress, firstName: name) != nil
-//                            {
-//                                self.fetchGoodies()
-//                            }
-//                        }
-//                        else
-//                        {
-//                            if createUser(currentEmailAddress) != nil
-//                            {
-//                                self.fetchGoodies()
-//                            }
-//                        }
+                        else
+                        {
+                            //Create a new user
+                            if createUser(currentEmailAddress) != nil
+                            {
+                                self.fetchGoodies()
+                            }
+                            
+                            //                        if let authWindowController = googleAuthWindowController, let name = authWindowController.signIn.userProfile["name"] as? String
+                            //                        {
+                            //                            if createUser(currentEmailAddress, firstName: name) != nil
+                            //                            {
+                            //                                self.fetchGoodies()
+                            //                            }
+                            //                        }
+                            //                        else
+                            //                        {
+                            //                            if createUser(currentEmailAddress) != nil
+                            //                            {
+                            //                                self.fetchGoodies()
+                            //                            }
+                            //                        }
+                        }
                     }
                 }
             }
-            
+
             return true
         }
         else
@@ -205,9 +229,7 @@ class WelcomeViewController: NSViewController
                 {
                     let authorization = GTMAppAuthFetcherAuthorization(authState: authState)
                     self.setAuthorization(auth: authorization)
-                    
-                    print("Got authorization tokens. Access token: \(authState.lastTokenResponse?.accessToken)")
-                    
+                                        
                     if self.isAuthorized()
                     {
                         //Present Home View

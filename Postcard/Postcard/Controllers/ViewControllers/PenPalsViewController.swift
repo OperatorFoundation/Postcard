@@ -91,20 +91,11 @@ class PenPalTableCell: NSTableCellView
                 {
                     buttonFont = maybeFont
                 }
+                
                 let attributes = [NSForegroundColorAttributeName: NSColor.white,NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
                 let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
-                
-                if penPal.key == nil && penPal.sentKey == false
-                {
-                    //We have not sent an invite, and neither have they
-                    actionTitle = localizedInviteButtonTitle
-                    actionButton.image = NSImage(named: "redButton")
-                    actionButton.target = self
-                    actionButton.action = #selector(inviteAction)
-                    backgroundView.viewColor = PostcardUI.gray
-                    actionButton.isHidden = false
-                }
-                else if penPal.key != nil && penPal.sentKey == false
+
+                if penPal.key != nil && penPal.sentKey == false
                 {
                     //They sent a key, but we have not
                     actionTitle = localizedAddButtonTitle
@@ -114,11 +105,21 @@ class PenPalTableCell: NSTableCellView
                     backgroundView.viewColor = NSColor.white
                     actionButton.isHidden = false
                 }
-                else //if penPal.key != nil && penPal.sentKey == true
+                else if penPal.key != nil && penPal.sentKey == true
                 {
                     //They have sent a key and so have we, these are Postcard Contacts
                     actionButton.isHidden = true
                     backgroundView.viewColor = PostcardUI.gray
+                }
+                else //penPal.key == nil && penPal.sentKey == false
+                {
+                    //We have not sent an invite, and neither have they
+                    actionTitle = localizedInviteButtonTitle
+                    actionButton.image = NSImage(named: "redButton")
+                    actionButton.target = self
+                    actionButton.action = #selector(inviteAction)
+                    backgroundView.viewColor = PostcardUI.gray
+                    actionButton.isHidden = false
                 }
                 
                 actionButton.attributedTitle = NSAttributedString(string: actionTitle, attributes: attributes)

@@ -2,7 +2,7 @@
 //  Postcard+CoreDataProperties.swift
 //  Postcard
 //
-//  Created by Adelita Schule on 3/22/17.
+//  Created by Adelita Schule on 3/29/17.
 //  Copyright © 2017 operatorfoundation.org. All rights reserved.
 //
 
@@ -12,7 +12,8 @@ import CoreData
 
 extension Postcard {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Postcard> {
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<Postcard>
+    {
         return NSFetchRequest<Postcard>(entityName: "Postcard");
     }
 
@@ -21,12 +22,13 @@ extension Postcard {
     @NSManaged public var hasPackage: Bool
     @NSManaged public var identifier: String?
     @NSManaged public var receivedDate: NSDate?
+    @NSManaged public var senderKey: NSData?
     @NSManaged public var snippet: String?
     @NSManaged public var to: String?
-    @NSManaged public var senderKey: NSData?
+    @NSManaged public var receiverKey: NSData?
     @NSManaged public var from: PenPal?
     @NSManaged public var owner: User?
-
+    
     //These are properties thatwe never want saved in core data, but that are part of the Postcard object
     public var subject: String?
         {
@@ -106,4 +108,5 @@ extension Postcard {
             return super.keyPathsForValuesAffectingValue(forKey: key)
         }
     }
+
 }

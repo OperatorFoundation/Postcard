@@ -83,6 +83,11 @@ class KeyController: NSObject
         }
     }
     
+    func checkMessagesForCurrentKey()
+    {
+        
+    }
+    
     func createAndSaveUserKeys(forUserWithEmail email: String)
     {
         let newKeyPair = createNewKeyPair()

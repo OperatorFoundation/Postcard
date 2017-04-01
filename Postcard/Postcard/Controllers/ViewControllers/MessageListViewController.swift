@@ -29,8 +29,13 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
         //TODO: This is not available quickly enough, should we store it in UD?
         if let currentUser = GlobalVars.currentUser
         {
-            let predicate = NSPredicate(format: "owner == %@", currentUser)
-            postcardsArrayController.fetchPredicate = predicate
+            if let userPublicKey = KeyController.sharedInstance.mySharedKey as NSData?
+            {
+                //let predicate = NSPredicate(format: "(owner == %@) AND (receiverKey == %@)", currentUser, userPublicKey)
+                let predicate = NSPredicate(format: "owner == %@", currentUser)
+                postcardsArrayController.fetchPredicate = predicate
+                print("******My Public Key: 🗝\(userPublicKey)🗝")
+            }
         }
     }
     
