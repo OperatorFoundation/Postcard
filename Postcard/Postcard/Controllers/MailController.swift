@@ -1149,7 +1149,7 @@ class MailController: NSObject
     {
         let oldKeyAlert = NSAlert()
         oldKeyAlert.messageText = "\(penPal.email) used an older version of your security settings. Send new settings to this contact?"
-        oldKeyAlert.informativeText = "A message or invitation was received that uses your old settings. You will not be able to read any new messages they send until they have your current settings, however this message or invitation will be deleted as it cannot be read. Choose 'No' if you have a previous installation of Postcard and you are going to import those settings."
+        oldKeyAlert.informativeText = "A message or invitation was received that uses your old settings. You will not be able to read any new messages they send until they have your current settings, however this message or invitation will be deleted as it cannot be read."
         oldKeyAlert.addButton(withTitle: "No")
         oldKeyAlert.addButton(withTitle: "Yes")
         let response = oldKeyAlert.runModal()
@@ -1166,6 +1166,7 @@ class MailController: NSObject
         {
             //Do not send newer key
             ///Show instructions for importing settings here?
+            trashGmailMessage(withId: messageId)
         }
     }
     
