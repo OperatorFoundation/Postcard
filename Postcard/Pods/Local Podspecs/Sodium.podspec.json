@@ -1,23 +1,23 @@
 {
   "name": "Sodium",
-  "version": "0.2",
+  "version": "0.3",
   "license": {
     "type": "ISC",
     "file": "LICENSE"
   },
   "summary": "Swift-Sodium provides a safe and easy to use interface to perform common cryptographic operations on iOS and OSX.",
   "homepage": "https://github.com/jedisct1/swift-sodium",
-  "social_media_url": "http://twitter.com/jedisct1",
+  "social_media_url": "https://twitter.com/jedisct1",
   "authors": {
     "Frank Denis": ""
   },
   "source": {
     "git": "https://github.com/jedisct1/swift-sodium.git",
-    "tag": "0.2"
+    "tag": "0.3"
   },
   "platforms": {
     "ios": "8.0",
-    "osx": "10.9"
+    "osx": "10.10"
   },
   "ios": {
     "vendored_libraries": "Sodium/libsodium-ios.a"

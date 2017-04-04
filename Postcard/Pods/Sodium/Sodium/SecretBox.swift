@@ -18,37 +18,37 @@ public class SecretBox {
     public typealias MAC = Data
 
     /**
-     Randomly generates a shared secret key.
-     
+     Generates a shared secret key.
+
      - Returns: The generated key.
      */
     public func key() -> Key? {
         var k = Data(count: KeyBytes)
         k.withUnsafeMutableBytes { kPtr in
-            randombytes_buf(kPtr, k.count)
+            crypto_secretbox_keygen(kPtr)
         }
         return k
     }
 
     /**
-     Randomly generates an ecryption nonce.
-     
+     Generates an encryption nonce.
+
      - Returns: The generated nonce.
      */
     public func nonce() -> Nonce {
-        var n = Data(count: NonceBytes)
-        n.withUnsafeMutableBytes { nPtr in
-            randombytes_buf(nPtr, n.count)
+        var nonce = Data(count: NonceBytes)
+        nonce.withUnsafeMutableBytes { noncePtr in
+            randombytes_buf(noncePtr, nonce.count)
         }
-        return n
+        return nonce
     }
 
     /**
      Encrypts a message with a shared secret key.
-     
+
      - Parameter message: The message to encrypt.
      - Parameter secretKey: The shared secret key.
-     
+
      - Returns: A `Data` object containing the nonce and authenticated ciphertext.
      */
     public func seal(message: Data, secretKey: Key) -> Data? {
@@ -63,10 +63,10 @@ public class SecretBox {
 
     /**
      Encrypts a message with a shared secret key.
-     
+
      - Parameter message: The message to encrypt.
      - Parameter secretKey: The shared secret key.
-     
+
      - Returns: The authenticated ciphertext and encryption nonce.
      */
     public func seal(message: Data, secretKey: Key) -> (authenticatedCipherText: Data, nonce: Nonce)? {
@@ -100,11 +100,11 @@ public class SecretBox {
     }
 
     /**
-     Encrypts a message with a shared secret key (Detached mode).
-     
+     Encrypts a message with a shared secret key (detached mode).
+
      - Parameter message: The message to encrypt.
      - Parameter secretKey: The shared secret key.
-     
+
      - Returns: The encrypted ciphertext, encryption nonce, and authentication tag.
      */
     public func seal(message: Data, secretKey: Key) -> (cipherText: Data, nonce: Nonce, mac: MAC)? {
@@ -142,11 +142,11 @@ public class SecretBox {
     }
 
     /**
-     Decrypts a message with a shared secret key
-     
+     Decrypts a message with a shared secret key.
+
      - Parameter nonceAndAuthenticatedCipherText: A `Data` object containing the nonce and authenticated ciphertext.
      - Parameter secretKey: The shared secret key.
-     
+
      - Returns: The decrypted message.
      */
     public func open(nonceAndAuthenticatedCipherText: Data, secretKey: Key) -> Data? {
@@ -161,11 +161,11 @@ public class SecretBox {
 
     /**
      Decrypts a message with a shared secret key and encryption nonce.
-     
+
      - Parameter authenticatedCipherText: The authenticated ciphertext.
      - Parameter secretKey: The shared secret key.
      - Parameter nonce: The encryption nonce.
-     
+
      - Returns: The decrypted message.
      */
     public func open(authenticatedCipherText: Data, secretKey: Key, nonce: Nonce) -> Data? {
@@ -199,11 +199,11 @@ public class SecretBox {
 
     /**
      Decrypts a message with a shared secret key, encryption nonce, and authentication tag.
-     
+
      - Parameter cipherText: The encrypted ciphertext.
      - Parameter secretKey: The shared secret key.
      - Parameter nonce: The encryption nonce.
-     
+
      - Returns: The decrypted message.
      */
     public func open(cipherText: Data, secretKey: Key, nonce: Nonce, mac: MAC) -> Data? {

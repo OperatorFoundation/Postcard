@@ -923,7 +923,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 33969F0AE60E147CB6607F26 /* Pods-Postcard.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -945,13 +944,13 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
-					"\"GTMOAuth2\"",
+					"\"GTMAppAuth\"",
 					"-framework",
 					"\"GTMSessionFetcher\"",
 					"-framework",
 					"\"GoogleAPIClientForREST\"",
 					"-framework",
-					"\"SAMKeychain\"",
+					"\"KeychainAccess\"",
 					"-framework",
 					"\"Sodium\"",
 				);
@@ -967,7 +966,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0E696D2E52F05F0503F6A52 /* Pods-Postcard.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -989,13 +987,13 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
-					"\"GTMOAuth2\"",
+					"\"GTMAppAuth\"",
 					"-framework",
 					"\"GTMSessionFetcher\"",
 					"-framework",
 					"\"GoogleAPIClientForREST\"",
 					"-framework",
-					"\"SAMKeychain\"",
+					"\"KeychainAccess\"",
 					"-framework",
 					"\"Sodium\"",
 				);
@@ -1010,7 +1008,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A9D48FFD468F001E6AB0DAE2 /* Pods-PostcardTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = PostcardTests/Info.plist;
@@ -1026,7 +1023,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 592EEB916E4DFE6C37933020 /* Pods-PostcardTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = PostcardTests/Info.plist;
@@ -1042,7 +1038,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 38AA5C72C3FEF1DCF660FAAB /* Pods-PostcardUITests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = PostcardUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
@@ -1057,7 +1052,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 34B365E8D9DFDEABFFBB62F5 /* Pods-PostcardUITests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = PostcardUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
