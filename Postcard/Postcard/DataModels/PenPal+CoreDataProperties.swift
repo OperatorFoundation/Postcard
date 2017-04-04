@@ -12,7 +12,6 @@ import CoreData
 
 extension PenPal
 {
-
     @nonobjc public class func fetchRequest() -> NSFetchRequest<PenPal>
     {
         return NSFetchRequest<PenPal>(entityName: "PenPal");
@@ -27,12 +26,10 @@ extension PenPal
     @NSManaged public var sentKey: Bool
     @NSManaged public var messages: NSSet?
     @NSManaged public var owner: User?
-
 }
 
 // MARK: Generated accessors for messages
-extension PenPal {
-
+extension PenPal{
     @objc(addMessagesObject:)
     @NSManaged public func addToMessages(_ value: Postcard)
 
@@ -44,5 +41,4 @@ extension PenPal {
 
     @objc(removeMessages:)
     @NSManaged public func removeFromMessages(_ values: NSSet)
-
 }

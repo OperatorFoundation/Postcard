@@ -18,7 +18,6 @@ class PenPalsViewController: NSViewController, NSTableViewDelegate
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        // Do view setup here.
         
         //Setup Array Controller Contents
         if let currentUser = GlobalVars.currentUser

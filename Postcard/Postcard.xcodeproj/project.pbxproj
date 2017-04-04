@@ -115,7 +115,6 @@
 		B4238F581CD2C0100054E7EF /* MailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MailController.swift; path = Controllers/MailController.swift; sourceTree = "<group>"; };
 		B4238F5B1CD2C11C0054E7EF /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = SupportingFiles/Constants.swift; sourceTree = "<group>"; };
 		B4238F5E1CD2DF050054E7EF /* KeyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KeyController.swift; path = Controllers/KeyController.swift; sourceTree = "<group>"; };
-		B4238F601CD2DF630054E7EF /* Postcard-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Postcard-Bridging-Header.h"; sourceTree = "<group>"; };
 		B430D5EA1CF7C31D0025365E /* WelcomeWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeWindowController.swift; path = Controllers/ViewControllers/WelcomeWindowController.swift; sourceTree = "<group>"; };
 		B4316C9B1D527F83000138D0 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
 		B455798C1D10C99B00E56D6D /* FuturaT_Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaT_Bold.ttf; sourceTree = "<group>"; };
@@ -145,6 +144,7 @@
 		B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeViewController.swift; path = Controllers/ViewControllers/WelcomeViewController.swift; sourceTree = "<group>"; };
 		B4EDBB511CEF7C040094853F /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainWindowController.swift; path = Controllers/ViewControllers/MainWindowController.swift; sourceTree = "<group>"; };
 		B9CC654AD83D22534CA430ED /* Pods_PostcardTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostcardTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAEF8C6C1E9459100035FA97 /* Postcard-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Postcard-Bridging-Header.h"; sourceTree = "<group>"; };
 		D0E696D2E52F05F0503F6A52 /* Pods-Postcard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Postcard.release.xcconfig"; path = "Pods/Target Support Files/Pods-Postcard/Pods-Postcard.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -274,6 +274,7 @@
 		B4238F5D1CD2C4C50054E7EF /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
+				CAEF8C6C1E9459100035FA97 /* Postcard-Bridging-Header.h */,
 				46F64E8B1E777BA6006799B3 /* rfc2822.swift */,
 				B4DA48971E57A53F00BB95FE /* ComposeView.strings */,
 				B4DA48921E57A53F00BB95FE /* MailController.strings */,
@@ -284,7 +285,6 @@
 				B4DA486F1E57A53B00BB95FE /* MessageView.strings */,
 				B4DA486A1E57A53A00BB95FE /* PenPalsView.strings */,
 				461891B71CC17B9A009C577D /* Info.plist */,
-				B4238F601CD2DF630054E7EF /* Postcard-Bridging-Header.h */,
 				B4238F5B1CD2C11C0054E7EF /* Constants.swift */,
 				B460CCE81D41805D00507EFD /* Globals.swift */,
 			);

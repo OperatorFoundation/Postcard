@@ -11,6 +11,6 @@ import Foundation
 import CoreData
 
 
-public class Postcard: NSManagedObject {
-
+public class Postcard: NSManagedObject
+{
 }

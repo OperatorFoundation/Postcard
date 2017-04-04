@@ -57,8 +57,6 @@ class PenPalController: NSObject
     {
         let query = GTLRPeopleQuery_PeopleConnectionsList.query(withResourceName: "people/me")
         
-        //You've got to be kidding me
-        //Your documentation says otherwise buttheads
         query.requestMaskIncludeField = "person.emailAddresses,person.names,person.photos"
         
         //Sort Order for results

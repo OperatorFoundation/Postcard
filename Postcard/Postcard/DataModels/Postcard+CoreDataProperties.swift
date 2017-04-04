@@ -10,8 +10,8 @@ import Foundation
 import CoreData
 
 
-extension Postcard {
-
+extension Postcard
+{
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Postcard>
     {
         return NSFetchRequest<Postcard>(entityName: "Postcard");
@@ -31,7 +31,7 @@ extension Postcard {
     
     //These are properties thatwe never want saved in core data, but that are part of the Postcard object
     public var subject: String?
-        {
+    {
         get
         {
             if self.decrypted
@@ -64,7 +64,7 @@ extension Postcard {
     }
     
     public var body: String?
-        {
+    {
         get
         {
             if self.decrypted
@@ -108,5 +108,4 @@ extension Postcard {
             return super.keyPathsForValuesAffectingValue(forKey: key)
         }
     }
-
 }

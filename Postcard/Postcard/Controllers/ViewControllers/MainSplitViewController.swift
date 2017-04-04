@@ -10,10 +10,8 @@ import Cocoa
 
 class MainSplitViewController: NSSplitViewController
 {
-
     override func viewDidLoad()
     {
         super.viewDidLoad()
     }
-    
 }

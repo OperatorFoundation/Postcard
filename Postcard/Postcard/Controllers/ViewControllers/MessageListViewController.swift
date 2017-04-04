@@ -18,7 +18,6 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        // Do view setup here.
     }
     
     override func viewWillAppear()

@@ -10,9 +10,10 @@ import Foundation
 import CoreData
 
 
-extension User {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<User> {
+extension User
+{
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<User>
+    {
         return NSFetchRequest<User>(entityName: "User");
     }
 
@@ -22,12 +23,11 @@ extension User {
     @NSManaged public var peopleSyncToken: String?
     @NSManaged public var pal: NSSet?
     @NSManaged public var postcard: NSSet?
-
 }
 
 // MARK: Generated accessors for pal
-extension User {
-
+extension User
+{
     @objc(addPalObject:)
     @NSManaged public func addToPal(_ value: PenPal)
 
@@ -39,12 +39,11 @@ extension User {
 
     @objc(removePal:)
     @NSManaged public func removeFromPal(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for postcard
-extension User {
-
+extension User
+{
     @objc(addPostcardObject:)
     @NSManaged public func addToPostcard(_ value: Postcard)
 
@@ -56,5 +55,4 @@ extension User {
 
     @objc(removePostcard:)
     @NSManaged public func removeFromPostcard(_ values: NSSet)
-
 }

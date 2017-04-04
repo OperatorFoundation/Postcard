@@ -10,7 +10,6 @@ import Cocoa
 
 class LockedViewController: NSViewController
 {
-    
     lazy var mainWindowController: MainWindowController =
     {
         let storyboard: NSStoryboard = NSStoryboard(name: "Main", bundle: nil)
@@ -18,9 +17,9 @@ class LockedViewController: NSViewController
         return newWindowController
     }()
 
-    override func viewDidLoad() {
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
-        // Do view setup here.
     }
     
     @IBAction func unlockTap(_ sender: NSButton)
@@ -30,5 +29,4 @@ class LockedViewController: NSViewController
         
         view.window?.close()
     }
-    
 }

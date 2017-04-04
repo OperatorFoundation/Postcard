@@ -11,6 +11,6 @@ import Foundation
 import CoreData
 
 
-public class PenPal: NSManagedObject {
-
+public class PenPal: NSManagedObject
+{
 }

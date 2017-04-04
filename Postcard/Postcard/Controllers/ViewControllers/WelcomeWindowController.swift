@@ -18,9 +18,7 @@ class WelcomeWindowController: NSWindowController
         // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
         window?.titlebarAppearsTransparent = true
         window?.isMovableByWindowBackground = true
-        window?.titleVisibility = NSWindowTitleVisibility.hidden
-        
-        //self.window?.setContentSize(NSSize(width: 1070, height: 640))
+        window?.titleVisibility = NSWindowTitleVisibility.hidden        
     }
 
 }

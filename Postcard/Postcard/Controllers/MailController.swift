@@ -1434,39 +1434,6 @@ class MailController: NSObject
         }
     }
     
-//    //Main Wrapper Message This is what the user will see in any email client
-//    func generateMessageMime(forPenPal penPal: PenPal, subject: String, body: String, messageData: Data, maybePackage: Data?) -> String
-//    {
-//        let messageBuilder = MCOMessageBuilder()
-//        messageBuilder.header.to = [MCOAddress(mailbox: penPal.email)]
-//        messageBuilder.header.subject = subject
-//        messageBuilder.textBody = body
-//        
-//        //This is the actual user's message as an attachment to the gmail message
-//        let messageAttachment = MCOAttachment(data: messageData, filename: "Postcard")
-//        messageAttachment?.mimeType = PostCardProps.postcardMimeType
-//        messageBuilder.addAttachment(messageAttachment)
-//        
-//        //Add a key attachment to this message
-//        let keyData = generateKeyAttachment(forPenPal: penPal)
-//        
-//        let keyAttachment = MCOAttachment(data: keyData, filename: "Key")
-//        keyAttachment?.mimeType = PostCardProps.keyMimeType
-//        messageBuilder.addAttachment(keyAttachment)
-//        
-//        
-//        //        if let packageData = maybePackage
-//        //        {
-//        //            if let packageAttachment = MCOAttachment(data: packageData, filename: "Postcard")
-//        //            {
-//        //                packageAttachment.mimeType = PostCardProps.packageMimeType
-//        //                messageBuilder.addAttachment(packageAttachment)
-//        //            }
-//        //        }
-//        
-//        return dataEncodedToString(messageBuilder.data())
-//    }
-    
     //Main Wrapper Message This is what the user will see in any email client
     
     func generateMessagePostcard(sendToEmail to: String, subject: String, body: String, withKey key: Data) -> Data?
