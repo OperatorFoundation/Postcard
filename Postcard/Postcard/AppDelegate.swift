@@ -18,9 +18,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
     //Google App Auth: you need to have a way for your UIApplicationDelegate to continue the authorization flow session from the incoming redirect URI
     var currentAuthorizationFlow: OIDAuthorizationFlowSession?
     
-    //Notification Keys
-    let keyHandoffNotificationName = "PostcardKeyHandoffNotification"
-    
     //MARK: Application Lifecycle
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {

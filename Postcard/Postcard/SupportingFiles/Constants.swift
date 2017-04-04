@@ -26,17 +26,7 @@ import AppAuth
  ProximaNovaAExCn-Light
  */
 
-//User Activity for Handoff
 let bundle = Bundle.main
-let activityTypePrivateKeySync = "org.operatorfoundation.Postcard.keySync"
-let activityItemKeyPrivateKey = "postcard.privateKey.key"
-let activityItemKeyPublicKey = "postcard.publicKey.key"
-let activityItemKeyTimestamp = "postcard.timestamp.key"
-let activityItemKeyVersion = "postcard.version.key"
-let activityKeySyncVersion = "1.0"
-
-//Notification Keys
-let keyHandoffNotificationName = "PostcardKeyHandoffNotification"
 
 //PopUpMessages Strings
 
