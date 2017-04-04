@@ -133,7 +133,7 @@ class PenPalController: NSObject
                 getGoogleContacts(nextPageToken)
             }
         }
-        else if let error = maybeError as? NSError
+        else if let error = maybeError as NSError?
         {
             print(error)
             //This is likely due to an expired sync token
@@ -160,12 +160,19 @@ class PenPalController: NSObject
         
         print("Saving PenPal with email: \(email)")
         print("PenPal has our key: \(penPal.sentKey)")
-        print("PenPal key: \(penPal.key)")
+        
         //Name
         if let names = connection.names, names.isEmpty == false
         {
             penPal.name = names[0].displayName
-            print("PenPal Name: \(penPal.name)")
+            if let thisName = penPal.name
+            {
+                print("PenPal Name: \(thisName)")
+            }
+            else
+            {
+                print("PenPal Name is nil")
+            }
         }
         
         //PenPal Image

@@ -430,9 +430,9 @@ class MailController: NSObject
                                     //Process the attachments
                                     if let attachment = maybeAttachment as? GTLRGmail_MessagePartBody
                                     {
-                                        print("^^^^^^Downloaded attachment from a sent message")
-                                        var senderKey: NSData?
-                                        
+                                        print("^^^^^^Downloaded attachment from a sent message: ", attachment)
+//                                        var senderKey: NSData?
+//
                                         ///ToDo: This key compare will not work as it assigns receiver sender based on the "From" field
 //                                        if messagePart.mimeType == PostCardProps.keyMimeType
 //                                        {
@@ -601,8 +601,16 @@ class MailController: NSObject
                                                 newCard.identifier = messageMeta.identifier
                                                 newCard.senderKey = senderKey
                                                 newCard.receiverKey = receiverKey
-                                                print("🔑Postcard says my key is:\(receiverKey)🔑")
-                                                print("New Card Owner: \(newCard.owner)")
+                                                if let thisKey = receiverKey
+                                                {
+                                                    print("🔑Postcard says my key is:\(thisKey)🔑")
+                                                }
+                                                else
+                                                {
+                                                    print("🔑Postcard says my key is nil🔑")
+                                                }
+                                                
+//                                                print("New Card Owner: \(newCard.owner)")
                                                 
                                                 for dateHeader in headers where dateHeader.name == "Date"
                                                 {
@@ -1001,8 +1009,7 @@ class MailController: NSObject
                             return (false, nil, nil)
                         }
                         
-                        guard let palKey = timestampedKeys.senderPublicKey as NSData?
-                            else {return (false, nil, nil)}
+                        let palKey = timestampedKeys.senderPublicKey as NSData
                         newPal.key = palKey
                         
                         let palKeyTimestamp = NSDate(timeIntervalSince1970: TimeInterval(timestampedKeys.senderKeyTimestamp))
@@ -1020,8 +1027,7 @@ class MailController: NSObject
                             return (false, nil, nil)
                         }
                         
-                        guard let palKey = timestampedKey.senderPublicKey as NSData?
-                            else {return (false, nil, nil)}
+                        let palKey = timestampedKey.senderPublicKey as NSData
                         
                         newPal.key = palKey
                         
@@ -1253,7 +1259,14 @@ class MailController: NSObject
                                     if maybeError == nil
                                     {
                                         print("Sent Key: \(thisPenpal.sentKey)")
-                                        print("PenPal Key: \(thisPenpal.key)")
+                                        if let thisKey = thisPenpal.key
+                                        {
+                                            print("PenPal Key: \(thisKey)")
+                                        }
+                                        else
+                                        {
+                                            print("PenPal Key is nil")
+                                        }
                                         
                                         completion(true)
                                         return

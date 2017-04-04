@@ -77,7 +77,7 @@ class MenuViewController: NSViewController, NSUserActivityDelegate
                                      activityItemKeyVersion: activityKeySyncVersion]
             //userActivity = syncActivity
             syncActivity.becomeCurrent()
-            print("User activity with title: \(syncActivity.title) called becomeCurrent.")
+            print("User activity with title: \(syncActivity.title ?? "nil activity") called becomeCurrent.")
         }
     }
     

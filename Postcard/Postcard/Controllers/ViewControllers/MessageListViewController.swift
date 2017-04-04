@@ -60,7 +60,7 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
                 
                 if GlobalVars.messageCache![messageID] != nil
                 {
-                    print("Found a message in the cache: \(GlobalVars.messageCache![messageID])")
+                    print("Found a message in the cache: \(GlobalVars.messageCache![messageID]!)")
                     return
                 }
 
