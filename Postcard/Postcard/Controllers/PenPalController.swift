@@ -298,6 +298,36 @@ class PenPalController: NSObject
             return nil
         }
     }
+  
+    func fetchPenPalForCurrentUser(_ emailAddress: String) -> PenPal?
+    {
+        //Make sure we have a current user
+        if let currentUser = GlobalVars.currentUser
+        {
+            let fetchRequest: NSFetchRequest<PenPal> = PenPal.fetchRequest()
+            //Check for a penpal with this email address AND this current user as owner
+            fetchRequest.predicate = NSPredicate(format: "email == %@ AND owner == %@", emailAddress, currentUser)
+            do
+            {
+                let result = try self.managedObjectContext?.fetch(fetchRequest)
+                if result?.count > 0
+                {
+                    let thisPenpal = result?[0]
+                    return thisPenpal
+                }
+            }
+            catch
+            {
+                //Could not fetch this Penpal from core data
+                let fetchError = error as NSError
+                print(fetchError.localizedDescription)
+                
+                return nil
+            }
+        }
+        
+        return nil
+    }    
     
   //📭//
 }

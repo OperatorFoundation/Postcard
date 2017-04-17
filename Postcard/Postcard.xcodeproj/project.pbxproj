@@ -58,6 +58,8 @@
 		B4EDBB4E1CEF6BC50094853F /* ComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EDBB4D1CEF6BC50094853F /* ComposeViewController.swift */; };
 		B4EDBB501CEF74D80094853F /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */; };
 		B4EDBB521CEF7C040094853F /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EDBB511CEF7C040094853F /* MainWindowController.swift */; };
+		CAA27A311E9AD6430030A89B /* Packable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA27A301E9AD6430030A89B /* Packable.swift */; };
+		CAA27A331E9AD8AA0030A89B /* Encoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA27A321E9AD8AA0030A89B /* Encoding.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -144,6 +146,8 @@
 		B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeViewController.swift; path = Controllers/ViewControllers/WelcomeViewController.swift; sourceTree = "<group>"; };
 		B4EDBB511CEF7C040094853F /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainWindowController.swift; path = Controllers/ViewControllers/MainWindowController.swift; sourceTree = "<group>"; };
 		B9CC654AD83D22534CA430ED /* Pods_PostcardTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostcardTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAA27A301E9AD6430030A89B /* Packable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Packable.swift; path = DataModels/Packable.swift; sourceTree = "<group>"; };
+		CAA27A321E9AD8AA0030A89B /* Encoding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Encoding.swift; path = SupportingFiles/Encoding.swift; sourceTree = "<group>"; };
 		CAEF8C6C1E9459100035FA97 /* Postcard-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Postcard-Bridging-Header.h"; sourceTree = "<group>"; };
 		D0E696D2E52F05F0503F6A52 /* Pods-Postcard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Postcard.release.xcconfig"; path = "Pods/Target Support Files/Pods-Postcard/Pods-Postcard.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -287,6 +291,7 @@
 				461891B71CC17B9A009C577D /* Info.plist */,
 				B4238F5B1CD2C11C0054E7EF /* Constants.swift */,
 				B460CCE81D41805D00507EFD /* Globals.swift */,
+				CAA27A321E9AD8AA0030A89B /* Encoding.swift */,
 			);
 			name = SupportingFiles;
 			sourceTree = "<group>";
@@ -338,6 +343,7 @@
 				B4BFDD271E4AA1B700455232 /* Postcard+CoreDataClass.swift */,
 				B4BFDD281E4AA1B700455232 /* Postcard+CoreDataProperties.swift */,
 				461891AF1CC17B9A009C577D /* Postcard.xcdatamodeld */,
+				CAA27A301E9AD6430030A89B /* Packable.swift */,
 			);
 			name = DataModels;
 			sourceTree = "<group>";
@@ -668,6 +674,7 @@
 				461891B11CC17B9A009C577D /* Postcard.xcdatamodeld in Sources */,
 				B460CCE91D41805D00507EFD /* Globals.swift in Sources */,
 				B4238F5F1CD2DF050054E7EF /* KeyController.swift in Sources */,
+				CAA27A311E9AD6430030A89B /* Packable.swift in Sources */,
 				B4BFDD2B1E4AA1B700455232 /* User+CoreDataClass.swift in Sources */,
 				461C0A641CE682AF00C5B5A5 /* DesignableView.swift in Sources */,
 				B4EDBB501CEF74D80094853F /* WelcomeViewController.swift in Sources */,
@@ -680,6 +687,7 @@
 				B4EDBB521CEF7C040094853F /* MainWindowController.swift in Sources */,
 				B4238F591CD2C0100054E7EF /* MailController.swift in Sources */,
 				461C0A551CE6638C00C5B5A5 /* MenuViewController.swift in Sources */,
+				CAA27A331E9AD8AA0030A89B /* Encoding.swift in Sources */,
 				461C0A531CE63F0B00C5B5A5 /* PenPalController.swift in Sources */,
 				B4EDBB4E1CEF6BC50094853F /* ComposeViewController.swift in Sources */,
 				B4238F5C1CD2C11C0054E7EF /* Constants.swift in Sources */,
