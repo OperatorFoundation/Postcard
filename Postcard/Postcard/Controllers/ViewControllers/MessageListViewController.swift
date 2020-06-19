@@ -13,7 +13,7 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
     @IBOutlet var postcardsArrayController: NSArrayController!
     @IBOutlet weak var postcardsTableView: NSTableView!
     
-    var managedContext = (NSApplication.shared().delegate as! AppDelegate).managedObjectContext
+    var managedContext = (NSApplication.shared.delegate as! AppDelegate).managedObjectContext
     
     override func viewDidLoad()
     {
@@ -99,7 +99,7 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
             
             //Tell the message VC what message to display
             let splitVC = parent as! NSSplitViewController
-            if let messageVC: MessageViewController = splitVC.childViewControllers[1] as? MessageViewController
+            if let messageVC: MessageViewController = splitVC.children[1] as? MessageViewController
             {
                 messageVC.postcardObjectController.content = selectedPostcard
                 
@@ -110,7 +110,7 @@ class MessageListViewController: NSViewController, NSTableViewDelegate
         else
         {
             let splitVC = parent as! NSSplitViewController
-            if let messageVC: MessageViewController = splitVC.childViewControllers[1] as? MessageViewController
+            if let messageVC: MessageViewController = splitVC.children[1] as? MessageViewController
             {
                 messageVC.postcardObjectController.content = nil
                 
@@ -139,10 +139,10 @@ class MessagesTableCell: NSTableCellView
         
         //When a cell is selected the system sets background style to dark by default
         //Use this to change the cell color
-        if backgroundStyle == NSBackgroundStyle.dark
+        if backgroundStyle == NSView.BackgroundStyle.dark
         {
             NSColor.white.setFill()
-            NSRectFill(dirtyRect)
+            __NSRectFill(dirtyRect)
         }
     }
     

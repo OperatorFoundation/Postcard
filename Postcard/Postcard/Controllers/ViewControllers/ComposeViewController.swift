@@ -31,8 +31,8 @@ class ComposeViewController: NSViewController
         //Set Default Font
         if let font = NSFont(name: PostcardUI.regularAFont, size: 14)
         {
-            let attributes = [NSFontAttributeName: font]
-            bodyTextView.typingAttributes = attributes
+            let attributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): font]
+            bodyTextView.typingAttributes = convertToNSAttributedStringKeyDictionary(attributes)
         }
         
         //Check For Prepopulated values
@@ -52,7 +52,7 @@ class ComposeViewController: NSViewController
         //This is to make the title bar transparent so that the BG image is uninterrupted
         view.window?.titlebarAppearsTransparent = true
         view.window?.isMovableByWindowBackground = true
-        view.window?.titleVisibility = NSWindowTitleVisibility.hidden
+        view.window?.titleVisibility = NSWindow.TitleVisibility.hidden
         self.view.window?.viewsNeedDisplay = true
     }
     
@@ -69,14 +69,14 @@ class ComposeViewController: NSViewController
             buttonFont = maybeFont
         }
         
-        let attributes = [NSForegroundColorAttributeName: NSColor.white,NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
-        let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
+        let attributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): NSColor.white,convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyle, convertFromNSAttributedStringKey(NSAttributedString.Key.font): buttonFont]
+        let altAttributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): PostcardUI.blue, convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyle, convertFromNSAttributedStringKey(NSAttributedString.Key.font): buttonFont]
         
-        sendButton.attributedTitle = NSAttributedString(string: localizedSendTitle, attributes: attributes)
-        sendButton.attributedAlternateTitle = NSAttributedString(string: localizedSendTitle, attributes: altAttributes)
+        sendButton.attributedTitle = NSAttributedString(string: localizedSendTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(attributes))
+        sendButton.attributedAlternateTitle = NSAttributedString(string: localizedSendTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(altAttributes))
         
-        attachmentButton.attributedTitle = NSAttributedString(string: localizedAttachmentTitle, attributes: attributes)
-        attachmentButton.attributedAlternateTitle = NSAttributedString(string: localizedAttachmentTitle, attributes: altAttributes)
+        attachmentButton.attributedTitle = NSAttributedString(string: localizedAttachmentTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(attributes))
+        attachmentButton.attributedAlternateTitle = NSAttributedString(string: localizedAttachmentTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(altAttributes))
     }
     
     //MARK: Actions
@@ -96,25 +96,23 @@ class ComposeViewController: NSViewController
             }
             else
             {
-                if let body: String = bodyTextView.string
+                let body: String = bodyTextView.string
+                if body.isEmpty
                 {
-                    if body.isEmpty
+                    print("This message has no body.")
+                }
+                else
+                {
+                    MailController.sharedInstance.sendEmail(allRecipients, subject: subject, body: body, maybeAttachments: attachments, completion:
                     {
-                        print("This message has no body.")
-                    }
-                    else
-                    {
-                        MailController.sharedInstance.sendEmail(allRecipients, subject: subject, body: body, maybeAttachments: attachments, completion:
+                        (successful) in
+                        
+                        if successful
                         {
-                            (successful) in
-                            
-                            if successful
-                            {
-                                //Close Window
-                                self.view.window?.close()
-                            }
-                        })
-                    }
+                            //Close Window
+                            self.view.window?.close()
+                        }
+                    })
                 }
             }
         }
@@ -132,7 +130,7 @@ class ComposeViewController: NSViewController
         {
             choosePanel.beginSheetModal(for: composeWindow, completionHandler:
             { (result) in
-                if result == NSFileHandlingPanelOKButton
+                if result.rawValue == NSFileHandlingPanelOKButton
                 {
                     let urls = choosePanel.urls
                     for thisURL in urls
@@ -173,8 +171,8 @@ class ComposeViewController: NSViewController
                                 buttonFont = maybeFont
                             }
                             
-                            let attributes = [NSForegroundColorAttributeName: PostcardUI.black, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
-                            attachmentButton.attributedTitle = NSAttributedString(string: fileName, attributes: attributes)
+                            let attributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): PostcardUI.black, convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyle, convertFromNSAttributedStringKey(NSAttributedString.Key.font): buttonFont]
+                            attachmentButton.attributedTitle = NSAttributedString(string: fileName, attributes: convertToOptionalNSAttributedStringKeyDictionary(attributes))
                             attachmentButton.isBordered = false
                             
                             //Remove Attachment Button
@@ -188,8 +186,8 @@ class ComposeViewController: NSViewController
                                 removeButtonFont = maybeFont
                             }
                             
-                            let removeAttributes = [NSForegroundColorAttributeName: PostcardUI.red, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: removeButtonFont]
-                            removeButton.attributedTitle = NSAttributedString(string: "x", attributes: removeAttributes)
+                            let removeAttributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): PostcardUI.red, convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyle, convertFromNSAttributedStringKey(NSAttributedString.Key.font): removeButtonFont]
+                            removeButton.attributedTitle = NSAttributedString(string: "x", attributes: convertToOptionalNSAttributedStringKeyDictionary(removeAttributes))
                             removeButton.target = self
                             removeButton.action = #selector(ComposeViewController.removeAttachment)
                             
@@ -209,7 +207,7 @@ class ComposeViewController: NSViewController
         
     }
     
-    func removeAttachment(_ sender: AnyObject)
+    @objc func removeAttachment(_ sender: AnyObject)
     {
         if let attachmentSender = sender as? AttachmentButton
         {
@@ -237,19 +235,19 @@ class ComposeViewController: NSViewController
 
 extension ComposeViewController: NSTokenFieldDelegate
 {
-    func tokenField(_ tokenField: NSTokenField, styleForRepresentedObject representedObject: Any) -> NSTokenStyle
+    func tokenField(_ tokenField: NSTokenField, styleForRepresentedObject representedObject: Any) -> NSTokenField.TokenStyle
     {
         //Visually Token-ize valid emails
         if let maybeEmail = representedObject as? String
         {
             if isValidEmailAddress(emailAddressString: maybeEmail)
             {
-                return NSRoundedTokenStyle
+                return NSTokenField.TokenStyle.rounded
             }
         }
         
         //Leave everything else in NSPlainTextTokenStyle
-        return NSPlainTextTokenStyle
+        return NSTokenField.TokenStyle.plainSquared
     }
     
 /*
@@ -321,4 +319,20 @@ class AttachmentButton: NSButton
     }
     
 
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToNSAttributedStringKeyDictionary(_ input: [String: Any]) -> [NSAttributedString.Key: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
 }

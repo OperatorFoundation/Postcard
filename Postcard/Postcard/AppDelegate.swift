@@ -9,6 +9,7 @@
 import Cocoa
 import CoreData
 import AppAuth
+import GTMAppAuth
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
@@ -22,14 +23,14 @@ class AppDelegate: NSObject, NSApplicationDelegate
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
         //Listen for sleep
-        NSWorkspace.shared().notificationCenter.addObserver(self, selector: #selector(willSleep), name: NSNotification.Name.NSWorkspaceWillSleep, object: nil)
+        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(willSleep), name: NSWorkspace.willSleepNotification, object: nil)
         
         // Register for GetURL events.
         let appleEventManager = NSAppleEventManager.shared()
         appleEventManager.setEventHandler(self, andSelector: #selector(handleGetURLEvent), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
     }
     
-    func willSleep()
+    @objc func willSleep()
     {
         print("😴")
         
@@ -39,7 +40,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     
     //MARK: Google Authorization
     
-    func handleGetURLEvent(event: NSAppleEventDescriptor, withReplyEvent replyEvent: NSAppleEventDescriptor)
+    @objc func handleGetURLEvent(event: NSAppleEventDescriptor, withReplyEvent replyEvent: NSAppleEventDescriptor)
     {
         // Sends the URL to the current authorization flow (if any) which will process it if it relates to an authorization response.
         if currentAuthorizationFlow != nil
@@ -147,7 +148,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 dict[NSUnderlyingErrorKey] = failError
             }
             let error = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict)
-            NSApplication.shared().presentError(error)
+            NSApplication.shared.presentError(error)
             
             //TODO: More user friendly way of handling non-migrated coreData changes
             abort()
@@ -185,7 +186,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
             }
             catch {
                 let nserror = error as NSError
-                NSApplication.shared().presentError(nserror)
+                NSApplication.shared.presentError(nserror)
             }
         }
     }
@@ -196,7 +197,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         return managedObjectContext.undoManager
     }
 
-    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplicationTerminateReply
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply
     {
         // Save changes in the application's managed object context before the application terminates.
         if !managedObjectContext.commitEditing()
@@ -235,7 +236,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
             alert.addButton(withTitle: cancelButton)
             
             let answer = alert.runModal()
-            if answer == NSAlertFirstButtonReturn
+            if answer == NSApplication.ModalResponse.alertFirstButtonReturn
             {
                 return .terminateCancel
             }

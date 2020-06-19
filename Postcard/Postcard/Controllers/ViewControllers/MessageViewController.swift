@@ -20,7 +20,7 @@ class MessageViewController: NSViewController
     @IBOutlet weak var headerView: DesignableView!
     @IBOutlet weak var contentView: DesignableView!
     
-    var managedContext = (NSApplication.shared().delegate as! AppDelegate).managedObjectContext
+    var managedContext = (NSApplication.shared.delegate as! AppDelegate).managedObjectContext
 
     override func viewDidLoad()
     {
@@ -115,14 +115,14 @@ class MessageViewController: NSViewController
             buttonFont = maybeFont
         }
         
-        let attributes = [NSForegroundColorAttributeName: NSColor.white,NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
-        let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
+        let attributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): NSColor.white,convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyle, convertFromNSAttributedStringKey(NSAttributedString.Key.font): buttonFont]
+        let altAttributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): PostcardUI.blue, convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyle, convertFromNSAttributedStringKey(NSAttributedString.Key.font): buttonFont]
         
-        replyButton.attributedTitle = NSAttributedString(string: localizedReplyTitle, attributes: attributes)
-        replyButton.attributedAlternateTitle = NSAttributedString(string: localizedReplyTitle, attributes: altAttributes)
+        replyButton.attributedTitle = NSAttributedString(string: localizedReplyTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(attributes))
+        replyButton.attributedAlternateTitle = NSAttributedString(string: localizedReplyTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(altAttributes))
         
-        deleteButton.attributedTitle = NSAttributedString(string: localizedDeleteTitle, attributes: attributes)
-        deleteButton.attributedAlternateTitle = NSAttributedString(string: localizedDeleteTitle, attributes: altAttributes)
+        deleteButton.attributedTitle = NSAttributedString(string: localizedDeleteTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(attributes))
+        deleteButton.attributedAlternateTitle = NSAttributedString(string: localizedDeleteTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(altAttributes))
     }
     
     //MARK: Helper Methods
@@ -134,4 +134,15 @@ class MessageViewController: NSViewController
         alert.runModal()
     }
     
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
 }

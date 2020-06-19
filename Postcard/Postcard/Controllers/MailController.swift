@@ -7,9 +7,11 @@
 //
 
 import Cocoa
-import GoogleAPIClientForREST
+import GoogleAPIClientForRESTCore
 import CoreData
 import Sodium
+import GoogleAPIClientForREST_Gmail
+import Datable
 
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
@@ -60,11 +62,11 @@ class MailController: NSObject
 {
     static let sharedInstance = MailController()
     
-    let appDelegate = NSApplication.shared().delegate as! AppDelegate
+    let appDelegate = NSApplication.shared.delegate as! AppDelegate
     let gmailUserId = "me"
     
     var managedObjectContext: NSManagedObjectContext?
-    var allPostcards = [GTLRGmail_Message]()
+//    var allPostcards = [GTLRGmail_Message]()
     var allPenpals = [PenPal]()
     
     fileprivate override init()
@@ -263,7 +265,7 @@ class MailController: NSObject
     }
     
     //This gets a bare list of messages that meet our criteria and then calls a func to retrieve the payload for each one
-    func fetchGmailMessagesList()
+    @objc func fetchGmailMessagesList()
     {
         //First get messages from the inbox
         let userMessagesListQuery = GTLRGmailQuery_UsersMessagesList.query(withUserId: gmailUserId)
@@ -688,12 +690,7 @@ class MailController: NSObject
     {
         //Decrypt - Sodium
         let keyController = KeyController.sharedInstance
-        guard let sodium = Sodium()
-            else
-        {
-            print("\nUnable to decrypt message: could not initialize Sodium. That's weird.\n")
-            return nil
-        }
+        let sodium = Sodium()
         
         guard let secretKey = keyController.myPrivateKey
             else
@@ -723,40 +720,66 @@ class MailController: NSObject
             showAlert(String(format: localizedMissingCipherError, penPalEMail))
             return nil
         }
+    
+        // FIXME: Encryption
         
-        guard let decryptedPostcard = sodium.box.open(nonceAndAuthenticatedCipherText: cipherText as Data, senderPublicKey: penPalKey as Box.PublicKey, recipientSecretKey: secretKey)
-            else
+//        guard let decryptedPostcard = sodium.box.open(nonceAndAuthenticatedCipherText: cipherText as Data, senderPublicKey: penPalKey as Box.PublicKey, recipientSecretKey: secretKey)
+//            else
+//        {
+//            showAlert(String(format: localizedWrongKeyError, penPalEMail))
+//
+//            //If this postcard is already flagged as decrypted, set flag to false as it can no longer be decrypted
+//            if postcard.decrypted
+//            {
+//                postcard.decrypted = false
+//
+//                //Save these changes to core data
+//                do
+//                {
+//                    try postcard.managedObjectContext?.save()
+//                }
+//                catch
+//                {
+//                    let saveError = error as NSError
+//                    print("\(saveError.localizedDescription)")
+//                }
+//            }
+//            print("\nFailed to decrypt message from \(penPalEMail)\n")
+//            return nil
+//        }
+//
+//        //Parse this message into usable parts
+//        guard let postcardMessage = PostcardMessage.init(postcardData: decryptedPostcard)
+//            else
+//        {
+//            return nil
+//        }
+//
+//        return postcardMessage
+        
+        /***/
+        print("Decryption is currently disabled.")
+        showAlert(String(format: localizedWrongKeyError, penPalEMail))
+        
+        //If this postcard is already flagged as decrypted, set flag to false as it can no longer be decrypted
+        if postcard.decrypted
         {
-            showAlert(String(format: localizedWrongKeyError, penPalEMail))
+            postcard.decrypted = false
             
-            //If this postcard is already flagged as decrypted, set flag to false as it can no longer be decrypted
-            if postcard.decrypted
+            //Save these changes to core data
+            do
             {
-                postcard.decrypted = false
-                
-                //Save these changes to core data
-                do
-                {
-                    try postcard.managedObjectContext?.save()
-                }
-                catch
-                {
-                    let saveError = error as NSError
-                    print("\(saveError.localizedDescription)")
-                }
+                try postcard.managedObjectContext?.save()
             }
-            print("\nFailed to decrypt message from \(penPalEMail)\n")
-            return nil
+            catch
+            {
+                let saveError = error as NSError
+                print("\(saveError.localizedDescription)")
+            }
         }
-        
-        //Parse this message into usable parts
-        guard let postcardMessage = PostcardMessage.init(postcardData: decryptedPostcard)
-            else
-        {
-            return nil
-        }
-        
-        return postcardMessage
+        print("\nFailed to decrypt message from \(penPalEMail)\n")
+        return nil
+        /***/
     }
     
     func removeAllDecryptionForUser(_ lockdownUser: User)
@@ -1185,17 +1208,21 @@ class MailController: NSObject
         let postcardMessage = PostcardMessage.init(to: to, subject: subject, body: body)
         if let postcardMessageData = postcardMessage.dataValue()
         {
-            if let sodium = Sodium(), let secretKey = KeyController.sharedInstance.myPrivateKey
+            let sodium = Sodium()
+            if let secretKey = KeyController.sharedInstance.myPrivateKey
             {
-                if let encryptedMessageData: Data = sodium.box.seal(message: postcardMessageData, recipientPublicKey: key, senderSecretKey: secretKey)
-                {
-                    return encryptedMessageData
-                }
-                else
-                {
-                    //We are not showing alerts for these because there is nothing the user can do about this
-                    print("We could not encrypt this message.")
-                }
+                //FIXME: Encryption Overhaul
+                print("Encryption has been disabled.")
+                
+//                if let encryptedMessageBytes: Bytes = sodium.box.seal(message: postcardMessageData, recipientPublicKey: key, senderSecretKey: secretKey)
+//                {
+//                    return Data(bytes: encryptedMessageBytes)
+//                }
+//                else
+//                {
+//                    //We are not showing alerts for these because there is nothing the user can do about this
+//                    print("We could not encrypt this message.")
+//                }
             }
             else
             {

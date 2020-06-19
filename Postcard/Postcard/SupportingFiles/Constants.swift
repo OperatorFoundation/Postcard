@@ -7,8 +7,10 @@
 //
 
 import Foundation
-import GoogleAPIClientForREST
-import GTMAppAuth
+import AppKit
+import GoogleAPIClientForRESTCore
+import GoogleAPIClientForREST_Gmail
+import GoogleAPIClientForREST_PeopleService
 import AppAuth
 
 /*
@@ -98,11 +100,14 @@ let localizedLogoutButtonTitle = NSLocalizedString("BUTTON-TITLE", tableName: "M
 struct GmailProps
 {
     static let service = GTLRGmailService()
-    static let servicePeople = GTLRPeopleService()
+    static let servicePeople = GTLRPeopleServiceService()
     
     /*If modifying these scopes, delete your previously saved credentials by resetting the iOS simulator or uninstalling the app.*/
     static let clientID = "313251347973-cpo986nne3t21bus5499b4kt1kb8thrm"
-    static let scopes = [kGTLRAuthScopeGmailMailGoogleCom, kGTLRAuthScopePeopleContactsReadonly, kGTLRAuthScopePeopleUserinfoProfile, "email"]
+    
+    // FIXME: Add kGTLRAuthScopePeopleContactsReadonly, kGTLRAuthScopePeopleUserinfoProfile,
+    static let scopes = [kGTLRAuthScopeGmailMailGoogleCom, "email"]
+    
     static let kKeychainItemName = "Gmail API"
     static let kClientID = "\(clientID).apps.googleusercontent.com"
     static let kRedirectURI = "com.googleusercontent.apps.\(clientID):/oauthredirect"
@@ -122,7 +127,8 @@ struct PostCardProps
 
 struct PostcardUI
 {
-    static let blue = NSColor(calibratedRed: 0.27, green: 0.65, blue: 0.73, alpha: 1)
+    static let blue =
+        NSColor(calibratedRed: 0.27, green: 0.65, blue: 0.73, alpha: 1)
     static let red = NSColor(calibratedRed: 0.88, green: 0.34, blue: 0.31, alpha: 1.0)
     static let orange = NSColor(calibratedRed: 0.93, green: 0.49, blue: 0.39, alpha: 1.0)
     static let green = NSColor(calibratedRed: 0.20, green: 0.70, blue: 0.53, alpha: 1.0)

@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import GTMAppAuth
+import AppAuth
 
 enum SelectedMode
 {
@@ -117,8 +117,8 @@ class MenuViewController: NSViewController, NSUserActivityDelegate
         splitVC.addSplitViewItem(splitViewItem)
         
         //TODO: Show button state
-        penPalsButton.state = NSOnState
-        inboxButton.state = NSOffState
+        penPalsButton.state = .on
+        inboxButton.state = .off
     }
     
     func showMessages()
@@ -130,8 +130,8 @@ class MenuViewController: NSViewController, NSUserActivityDelegate
         splitVC.addSplitViewItem(splitViewItem)
         
         //TODO: Show button state
-        inboxButton.state = NSOnState
-        penPalsButton.state = NSOffState
+        inboxButton.state = .on
+        penPalsButton.state = .off
     }
     
     //MARK: Helper Methods
@@ -165,25 +165,36 @@ class MenuViewController: NSViewController, NSUserActivityDelegate
             buttonFont2 = maybeFont2
         }
         
-        let composeAttributes = [NSForegroundColorAttributeName: NSColor.white,NSParagraphStyleAttributeName: paragraphStyleCenter, NSFontAttributeName: buttonFont]
-        let attributes = [NSForegroundColorAttributeName: NSColor.white,NSParagraphStyleAttributeName: paragraphStyleLeft, NSFontAttributeName: buttonFont2]
-        let altInboxAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyleLeft, NSFontAttributeName: buttonFont2]
-        let altPenpalAttributes = [NSForegroundColorAttributeName: PostcardUI.green, NSParagraphStyleAttributeName: paragraphStyleLeft, NSFontAttributeName: buttonFont2]
-        let altAttributes = [NSForegroundColorAttributeName: PostcardUI.orange, NSParagraphStyleAttributeName: paragraphStyleLeft, NSFontAttributeName: buttonFont2]
+        let composeAttributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): NSColor.white,convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyleCenter, convertFromNSAttributedStringKey(NSAttributedString.Key.font): buttonFont]
+        let attributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): NSColor.white,convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyleLeft, convertFromNSAttributedStringKey(NSAttributedString.Key.font): buttonFont2]
+        let altInboxAttributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): PostcardUI.blue, convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyleLeft, convertFromNSAttributedStringKey(NSAttributedString.Key.font): buttonFont2]
+        let altPenpalAttributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): PostcardUI.green, convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyleLeft, convertFromNSAttributedStringKey(NSAttributedString.Key.font): buttonFont2]
+        let altAttributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): PostcardUI.orange, convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyleLeft, convertFromNSAttributedStringKey(NSAttributedString.Key.font): buttonFont2]
         
-        inboxButton.attributedTitle = NSAttributedString(string: localizedInboxButtonTitle, attributes: attributes)
-        inboxButton.attributedAlternateTitle = NSAttributedString(string: localizedInboxButtonTitle, attributes: altInboxAttributes)
+        inboxButton.attributedTitle = NSAttributedString(string: localizedInboxButtonTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(attributes))
+        inboxButton.attributedAlternateTitle = NSAttributedString(string: localizedInboxButtonTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(altInboxAttributes))
         
-        composeButton.attributedTitle = NSAttributedString(string: localizedComposeButtonTitle, attributes: composeAttributes)
+        composeButton.attributedTitle = NSAttributedString(string: localizedComposeButtonTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(composeAttributes))
         
-        penPalsButton.attributedTitle = NSAttributedString(string: localizedPenPalsButtonTitle, attributes: attributes)
-        penPalsButton.attributedAlternateTitle = NSAttributedString(string: localizedPenPalsButtonTitle, attributes: altPenpalAttributes)
+        penPalsButton.attributedTitle = NSAttributedString(string: localizedPenPalsButtonTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(attributes))
+        penPalsButton.attributedAlternateTitle = NSAttributedString(string: localizedPenPalsButtonTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(altPenpalAttributes))
         
-        lockdownButton.attributedTitle = NSAttributedString(string: localizedLockdownButtonTitle, attributes: attributes)
-        lockdownButton.attributedAlternateTitle = NSAttributedString(string: localizedLockdownButtonTitle, attributes: altAttributes)
+        lockdownButton.attributedTitle = NSAttributedString(string: localizedLockdownButtonTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(attributes))
+        lockdownButton.attributedAlternateTitle = NSAttributedString(string: localizedLockdownButtonTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(altAttributes))
         
-        logoutButton.attributedTitle = NSAttributedString(string: localizedLogoutButtonTitle, attributes: attributes)
-        logoutButton.attributedAlternateTitle = NSAttributedString(string: localizedLogoutButtonTitle, attributes: altAttributes)
+        logoutButton.attributedTitle = NSAttributedString(string: localizedLogoutButtonTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(attributes))
+        logoutButton.attributedAlternateTitle = NSAttributedString(string: localizedLogoutButtonTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(altAttributes))
     }
     
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
 }

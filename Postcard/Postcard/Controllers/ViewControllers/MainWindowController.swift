@@ -18,7 +18,7 @@ class MainWindowController: NSWindowController
         self.window?.titlebarAppearsTransparent = true
         
         window?.isMovableByWindowBackground = true
-        window?.titleVisibility = NSWindowTitleVisibility.hidden
+        window?.titleVisibility = NSWindow.TitleVisibility.hidden
         window?.backgroundColor = PostcardUI.blue
         
     }

@@ -7,8 +7,10 @@
 //
 
 import Cocoa
-import GTMAppAuth
 import AppAuth
+import GoogleAPIClientForRESTCore
+import GoogleAPIClientForREST_Gmail
+import GTMAppAuth
 //import GoogleAPIClient
 
 class WelcomeViewController: NSViewController
@@ -17,7 +19,7 @@ class WelcomeViewController: NSViewController
     @IBOutlet weak var descriptionView: NSView!
     @IBOutlet weak var googleLoginButton: NSButton!
     
-    let appDelegate = NSApplication.shared().delegate as! AppDelegate
+    let appDelegate = NSApplication.shared.delegate as! AppDelegate
     
     var userGoogleName: String?
     var authorization: GTMAppAuthFetcherAuthorization?
@@ -257,6 +259,7 @@ class WelcomeViewController: NSViewController
             let canAuth = self.authorization!.canAuthorize()
             if canAuth
             {
+                
                 GTMAppAuthFetcherAuthorization.save(self.authorization!, toKeychainForName: GmailProps.kKeychainItemName)
             }
             else

@@ -13,7 +13,7 @@ class PenPalsViewController: NSViewController, NSTableViewDelegate
     @IBOutlet weak var penPalsTableView: NSTableView!
     @IBOutlet var penPalsArrayController: NSArrayController!
     
-    var managedContext = (NSApplication.shared().delegate as! AppDelegate).managedObjectContext
+    var managedContext = (NSApplication.shared.delegate as! AppDelegate).managedObjectContext
     
     override func viewDidLoad()
     {
@@ -35,7 +35,7 @@ class PenPalsViewController: NSViewController, NSTableViewDelegate
         penPalsTableView.doubleAction = #selector(doubleClickComposeEmail)
     }
     
-    func doubleClickComposeEmail()
+    @objc func doubleClickComposeEmail()
     {
         if let thisPenPal = penPalsArrayController.selectedObjects[0] as? PenPal
         {
@@ -73,7 +73,7 @@ class PenPalTableCell: NSTableCellView
     @IBOutlet weak var backgroundView: DesignableView!
     
     var actionTitle = ""
-    var managedContext = (NSApplication.shared().delegate as! AppDelegate).managedObjectContext
+    var managedContext = (NSApplication.shared.delegate as! AppDelegate).managedObjectContext
     
     override var objectValue: Any?
     {
@@ -91,8 +91,8 @@ class PenPalTableCell: NSTableCellView
                     buttonFont = maybeFont
                 }
                 
-                let attributes = [NSForegroundColorAttributeName: NSColor.white,NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
-                let altAttributes = [NSForegroundColorAttributeName: PostcardUI.blue, NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName: buttonFont]
+                let attributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): NSColor.white,convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyle, convertFromNSAttributedStringKey(NSAttributedString.Key.font): buttonFont]
+                let altAttributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): PostcardUI.blue, convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyle, convertFromNSAttributedStringKey(NSAttributedString.Key.font): buttonFont]
 
                 if penPal.key != nil && penPal.sentKey == false
                 {
@@ -121,14 +121,14 @@ class PenPalTableCell: NSTableCellView
                     actionButton.isHidden = false
                 }
                 
-                actionButton.attributedTitle = NSAttributedString(string: actionTitle, attributes: attributes)
-                actionButton.attributedAlternateTitle = NSAttributedString(string: actionTitle, attributes: altAttributes)
+                actionButton.attributedTitle = NSAttributedString(string: actionTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(attributes))
+                actionButton.attributedAlternateTitle = NSAttributedString(string: actionTitle, attributes: convertToOptionalNSAttributedStringKeyDictionary(altAttributes))
             }
         }
     }
 
     //We already have their key, but they don't have ours
-    func addAction()
+    @objc func addAction()
     {
         //Send key email to this user
         if let penPal = objectValue as? PenPal
@@ -140,7 +140,7 @@ class PenPalTableCell: NSTableCellView
     }
     
     //We don't have their key, and they don't have ours
-    func inviteAction()
+    @objc func inviteAction()
     {
         //Send key email to this user
         if let penPal = objectValue as? PenPal
@@ -152,4 +152,15 @@ class PenPalTableCell: NSTableCellView
     }
     
     
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
 }

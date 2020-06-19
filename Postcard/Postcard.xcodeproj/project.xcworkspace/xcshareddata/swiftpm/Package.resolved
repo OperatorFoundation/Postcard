@@ -1,0 +1,70 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "AppAuth",
+        "repositoryURL": "https://github.com/openid/AppAuth-iOS.git",
+        "state": {
+          "branch": null,
+          "revision": "01131d68346c8ae552961c768d583c715fbe1410",
+          "version": "1.4.0"
+        }
+      },
+      {
+        "package": "Clibsodium",
+        "repositoryURL": "https://github.com/tiwoc/Clibsodium.git",
+        "state": {
+          "branch": null,
+          "revision": "2ac72772aae26b2da0b15c253d9bb79ba452f66a",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "Datable",
+        "repositoryURL": "https://github.com/OperatorFoundation/Datable.git",
+        "state": {
+          "branch": null,
+          "revision": "7387409895e3998d9169007df3fd4a37ad74cb4a",
+          "version": "2.0.2"
+        }
+      },
+      {
+        "package": "GoogleAPIClientForREST",
+        "repositoryURL": "https://github.com/google/google-api-objectivec-client-for-rest.git",
+        "state": {
+          "branch": null,
+          "revision": "964454b1b812ef5b8c2f16f9961a8d2a0ab80404",
+          "version": "1.4.1"
+        }
+      },
+      {
+        "package": "GTMSessionFetcher",
+        "repositoryURL": "https://github.com/google/gtm-session-fetcher.git",
+        "state": {
+          "branch": null,
+          "revision": "1d4ef59335abfccee6150ca5c9b436c17c801fa9",
+          "version": "1.4.0"
+        }
+      },
+      {
+        "package": "KeychainAccess",
+        "repositoryURL": "https://github.com/kishikawakatsumi/KeychainAccess.git",
+        "state": {
+          "branch": null,
+          "revision": "3d0ea2c0806791abcc5d7f0d9f62f1cfd4a7264d",
+          "version": "4.2.0"
+        }
+      },
+      {
+        "package": "Sodium",
+        "repositoryURL": "https://github.com/OperatorFoundation/swift-sodium.git",
+        "state": {
+          "branch": null,
+          "revision": "1e66f454379716cc7f2be875991ec7f6e37c2132",
+          "version": "0.8.4"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import GTMAppAuth
+import AppAuth
 
 struct GlobalVars
 {

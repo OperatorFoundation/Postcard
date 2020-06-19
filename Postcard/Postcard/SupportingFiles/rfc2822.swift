@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import GoogleAPIClientForREST
+import GoogleAPIClientForREST_Gmail
 
 let headerNameTo = "To"
 let headerNamesubject = "Subject"

@@ -3,13 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		013F466E51A7EC7DD70A3BBF /* Pods_PostcardUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 533D8F179720CC3090DF40D0 /* Pods_PostcardUITests.framework */; };
-		1975EEF2A1B4351FF1EDE442 /* Pods_PostcardTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9CC654AD83D22534CA430ED /* Pods_PostcardTests.framework */; };
-		3930C8C6518B7B64B1928A70 /* Pods_Postcard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0D435509511DC88D515D16B /* Pods_Postcard.framework */; };
 		461891AC1CC17B9A009C577D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461891AB1CC17B9A009C577D /* AppDelegate.swift */; };
 		461891B11CC17B9A009C577D /* Postcard.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 461891AF1CC17B9A009C577D /* Postcard.xcdatamodeld */; };
 		461891B31CC17B9A009C577D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 461891B21CC17B9A009C577D /* Assets.xcassets */; };
@@ -29,6 +26,18 @@
 		46A6F4AE1CEFB578007C2D17 /* MainContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A6F4AD1CEFB578007C2D17 /* MainContainerViewController.swift */; };
 		46A7D0661E3000D800855A48 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46A7D0651E3000D800855A48 /* WebKit.framework */; };
 		46F64E8C1E777BA6006799B3 /* rfc2822.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F64E8B1E777BA6006799B3 /* rfc2822.swift */; };
+		AEA70D25248850FF00FAAAF1 /* AppAuth in Frameworks */ = {isa = PBXBuildFile; productRef = AEA70D24248850FF00FAAAF1 /* AppAuth */; };
+		AEA70D27248850FF00FAAAF1 /* AppAuthCore in Frameworks */ = {isa = PBXBuildFile; productRef = AEA70D26248850FF00FAAAF1 /* AppAuthCore */; };
+		AEA70D2A248851D600FAAAF1 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = AEA70D29248851D600FAAAF1 /* KeychainAccess */; };
+		AEA70D2D2488588D00FAAAF1 /* GoogleAPIClientForREST_PeopleService in Frameworks */ = {isa = PBXBuildFile; productRef = AEA70D2C2488588D00FAAAF1 /* GoogleAPIClientForREST_PeopleService */; };
+		AEA70D2F2488588D00FAAAF1 /* GoogleAPIClientForREST_Gmail in Frameworks */ = {isa = PBXBuildFile; productRef = AEA70D2E2488588D00FAAAF1 /* GoogleAPIClientForREST_Gmail */; };
+		AEA70D3224885A5D00FAAAF1 /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = AEA70D3124885A5D00FAAAF1 /* Sodium */; };
+		AEDDAFEB2488AF1600A7DAC8 /* MessagePack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEDDAFE72488AEFC00A7DAC8 /* MessagePack.framework */; };
+		AEDDAFEC2488AF1600A7DAC8 /* MessagePack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AEDDAFE72488AEFC00A7DAC8 /* MessagePack.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AEDDAFF6248B518800A7DAC8 /* Datable in Frameworks */ = {isa = PBXBuildFile; productRef = AEDDAFF5248B518800A7DAC8 /* Datable */; };
+		AEDDB000248B574F00A7DAC8 /* GTMAppAuth.h in Headers */ = {isa = PBXBuildFile; fileRef = AEDDAFFE248B574F00A7DAC8 /* GTMAppAuth.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AEDDB003248B574F00A7DAC8 /* GTMAppAuth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEDDAFFC248B574F00A7DAC8 /* GTMAppAuth.framework */; };
+		AEDDB004248B574F00A7DAC8 /* GTMAppAuth.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AEDDAFFC248B574F00A7DAC8 /* GTMAppAuth.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B4238F571CD2A6030054E7EF /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4238F561CD2A6030054E7EF /* SystemConfiguration.framework */; };
 		B4238F591CD2C0100054E7EF /* MailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4238F581CD2C0100054E7EF /* MailController.swift */; };
 		B4238F5C1CD2C11C0054E7EF /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4238F5B1CD2C11C0054E7EF /* Constants.swift */; };
@@ -77,12 +86,31 @@
 			remoteGlobalIDString = 461891A71CC17B99009C577D;
 			remoteInfo = Postcard;
 		};
+		AEDDB001248B574F00A7DAC8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 461891A01CC17B99009C577D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AEDDAFFB248B574F00A7DAC8;
+			remoteInfo = GTMAppAuth;
+		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		AEDDAFED2488AF1600A7DAC8 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				AEDDAFEC2488AF1600A7DAC8 /* MessagePack.framework in Embed Frameworks */,
+				AEDDB004248B574F00A7DAC8 /* GTMAppAuth.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		33969F0AE60E147CB6607F26 /* Pods-Postcard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Postcard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Postcard/Pods-Postcard.debug.xcconfig"; sourceTree = "<group>"; };
-		34B365E8D9DFDEABFFBB62F5 /* Pods-PostcardUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostcardUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PostcardUITests/Pods-PostcardUITests.release.xcconfig"; sourceTree = "<group>"; };
-		38AA5C72C3FEF1DCF660FAAB /* Pods-PostcardUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostcardUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PostcardUITests/Pods-PostcardUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		461891A81CC17B99009C577D /* Postcard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Postcard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		461891AB1CC17B9A009C577D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		461891B01CC17B9A009C577D /* Postcard.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Postcard.xcdatamodel; sourceTree = "<group>"; };
@@ -108,10 +136,18 @@
 		46A6F4AD1CEFB578007C2D17 /* MainContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainContainerViewController.swift; path = Controllers/ViewControllers/MainContainerViewController.swift; sourceTree = "<group>"; };
 		46A7D0651E3000D800855A48 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		46F64E8B1E777BA6006799B3 /* rfc2822.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = rfc2822.swift; path = SupportingFiles/rfc2822.swift; sourceTree = "<group>"; };
-		533D8F179720CC3090DF40D0 /* Pods_PostcardUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostcardUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		592EEB916E4DFE6C37933020 /* Pods-PostcardTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostcardTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PostcardTests/Pods-PostcardTests.release.xcconfig"; sourceTree = "<group>"; };
-		A9D48FFD468F001E6AB0DAE2 /* Pods-PostcardTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostcardTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PostcardTests/Pods-PostcardTests.debug.xcconfig"; sourceTree = "<group>"; };
-		B0D435509511DC88D515D16B /* Pods_Postcard.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Postcard.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AEDDAFE72488AEFC00A7DAC8 /* MessagePack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MessagePack.framework; sourceTree = "<group>"; };
+		AEDDAFFC248B574F00A7DAC8 /* GTMAppAuth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GTMAppAuth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AEDDAFFE248B574F00A7DAC8 /* GTMAppAuth.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GTMAppAuth.h; sourceTree = "<group>"; };
+		AEDDAFFF248B574F00A7DAC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AEDDB00B248B578000A7DAC8 /* CONTRIBUTORS */ = {isa = PBXFileReference; lastKnownFileType = text; path = CONTRIBUTORS; sourceTree = "<group>"; };
+		AEDDB00D248B578000A7DAC8 /* AUTHORS */ = {isa = PBXFileReference; lastKnownFileType = text; path = AUTHORS; sourceTree = "<group>"; };
+		AEDDB00E248B578000A7DAC8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		AEDDB00F248B578100A7DAC8 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		AEDDB010248B578100A7DAC8 /* Doxyfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
+		AEDDB011248B578100A7DAC8 /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
+		AEDDB012248B578100A7DAC8 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		AEDDB013248B578100A7DAC8 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 		B4238F541CD2A24D0054E7EF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		B4238F561CD2A6030054E7EF /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		B4238F581CD2C0100054E7EF /* MailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MailController.swift; path = Controllers/MailController.swift; sourceTree = "<group>"; };
@@ -145,11 +181,9 @@
 		B4EDBB4D1CEF6BC50094853F /* ComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComposeViewController.swift; path = Controllers/ViewControllers/ComposeViewController.swift; sourceTree = "<group>"; };
 		B4EDBB4F1CEF74D80094853F /* WelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeViewController.swift; path = Controllers/ViewControllers/WelcomeViewController.swift; sourceTree = "<group>"; };
 		B4EDBB511CEF7C040094853F /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainWindowController.swift; path = Controllers/ViewControllers/MainWindowController.swift; sourceTree = "<group>"; };
-		B9CC654AD83D22534CA430ED /* Pods_PostcardTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostcardTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAA27A301E9AD6430030A89B /* Packable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Packable.swift; path = DataModels/Packable.swift; sourceTree = "<group>"; };
 		CAA27A321E9AD8AA0030A89B /* Encoding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Encoding.swift; path = SupportingFiles/Encoding.swift; sourceTree = "<group>"; };
 		CAEF8C6C1E9459100035FA97 /* Postcard-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Postcard-Bridging-Header.h"; sourceTree = "<group>"; };
-		D0E696D2E52F05F0503F6A52 /* Pods-Postcard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Postcard.release.xcconfig"; path = "Pods/Target Support Files/Pods-Postcard/Pods-Postcard.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,10 +191,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEA70D25248850FF00FAAAF1 /* AppAuth in Frameworks */,
 				46A7D0661E3000D800855A48 /* WebKit.framework in Frameworks */,
+				AEA70D2A248851D600FAAAF1 /* KeychainAccess in Frameworks */,
 				B486A0771E2F2ECB009664A2 /* Security.framework in Frameworks */,
+				AEA70D2F2488588D00FAAAF1 /* GoogleAPIClientForREST_Gmail in Frameworks */,
+				AEA70D3224885A5D00FAAAF1 /* Sodium in Frameworks */,
+				AEDDAFF6248B518800A7DAC8 /* Datable in Frameworks */,
+				AEDDB003248B574F00A7DAC8 /* GTMAppAuth.framework in Frameworks */,
+				AEA70D2D2488588D00FAAAF1 /* GoogleAPIClientForREST_PeopleService in Frameworks */,
 				B4238F571CD2A6030054E7EF /* SystemConfiguration.framework in Frameworks */,
-				3930C8C6518B7B64B1928A70 /* Pods_Postcard.framework in Frameworks */,
+				AEA70D27248850FF00FAAAF1 /* AppAuthCore in Frameworks */,
+				AEDDAFEB2488AF1600A7DAC8 /* MessagePack.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,7 +210,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1975EEF2A1B4351FF1EDE442 /* Pods_PostcardTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -176,7 +217,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				013F466E51A7EC7DD70A3BBF /* Pods_PostcardUITests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AEDDAFF9248B574F00A7DAC8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -191,7 +238,6 @@
 				461891CA1CC17B9A009C577D /* PostcardUITests */,
 				461891A91CC17B99009C577D /* Products */,
 				CD953D86455DD95CB6DAFBBB /* Frameworks */,
-				911A317E6549E65363E6D186 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -201,6 +247,7 @@
 				461891A81CC17B99009C577D /* Postcard.app */,
 				461891BC1CC17B9A009C577D /* PostcardTests.xctest */,
 				461891C71CC17B9A009C577D /* PostcardUITests.xctest */,
+				AEDDAFFC248B574F00A7DAC8 /* GTMAppAuth.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -251,17 +298,53 @@
 			name = UIGoodies;
 			sourceTree = "<group>";
 		};
-		911A317E6549E65363E6D186 /* Pods */ = {
+		AEDDAFFD248B574F00A7DAC8 /* GTMAppAuth */ = {
 			isa = PBXGroup;
 			children = (
-				33969F0AE60E147CB6607F26 /* Pods-Postcard.debug.xcconfig */,
-				D0E696D2E52F05F0503F6A52 /* Pods-Postcard.release.xcconfig */,
-				A9D48FFD468F001E6AB0DAE2 /* Pods-PostcardTests.debug.xcconfig */,
-				592EEB916E4DFE6C37933020 /* Pods-PostcardTests.release.xcconfig */,
-				38AA5C72C3FEF1DCF660FAAB /* Pods-PostcardUITests.debug.xcconfig */,
-				34B365E8D9DFDEABFFBB62F5 /* Pods-PostcardUITests.release.xcconfig */,
+				AEDDB00C248B578000A7DAC8 /* .build */,
+				AEDDB012248B578100A7DAC8 /* LICENSE */,
+				AEDDB013248B578100A7DAC8 /* CHANGELOG.md */,
+				AEDDB00D248B578000A7DAC8 /* AUTHORS */,
+				AEDDB009248B578000A7DAC8 /* Source */,
+				AEDDB008248B578000A7DAC8 /* Tests */,
+				AEDDB00B248B578000A7DAC8 /* CONTRIBUTORS */,
+				AEDDB00E248B578000A7DAC8 /* README.md */,
+				AEDDB00F248B578100A7DAC8 /* .gitignore */,
+				AEDDB011248B578100A7DAC8 /* CONTRIBUTING.md */,
+				AEDDB00A248B578000A7DAC8 /* Examples */,
+				AEDDB010248B578100A7DAC8 /* Doxyfile */,
+				AEDDAFFE248B574F00A7DAC8 /* GTMAppAuth.h */,
+				AEDDAFFF248B574F00A7DAC8 /* Info.plist */,
 			);
-			name = Pods;
+			path = GTMAppAuth;
+			sourceTree = "<group>";
+		};
+		AEDDB008248B578000A7DAC8 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		AEDDB009248B578000A7DAC8 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		AEDDB00A248B578000A7DAC8 /* Examples */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Examples;
+			sourceTree = "<group>";
+		};
+		AEDDB00C248B578000A7DAC8 /* .build */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = .build;
 			sourceTree = "<group>";
 		};
 		B4238F5A1CD2C0E50054E7EF /* Controllers */ = {
@@ -351,36 +434,54 @@
 		CD953D86455DD95CB6DAFBBB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AEDDAFFD248B574F00A7DAC8 /* GTMAppAuth */,
+				AEDDAFE72488AEFC00A7DAC8 /* MessagePack.framework */,
 				46A7D0651E3000D800855A48 /* WebKit.framework */,
 				B4572D7F1E2F09890072813D /* Sodium.framework */,
 				B4238F561CD2A6030054E7EF /* SystemConfiguration.framework */,
 				B4238F541CD2A24D0054E7EF /* Security.framework */,
-				B0D435509511DC88D515D16B /* Pods_Postcard.framework */,
-				B9CC654AD83D22534CA430ED /* Pods_PostcardTests.framework */,
-				533D8F179720CC3090DF40D0 /* Pods_PostcardUITests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		AEDDAFF7248B574F00A7DAC8 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AEDDB000248B574F00A7DAC8 /* GTMAppAuth.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		461891A71CC17B99009C577D /* Postcard */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 461891D01CC17B9A009C577D /* Build configuration list for PBXNativeTarget "Postcard" */;
 			buildPhases = (
-				3D2744DE908F24FBBF053917 /* [CP] Check Pods Manifest.lock */,
 				461891A41CC17B99009C577D /* Sources */,
 				461891A51CC17B99009C577D /* Frameworks */,
 				461891A61CC17B99009C577D /* Resources */,
-				DE5BA197EED173C932207AC4 /* [CP] Embed Pods Frameworks */,
-				95DB8458B35DC3925CAF24B8 /* [CP] Copy Pods Resources */,
+				AEDDAFED2488AF1600A7DAC8 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AEDDB002248B574F00A7DAC8 /* PBXTargetDependency */,
 			);
 			name = Postcard;
+			packageProductDependencies = (
+				AEA70D24248850FF00FAAAF1 /* AppAuth */,
+				AEA70D26248850FF00FAAAF1 /* AppAuthCore */,
+				AEA70D29248851D600FAAAF1 /* KeychainAccess */,
+				AEA70D2C2488588D00FAAAF1 /* GoogleAPIClientForREST_PeopleService */,
+				AEA70D2E2488588D00FAAAF1 /* GoogleAPIClientForREST_Gmail */,
+				AEA70D3124885A5D00FAAAF1 /* Sodium */,
+				AEDDAFF5248B518800A7DAC8 /* Datable */,
+			);
 			productName = Postcard;
 			productReference = 461891A81CC17B99009C577D /* Postcard.app */;
 			productType = "com.apple.product-type.application";
@@ -427,6 +528,24 @@
 			productReference = 461891C71CC17B9A009C577D /* PostcardUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		AEDDAFFB248B574F00A7DAC8 /* GTMAppAuth */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AEDDB005248B574F00A7DAC8 /* Build configuration list for PBXNativeTarget "GTMAppAuth" */;
+			buildPhases = (
+				AEDDAFF7248B574F00A7DAC8 /* Headers */,
+				AEDDAFF8248B574F00A7DAC8 /* Sources */,
+				AEDDAFF9248B574F00A7DAC8 /* Frameworks */,
+				AEDDAFFA248B574F00A7DAC8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GTMAppAuth;
+			productName = GTMAppAuth;
+			productReference = AEDDAFFC248B574F00A7DAC8 /* GTMAppAuth.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -434,13 +553,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 1150;
 				ORGANIZATIONNAME = operatorfoundation.org;
 				TargetAttributes = {
 					461891A71CC17B99009C577D = {
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = 67Y4NSLDQ3;
-						LastSwiftMigration = 0820;
+						LastSwiftMigration = 1010;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Keychain = {
@@ -453,25 +572,38 @@
 					};
 					461891BB1CC17B9A009C577D = {
 						CreatedOnToolsVersion = 7.3;
-						LastSwiftMigration = 0820;
+						LastSwiftMigration = 1010;
+						ProvisioningStyle = Automatic;
 						TestTargetID = 461891A71CC17B99009C577D;
 					};
 					461891C61CC17B9A009C577D = {
 						CreatedOnToolsVersion = 7.3;
-						LastSwiftMigration = 0820;
+						LastSwiftMigration = 1010;
+						ProvisioningStyle = Automatic;
 						TestTargetID = 461891A71CC17B99009C577D;
+					};
+					AEDDAFFB248B574F00A7DAC8 = {
+						CreatedOnToolsVersion = 11.5;
 					};
 				};
 			};
 			buildConfigurationList = 461891A31CC17B99009C577D /* Build configuration list for PBXProject "Postcard" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				es,
 			);
 			mainGroup = 4618919F1CC17B99009C577D;
+			packageReferences = (
+				AEA70D23248850FF00FAAAF1 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */,
+				AEA70D28248851D600FAAAF1 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				AEA70D2B2488588D00FAAAF1 /* XCRemoteSwiftPackageReference "google-api-objectivec-client-for-rest" */,
+				AEA70D3024885A5D00FAAAF1 /* XCRemoteSwiftPackageReference "swift-sodium" */,
+				AEDDAFF4248B518800A7DAC8 /* XCRemoteSwiftPackageReference "Datable" */,
+			);
 			productRefGroup = 461891A91CC17B99009C577D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -479,6 +611,7 @@
 				461891A71CC17B99009C577D /* Postcard */,
 				461891BB1CC17B9A009C577D /* PostcardTests */,
 				461891C61CC17B9A009C577D /* PostcardUITests */,
+				AEDDAFFB248B574F00A7DAC8 /* GTMAppAuth */,
 			);
 		};
 /* End PBXProject section */
@@ -521,6 +654,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AEDDAFFA248B574F00A7DAC8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -554,21 +694,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PostcardUITests/Pods-PostcardUITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		3D2744DE908F24FBBF053917 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
 		6F715FE05F658E4CF97702D5 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -582,21 +707,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PostcardTests/Pods-PostcardTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		95DB8458B35DC3925CAF24B8 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Postcard/Pods-Postcard-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A652955F5C4E49CBB442D64E /* [CP] Check Pods Manifest.lock */ = {
@@ -627,21 +737,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PostcardTests/Pods-PostcardTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		DE5BA197EED173C932207AC4 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Postcard/Pods-Postcard-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E1C5B4139961023A29FF3D8C /* [CP] Check Pods Manifest.lock */ = {
@@ -714,6 +809,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AEDDAFF8248B574F00A7DAC8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -726,6 +828,11 @@
 			isa = PBXTargetDependency;
 			target = 461891A71CC17B99009C577D /* Postcard */;
 			targetProxy = 461891C81CC17B9A009C577D /* PBXContainerItemProxy */;
+		};
+		AEDDB002248B574F00A7DAC8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AEDDAFFB248B574F00A7DAC8 /* GTMAppAuth */;
+			targetProxy = AEDDB001248B574F00A7DAC8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -848,14 +955,22 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -878,7 +993,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -896,14 +1011,22 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -920,16 +1043,16 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Release;
 		};
 		461891D11CC17B9A009C577D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 33969F0AE60E147CB6607F26 /* Pods-Postcard.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -938,17 +1061,24 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 67Y4NSLDQ3;
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"GTLR_USE_MODULAR_IMPORT=1",
+				);
 				INFOPLIST_FILE = Postcard/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/Sodium/Sodium",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -962,17 +1092,18 @@
 					"-framework",
 					"\"Sodium\"",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = org.operatorfoundation.Postcard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Postcard/Postcard-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
 		461891D21CC17B9A009C577D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0E696D2E52F05F0503F6A52 /* Pods-Postcard.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -981,17 +1112,24 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 67Y4NSLDQ3;
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"GTLR_USE_MODULAR_IMPORT=1",
+				);
 				INFOPLIST_FILE = Postcard/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/Sodium/Sodium",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -1005,68 +1143,176 @@
 					"-framework",
 					"\"Sodium\"",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = org.operatorfoundation.Postcard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Postcard/Postcard-Bridging-Header.h";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
 		461891D41CC17B9A009C577D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A9D48FFD468F001E6AB0DAE2 /* Pods-PostcardTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = PostcardTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.operatorfoundation.PostcardTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Postcard.app/Contents/MacOS/Postcard";
 			};
 			name = Debug;
 		};
 		461891D51CC17B9A009C577D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 592EEB916E4DFE6C37933020 /* Pods-PostcardTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = PostcardTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.operatorfoundation.PostcardTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Postcard.app/Contents/MacOS/Postcard";
 			};
 			name = Release;
 		};
 		461891D71CC17B9A009C577D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 38AA5C72C3FEF1DCF660FAAB /* Pods-PostcardUITests.debug.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = PostcardUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.operatorfoundation.PostcardUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.2;
 				TEST_TARGET_NAME = Postcard;
 			};
 			name = Debug;
 		};
 		461891D81CC17B9A009C577D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 34B365E8D9DFDEABFFBB62F5 /* Pods-PostcardUITests.release.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = PostcardUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.operatorfoundation.PostcardUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.2;
 				TEST_TARGET_NAME = Postcard;
+			};
+			name = Release;
+		};
+		AEDDB006248B574F00A7DAC8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 67Y4NSLDQ3;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = GTMAppAuth/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.org.OperatorFoundation.GTMAppAuth;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		AEDDB007248B574F00A7DAC8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 67Y4NSLDQ3;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = GTMAppAuth/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.org.OperatorFoundation.GTMAppAuth;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
@@ -1109,7 +1355,97 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		AEDDB005248B574F00A7DAC8 /* Build configuration list for PBXNativeTarget "GTMAppAuth" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AEDDB006248B574F00A7DAC8 /* Debug */,
+				AEDDB007248B574F00A7DAC8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AEA70D23248850FF00FAAAF1 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/openid/AppAuth-iOS.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.0;
+			};
+		};
+		AEA70D28248851D600FAAAF1 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.2.0;
+			};
+		};
+		AEA70D2B2488588D00FAAAF1 /* XCRemoteSwiftPackageReference "google-api-objectivec-client-for-rest" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/google-api-objectivec-client-for-rest.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.1;
+			};
+		};
+		AEA70D3024885A5D00FAAAF1 /* XCRemoteSwiftPackageReference "swift-sodium" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/OperatorFoundation/swift-sodium.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.8.4;
+			};
+		};
+		AEDDAFF4248B518800A7DAC8 /* XCRemoteSwiftPackageReference "Datable" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/OperatorFoundation/Datable.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AEA70D24248850FF00FAAAF1 /* AppAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AEA70D23248850FF00FAAAF1 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */;
+			productName = AppAuth;
+		};
+		AEA70D26248850FF00FAAAF1 /* AppAuthCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AEA70D23248850FF00FAAAF1 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */;
+			productName = AppAuthCore;
+		};
+		AEA70D29248851D600FAAAF1 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AEA70D28248851D600FAAAF1 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		AEA70D2C2488588D00FAAAF1 /* GoogleAPIClientForREST_PeopleService */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AEA70D2B2488588D00FAAAF1 /* XCRemoteSwiftPackageReference "google-api-objectivec-client-for-rest" */;
+			productName = GoogleAPIClientForREST_PeopleService;
+		};
+		AEA70D2E2488588D00FAAAF1 /* GoogleAPIClientForREST_Gmail */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AEA70D2B2488588D00FAAAF1 /* XCRemoteSwiftPackageReference "google-api-objectivec-client-for-rest" */;
+			productName = GoogleAPIClientForREST_Gmail;
+		};
+		AEA70D3124885A5D00FAAAF1 /* Sodium */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AEA70D3024885A5D00FAAAF1 /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Sodium;
+		};
+		AEDDAFF5248B518800A7DAC8 /* Datable */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AEDDAFF4248B518800A7DAC8 /* XCRemoteSwiftPackageReference "Datable" */;
+			productName = Datable;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		461891AF1CC17B9A009C577D /* Postcard.xcdatamodeld */ = {

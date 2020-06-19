@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import GoogleAPIClientForREST
+import GoogleAPIClientForRESTCore
 
 
 func dataEncodedToString(_ data: Data) -> String

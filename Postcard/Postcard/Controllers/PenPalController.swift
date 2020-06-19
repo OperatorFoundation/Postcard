@@ -7,7 +7,9 @@
 //
 
 import Cocoa
-import GoogleAPIClientForREST
+import GoogleAPIClientForRESTCore
+import GoogleAPIClientForREST_PeopleService
+
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
@@ -37,7 +39,7 @@ class PenPalController: NSObject
 {
     static let sharedInstance = PenPalController()
     
-    let appDelegate = NSApplication.shared().delegate as! AppDelegate
+    let appDelegate = NSApplication.shared.delegate as! AppDelegate
     //let penPalEntityName = "PenPal"
     
     var managedObjectContext: NSManagedObjectContext?
@@ -55,19 +57,18 @@ class PenPalController: NSObject
     
     func getGoogleContacts(_ nextPageToken: String?)
     {
-        let query = GTLRPeopleQuery_PeopleConnectionsList.query(withResourceName: "people/me")
-        
+        let query = GTLRPeopleServiceQuery_PeopleConnectionsList.query(withResourceName: "people/me")
         query.requestMaskIncludeField = "person.emailAddresses,person.names,person.photos"
-        
+
         //Sort Order for results
         query.sortOrder = "FIRST_NAME_ASCENDING"
-        
+
         //Sync Token
         query.syncToken = GlobalVars.currentUser?.peopleSyncToken
-        
+
         //Results per page
         query.pageSize = 500
-        
+
         //Next Page Token
         query.pageToken = nextPageToken
 
@@ -78,7 +79,7 @@ class PenPalController: NSObject
     {
         //Do we have friends??
         var count = 0
-        if let response:GTLRPeople_ListConnectionsResponse = maybeResponse as? GTLRPeople_ListConnectionsResponse
+        if let response: GTLRPeopleService_ListConnectionsResponse = maybeResponse as? GTLRPeopleService_ListConnectionsResponse
         {
             count += 1
             let nextPageToken: String? = response.nextPageToken
@@ -150,8 +151,7 @@ class PenPalController: NSObject
             }
         }
     }
-    
-    func saveConnection(_ connection:GTLRPeople_Person, asPenPal penPal: PenPal, withEmailAddress email: String)
+    func saveConnection(_ connection: GTLRPeopleService_Person, asPenPal penPal: PenPal, withEmailAddress email: String)
     {
         penPal.owner = GlobalVars.currentUser
         penPal.email = email

@@ -8,9 +8,9 @@
 
 import Cocoa
 import KeychainAccess
-import GoogleAPIClientForREST
+//import GoogleAPIClientForREST
 import Sodium
-import MessagePack
+//import MessagePack
 
 //Key Attachment Keys
 let userPublicKeyKey = "userPublicKey"
@@ -172,12 +172,12 @@ class KeyController: NSObject
         newKeyAlert.addButton(withTitle: "Yes")
         let response = newKeyAlert.runModal()
         
-        if response == NSAlertSecondButtonReturn
+        if response == NSApplication.ModalResponse.alertSecondButtonReturn
         {
             //User wants to import settings from other machine
             ///Show instructions for importing settings here?
         }
-        else if response == NSAlertFirstButtonReturn
+        else if response == NSApplication.ModalResponse.alertFirstButtonReturn
         {
             //User selected No
             //Delete this message as we will be unable to read it
@@ -194,7 +194,7 @@ class KeyController: NSObject
         oldKeyAlert.addButton(withTitle: "Yes")
         let response = oldKeyAlert.runModal()
         
-        if response == NSAlertSecondButtonReturn
+        if response == NSApplication.ModalResponse.alertSecondButtonReturn
         {
             //User wants to send new key to contact
             KeyController.sharedInstance.sendKey(toPenPal: penPal)
@@ -219,7 +219,7 @@ class KeyController: NSObject
         newKeyAlert.addButton(withTitle: "Yes")
         let response = newKeyAlert.runModal()
         
-        if response == NSAlertSecondButtonReturn
+        if response == NSApplication.ModalResponse.alertSecondButtonReturn
         {
             //User wants to update penpal key
             penPal.key = senderPublicKey as NSData?
@@ -237,7 +237,7 @@ class KeyController: NSObject
                 showAlert("Warning: We could not save this contact's new encryption settings.\n")
             }
         }
-        else if response == NSAlertFirstButtonReturn
+        else if response == NSApplication.ModalResponse.alertFirstButtonReturn
         {
             //User has chosen to ignore contact's new key, let's delete it so the user does not keep getting these alerts
             //trashGmailMessage(withId: messageId)
@@ -310,7 +310,7 @@ class KeyController: NSObject
     fileprivate func createNewKeyPair() -> Box.KeyPair
     {
         //Generate a key pair for the user.
-        let mySodium = Sodium()!
+        let mySodium = Sodium()
         let myKeyPair = mySodium.box.keyPair()!
 
         return myKeyPair
